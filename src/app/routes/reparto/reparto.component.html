@@ -1,0 +1,69 @@
+<div class="reparto">
+
+  <button class="btn-volver" (click)="volver()">⬅ Volver</button>
+
+  <!-- RESUMEN DEL DÍA -->
+<div class="resumen-simple" *ngIf="ruta() as r">
+
+  <div class="linea1">
+    <strong>{{ r.nombrePersonalizado }}</strong>
+    <span class="fecha">{{ diaSemana }} {{ fechaHoy }}</span>
+  </div>
+
+  <div class="linea2">
+    <span>{{ indiceActual() + 1 }} / {{ direcciones().length }}</span>
+    <span class="punto">•</span>
+    <span>{{ totalDiariosHoy() }} diarios</span>
+  </div>
+
+</div>
+
+  <!-- DIRECCIÓN ACTUAL -->
+  <div class="card-principal" *ngIf="actual() as d">
+
+    <h2>{{ d.cliente }}</h2>
+
+    <p><strong>Dirección:</strong> {{ d.direccion }}</p>
+
+    <p *ngIf="d.notas">
+      <strong>Notas:</strong> <br>
+      {{ d.notas }}
+    </p>
+
+    <button class="btn-maps" (click)="abrirMaps()">
+      📍 Abrir en Google Maps
+    </button>
+
+    <!-- ANTERIOR -->
+    <button class="btn-anterior"
+            (click)="anterior()"
+            [disabled]="indiceActual() === 0">
+      ⬅ Anterior
+    </button>
+
+    <!-- ENTREGAR -->
+    <button class="btn-entregado" (click)="entregar()">
+      ✔ Entregado
+    </button>
+
+    <!-- SALTAR -->
+    <button class="btn-saltar" (click)="saltar()">
+      ⏭ Saltar
+    </button>
+  </div>
+
+  <!-- SIGUIENTES DIRECCIONES -->
+  <h3 class="tit-siguientes">Próximas entregas:</h3>
+
+  <div class="lista-siguientes">
+    <div class="preview-card" *ngFor="let s of siguientes()">
+      <strong>{{ s.cliente }}</strong>
+      <div class="mini-dir">{{ s.direccion }}</div>
+    </div>
+  </div>
+
+  <button class="btn-reiniciar" (click)="reiniciarReparto()">
+    Reiniciar reparto
+  </button>
+
+</div>

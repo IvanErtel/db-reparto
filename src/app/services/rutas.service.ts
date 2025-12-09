@@ -15,6 +15,7 @@ import {
 import { Auth } from '@angular/fire/auth';
 import { Ruta } from '../models/ruta';
 import { Direccion } from '../models/direccion';
+import { setDoc, serverTimestamp } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -170,6 +171,12 @@ async obtenerDireccionesOrdenadas(rutaId: string): Promise<Direccion[]> {
     return null;
   }
 
+  async obtenerUnaRuta(rutaId: string) {
+  const ref = doc(this.firestore, `routes/${rutaId}`);
+  const snap = await getDoc(ref);
+  return snap.exists() ? { id: rutaId, ...snap.data() } : null;
+}
+
   direccionActivaEnFecha(d: Direccion, fecha: Date): boolean {
     const hoy = this.limpiarFecha(fecha);
 
@@ -186,6 +193,29 @@ async obtenerDireccionesOrdenadas(rutaId: string): Promise<Direccion[]> {
     return true;
   }
 
+async registrarSalto(rutaId: string, direccion: Direccion, razon: string = '') {
+  const hoy = new Date().toISOString().split('T')[0];
+
+  const ref = doc(
+    this.firestore,
+    `routes/${rutaId}/historial/${hoy}/direcciones/${direccion.id}`
+  );
+
+  await setDoc(ref, {
+    entregado: false,
+    hora: serverTimestamp(),
+    razonSalto: razon || null,
+
+    // También guardamos los datos completos
+    cliente: direccion.cliente,
+    direccion: direccion.direccion,
+    cantidadDiarios: direccion.cantidadDiarios,
+    notas: direccion.notas || null,
+    lat: direccion.lat || null,
+    lng: direccion.lng || null
+  });
+}
+
   direccionSeEntregaEsteDia(d: Direccion, fecha: Date): boolean {
     const diaSemana = fecha.getDay(); // 0=domingo ... 6=sábado
     const mapa: (keyof Direccion['dias'])[] = [
@@ -201,6 +231,29 @@ async obtenerDireccionesOrdenadas(rutaId: string): Promise<Direccion[]> {
     const clave = mapa[diaSemana];
     return d.dias[clave] === true;
   }
+
+async registrarEntrega(rutaId: string, direccion: Direccion) {
+  const hoy = new Date().toISOString().split('T')[0]; // AAAA-MM-DD
+
+  const ref = doc(
+    this.firestore,
+    `routes/${rutaId}/historial/${hoy}/direcciones/${direccion.id}`
+  );
+
+  await setDoc(ref, {
+    entregado: true,
+    hora: serverTimestamp(),
+    razonSalto: null,
+
+    // Guardamos información útil para el historial
+    cliente: direccion.cliente,
+    direccion: direccion.direccion,
+    cantidadDiarios: direccion.cantidadDiarios,
+    notas: direccion.notas || null,
+    lat: direccion.lat || null,
+    lng: direccion.lng || null
+  });
+}
 
   async obtenerDireccionesParaReparto(rutaId: string, fecha: Date): Promise<Direccion[]> {
     const todas = await this.obtenerDireccionesOrdenadas(rutaId);

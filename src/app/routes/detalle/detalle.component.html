@@ -10,20 +10,24 @@
   </button>
 
   <div class="filtro-dia">
-  <label>Día de reparto:
-    <select [(ngModel)]="diaSeleccionado" (change)="filtrarPorDia()">
-      <option value="todos">Todos</option>
-      <option value="lunes">Lunes</option>
-      <option value="martes">Martes</option>
-      <option value="miercoles">Miércoles</option>
-      <option value="jueves">Jueves</option>
-      <option value="viernes">Viernes</option>
-      <option value="sabado">Sábado</option>
-      <option value="domingo">Domingo</option>
-      <option value="festivos">Festivos</option>
-    </select>
-  </label>
-</div>
+    <label>Día de reparto:
+      <select [(ngModel)]="diaSeleccionado" (change)="filtrarPorDia()">
+        <option value="todos">Todos</option>
+        <option value="lunes">Lunes</option>
+        <option value="martes">Martes</option>
+        <option value="miercoles">Miércoles</option>
+        <option value="jueves">Jueves</option>
+        <option value="viernes">Viernes</option>
+        <option value="sabado">Sábado</option>
+        <option value="domingo">Domingo</option>
+        <option value="festivos">Festivos</option>
+      </select>
+    </label>
+  </div>
+
+<button class="btn-reparto" (click)="iniciarReparto()">
+  🚚 {{ hayProgresoGuardado() ? 'Continuar reparto' : 'Iniciar reparto' }}
+</button>
 
   <h2>Direcciones cargadas</h2>
 
@@ -33,19 +37,10 @@
 
   <div class="lista" *ngIf="!cargandoDirecciones() && direcciones().length > 0">
 
-    <div class="card" *ngFor="let d of direcciones()" (click)="abrirDetalle(d)"
->
-
+    <div class="card" *ngFor="let d of direcciones()" (click)="abrirDetalle(d)">
       <div class="cliente">{{ d.cliente }}</div>
-
-      <div class="direccion">
-        📍 {{ d.direccion }}
-      </div>
-
-      <div class="info">
-        📰 {{ d.cantidadDiarios }} diarios
-      </div>
-
+      <div class="direccion">📍 {{ d.direccion }}</div>
+      <div class="info">📰 {{ d.cantidadDiarios }} diarios</div>
     </div>
 
   </div>
@@ -55,44 +50,63 @@
     Esta ruta todavía no tiene direcciones.
   </p>
 
-  <!-- MODAL DETALLE -->
-<div class="modal-fondo" *ngIf="modalAbierto()">
-  <div class="modal-contenido">
+  <!-- ========================= -->
+  <!--       MODAL DETALLE       -->
+  <!-- ========================= -->
 
-    <h2>{{ detalleSeleccionado()?.cliente }}</h2>
+  <div class="modal-fondo" *ngIf="modalAbierto()">
+    <div class="modal-contenido">
 
-    <p><strong>Dirección:</strong> {{ detalleSeleccionado()?.direccion }}</p>
-    <p><strong>Diarios:</strong> {{ detalleSeleccionado()?.cantidadDiarios }}</p>
+      <h2>{{ detalleSeleccionado()?.cliente }}</h2>
 
-    <p><strong>Días:</strong></p>
-    <ul>
-      <li *ngIf="detalleSeleccionado()?.dias.lunes">Lunes</li>
-      <li *ngIf="detalleSeleccionado()?.dias.martes">Martes</li>
-      <li *ngIf="detalleSeleccionado()?.dias.miercoles">Miércoles</li>
-      <li *ngIf="detalleSeleccionado()?.dias.jueves">Jueves</li>
-      <li *ngIf="detalleSeleccionado()?.dias.viernes">Viernes</li>
-      <li *ngIf="detalleSeleccionado()?.dias.sabado">Sábado</li>
-      <li *ngIf="detalleSeleccionado()?.dias.domingo">Domingo</li>
-      <li *ngIf="detalleSeleccionado()?.dias.festivos">Festivos</li>
-    </ul>
+      <p><strong>Dirección:</strong> {{ detalleSeleccionado()?.direccion }}</p>
+      <p><strong>Diarios:</strong> {{ detalleSeleccionado()?.cantidadDiarios }}</p>
 
-    <p *ngIf="detalleSeleccionado()?.notas">
-      <strong>Notas:</strong><br>{{ detalleSeleccionado()?.notas }}
-    </p>
+      <p *ngIf="detalleSeleccionado()?.lat">
+  <strong>Latitud:</strong> {{ detalleSeleccionado()?.lat }}
+</p>
 
-    <div class="acciones-modal">
-      <button class="btn-editar"
-              (click)="editarDireccion(detalleSeleccionado()!.id!)">
-        Editar
-      </button>
+<p *ngIf="detalleSeleccionado()?.lng">
+  <strong>Longitud:</strong> {{ detalleSeleccionado()?.lng }}
+</p>
 
-      <button class="btn-cerrar"
-              (click)="cerrarModal()">
-        Cerrar
-      </button>
-    </div>
+      <p><strong>Días:</strong></p>
+      <ul>
+        <li *ngIf="detalleSeleccionado()?.dias?.lunes">Lunes</li>
+        <li *ngIf="detalleSeleccionado()?.dias?.martes">Martes</li>
+        <li *ngIf="detalleSeleccionado()?.dias?.miercoles">Miércoles</li>
+        <li *ngIf="detalleSeleccionado()?.dias?.jueves">Jueves</li>
+        <li *ngIf="detalleSeleccionado()?.dias?.viernes">Viernes</li>
+        <li *ngIf="detalleSeleccionado()?.dias?.sabado">Sábado</li>
+        <li *ngIf="detalleSeleccionado()?.dias?.domingo">Domingo</li>
+        <li *ngIf="detalleSeleccionado()?.dias?.festivos">Festivos</li>
+      </ul>
 
-  </div>
+      <p *ngIf="detalleSeleccionado()?.notas">
+        <strong>Notas:</strong><br>
+        {{ detalleSeleccionado()?.notas }}
+      </p>
+
+      
+<div class="acciones-modal">
+
+  <button class="btn-maps" (click)="abrirEnMaps()">
+    📍 Ver en Google Maps
+  </button>
+
+  <button class="btn-editar"
+          (click)="editarDireccion(detalleSeleccionado()!.id!)">
+    Editar
+  </button>
+
+  <button class="btn-cerrar" (click)="cerrarModal()">
+    Cerrar
+  </button>
+
 </div>
+
+
+    </div>
+  </div>
 
 </div>

@@ -26,6 +26,11 @@ export const routes: Routes = [
   
   { path: 'rutas/:rutaId/editar/:direccionId', component: EditarComponent, canActivate: [authGuard] },
   
+  {
+  path: 'rutas/:id/reparto',
+  loadComponent: () => import('./routes/reparto/reparto.component').then(m => m.RepartoComponent)
+},
+
   // Redirecciones
   { path: '', redirectTo: 'rutas', pathMatch: 'full' },
   { path: '**', redirectTo: 'rutas' }

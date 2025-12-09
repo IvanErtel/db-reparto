@@ -1,0 +1,98 @@
+.reparto {
+  max-width: 450px;
+  margin: 20px auto;
+  padding: 10px;
+}
+
+.card-principal {
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  margin-top: 15px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.btn-maps {
+  background: #4285F4;
+}
+
+.btn-entregado {
+  background: #4CAF50;
+}
+
+.btn-saltar {
+  background: #EF6C00;
+}
+
+.btn-volver {
+  background: #444;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.lista-siguientes {
+  margin-top: 10px;
+}
+
+.preview-card {
+  background: #f8f8f8;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  border-left: 4px solid #4285F4;
+}
+
+.mini-dir {
+  font-size: 13px;
+  color: #555;
+}
+
+.btn-reiniciar {
+  background: #b71c1c;
+  margin-top: 25px;
+}
+
+.btn-anterior {
+  background: #757575;
+}
+
+.resumen-simple {
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+}
+
+.resumen-simple .linea1 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+}
+
+.resumen-simple .linea1 .fecha {
+  color: #555;
+}
+
+.resumen-simple .linea2 {
+  margin-top: 5px;
+  display: flex;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: #333;
+  align-items: center;
+}
+
+.resumen-simple .punto {
+  font-weight: bold;
+}

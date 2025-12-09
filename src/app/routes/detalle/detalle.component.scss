@@ -118,18 +118,20 @@ h1 {
 }
 
 .acciones-modal {
-  margin-top: 20px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;     /* 🔥 Esto pone los botones uno debajo del otro */
+  gap: 10px;                  /* Espaciado entre botones */
+  margin-top: 20px;
 }
 
 .btn-editar {
-  background: #1976d2;
+  background: #4CAF50;
   color: white;
-  padding: 10px 14px;
-  border: none;
+  padding: 10px;
   border-radius: 6px;
+  border: none;
   cursor: pointer;
+  width: 100%;
 }
 
 .btn-cerrar {
@@ -139,6 +141,23 @@ h1 {
   border: none;
   border-radius: 6px;
   cursor: pointer;
+}
+
+.btn-maps {
+  background: #4285F4;
+  color: white;
+    padding: 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 12px;
+  width: 100%;
+  text-align: center;
+  width: 100%; 
+}
+
+.btn-maps:hover {
+  background: #3367d6;
 }
 
 @keyframes fadeIn {

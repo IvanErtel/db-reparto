@@ -113,4 +113,29 @@ export class DetalleComponent implements OnInit {
   editarDireccion(id: string) {
     this.router.navigate(['/rutas', this.rutaId, 'editar', id]);
   }
+
+  iniciarReparto() {
+  this.router.navigate(['/rutas', this.rutaId, 'reparto']);
+}
+
+hayProgresoGuardado(): boolean {
+  return localStorage.getItem(`reparto_${this.rutaId}`) !== null;
+}
+
+  abrirEnMaps() {
+  const d = this.detalleSeleccionado();
+
+  if (!d) return;
+
+  // Primero probamos coordenadas (cuando existan)
+  if ((d as any).lat && (d as any).lng) {
+    window.open(`https://www.google.com/maps?q=${d.lat},${d.lng}`, "_blank");
+    return;
+  }
+
+  // Si no hay coordenadas, buscamos por dirección
+  const encoded = encodeURIComponent(d.direccion);
+  window.open(`https://www.google.com/maps?q=${encoded}`, "_blank");
+}
+
 }
