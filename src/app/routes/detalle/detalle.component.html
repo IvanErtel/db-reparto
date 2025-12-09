@@ -9,6 +9,22 @@
     ➕ Agregar dirección
   </button>
 
+  <div class="filtro-dia">
+  <label>Día de reparto:
+    <select [(ngModel)]="diaSeleccionado" (change)="filtrarPorDia()">
+      <option value="todos">Todos</option>
+      <option value="lunes">Lunes</option>
+      <option value="martes">Martes</option>
+      <option value="miercoles">Miércoles</option>
+      <option value="jueves">Jueves</option>
+      <option value="viernes">Viernes</option>
+      <option value="sabado">Sábado</option>
+      <option value="domingo">Domingo</option>
+      <option value="festivos">Festivos</option>
+    </select>
+  </label>
+</div>
+
   <h2>Direcciones cargadas</h2>
 
   <div *ngIf="cargandoDirecciones()" class="loading">
@@ -17,7 +33,8 @@
 
   <div class="lista" *ngIf="!cargandoDirecciones() && direcciones().length > 0">
 
-    <div class="card" *ngFor="let d of direcciones()" (click)="editarDireccion(d.id!)">
+    <div class="card" *ngFor="let d of direcciones()" (click)="abrirDetalle(d)"
+>
 
       <div class="cliente">{{ d.cliente }}</div>
 
@@ -37,5 +54,45 @@
      *ngIf="!cargandoDirecciones() && direcciones().length === 0">
     Esta ruta todavía no tiene direcciones.
   </p>
+
+  <!-- MODAL DETALLE -->
+<div class="modal-fondo" *ngIf="modalAbierto()">
+  <div class="modal-contenido">
+
+    <h2>{{ detalleSeleccionado()?.cliente }}</h2>
+
+    <p><strong>Dirección:</strong> {{ detalleSeleccionado()?.direccion }}</p>
+    <p><strong>Diarios:</strong> {{ detalleSeleccionado()?.cantidadDiarios }}</p>
+
+    <p><strong>Días:</strong></p>
+    <ul>
+      <li *ngIf="detalleSeleccionado()?.dias.lunes">Lunes</li>
+      <li *ngIf="detalleSeleccionado()?.dias.martes">Martes</li>
+      <li *ngIf="detalleSeleccionado()?.dias.miercoles">Miércoles</li>
+      <li *ngIf="detalleSeleccionado()?.dias.jueves">Jueves</li>
+      <li *ngIf="detalleSeleccionado()?.dias.viernes">Viernes</li>
+      <li *ngIf="detalleSeleccionado()?.dias.sabado">Sábado</li>
+      <li *ngIf="detalleSeleccionado()?.dias.domingo">Domingo</li>
+      <li *ngIf="detalleSeleccionado()?.dias.festivos">Festivos</li>
+    </ul>
+
+    <p *ngIf="detalleSeleccionado()?.notas">
+      <strong>Notas:</strong><br>{{ detalleSeleccionado()?.notas }}
+    </p>
+
+    <div class="acciones-modal">
+      <button class="btn-editar"
+              (click)="editarDireccion(detalleSeleccionado()!.id!)">
+        Editar
+      </button>
+
+      <button class="btn-cerrar"
+              (click)="cerrarModal()">
+        Cerrar
+      </button>
+    </div>
+
+  </div>
+</div>
 
 </div>

@@ -17,11 +17,23 @@ import { Auth } from '@angular/fire/auth';
 })
 export class DetalleComponent implements OnInit {
 
+  // -------------------------
+  // VARIABLES PRINCIPALES
+  // -------------------------
+
   rutaId = '';
   ruta = signal<Ruta | null>(null);
   direcciones = signal<Direccion[]>([]);
   cargandoRuta = signal(true);
   cargandoDirecciones = signal(true);
+
+  // Para el filtro por día
+  diaSeleccionado = 'todos';
+  todasLasDirecciones: Direccion[] = [];
+
+  // Para el modal de detalle
+  detalleSeleccionado = signal<Direccion | null>(null);
+  modalAbierto = signal(false);
 
   constructor(
     private route: ActivatedRoute,
@@ -29,6 +41,10 @@ export class DetalleComponent implements OnInit {
     private rutasService: RutasService,
     private auth: Auth
   ) {}
+
+  // -------------------------
+  // CARGA INICIAL
+  // -------------------------
 
   async ngOnInit() {
     this.rutaId = this.route.snapshot.params['id'];
@@ -45,12 +61,49 @@ export class DetalleComponent implements OnInit {
 
   async cargarDirecciones() {
     const dirs = await this.rutasService.obtenerDireccionesOrdenadas(this.rutaId);
-    this.direcciones.set(dirs);
+
+    this.todasLasDirecciones = dirs;   // Guardamos todo
+    this.direcciones.set(dirs);        // Mostramos por defecto
+
     this.cargandoDirecciones.set(false);
   }
 
+  // -------------------------
+  // MODAL
+  // -------------------------
+
+  abrirDetalle(d: Direccion) {
+    this.detalleSeleccionado.set(d);
+    this.modalAbierto.set(true);
+  }
+
+  cerrarModal() {
+    this.modalAbierto.set(false);
+  }
+
+  // -------------------------
+  // FILTRO POR DÍA
+  // -------------------------
+
+  filtrarPorDia() {
+    if (this.diaSeleccionado === 'todos') {
+      this.direcciones.set(this.todasLasDirecciones);
+      return;
+    }
+
+    const filtradas = this.todasLasDirecciones.filter(d => {
+      return d.dias[this.diaSeleccionado as keyof typeof d.dias];
+    });
+
+    this.direcciones.set(filtradas);
+  }
+
+  // -------------------------
+  // NAVEGACIÓN
+  // -------------------------
+
   volver() {
-    window.location.href = '/rutas';
+    this.router.navigate(['/rutas']);
   }
 
   agregarDireccion() {
