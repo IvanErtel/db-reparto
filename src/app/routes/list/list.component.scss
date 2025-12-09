@@ -1,0 +1,33 @@
+.lista-rutas {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  padding: 12px;
+  margin: 8px 0;
+  background: #f4f4f4;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+li:hover {
+  background: #e8e8e8;
+}
+
+.btn-crear {
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  background: #3498db;
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+}

@@ -1,0 +1,22 @@
+<div class="lista-rutas">
+
+  <h1>Mis rutas</h1>
+
+  <button class="btn-crear" (click)="crearNuevaRuta()">
+    ➕ Crear nueva ruta
+  </button>
+
+  <div *ngIf="cargando">Cargando rutas...</div>
+
+  <ul *ngIf="!cargando && rutas.length > 0">
+    <li *ngFor="let r of rutas" (click)="abrirRuta(r.id!)">
+      <strong>{{ r.nombrePersonalizado }}</strong>
+      <span class="base">({{ r.nombreBase }})</span>
+    </li>
+  </ul>
+
+  <p *ngIf="!cargando && rutas.length === 0">
+    No tienes rutas creadas todavía.
+  </p>
+
+</div>

@@ -1,11 +1,23 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
+import { ListComponent } from './routes/list/list.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { authGuard } from './guards/auth.guard';
+import { LoginComponent } from './login/login.component';
+import { CrearRutaComponent } from './routes/crear/crear.component';
 
 export const routes: Routes = [
+  // Login
   { path: 'login', component: LoginComponent },
+
+  // Dashboard principal
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: '**', redirectTo: 'login' }
+
+  // Ruta donde se listan todas las rutas del usuario
+  { path: 'rutas', component: ListComponent, canActivate: [authGuard] },
+
+  { path: 'rutas/crear', component: CrearRutaComponent, canActivate: [authGuard] },
+
+  // Redirecciones
+  { path: '', redirectTo: 'rutas', pathMatch: 'full' },
+  { path: '**', redirectTo: 'rutas' }
 ];

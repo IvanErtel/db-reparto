@@ -41,7 +41,7 @@ export class AuthService {
         return;
       }
 
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/rutas']);
 
     } catch (error) {
       console.error("Error en login:", error);

@@ -1,0 +1,41 @@
+.crear-ruta {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  margin: 12px 0;
+}
+
+input, select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.acciones {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.guardar {
+  padding: 10px 14px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cancelar {
+  padding: 10px 14px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
