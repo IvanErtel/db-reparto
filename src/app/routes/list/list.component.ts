@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
@@ -9,12 +9,13 @@ import { Ruta } from '../../models/ruta';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './list.component.html',
-  styleUrl: './list.component.scss'
+  styleUrl: './list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ListComponent implements OnInit {
 
-  rutas: Ruta[] = [];
-  cargando = true;
+  rutas = signal<Ruta[]>([]);
+  cargando = signal(true);
 
   constructor(
     private rutasService: RutasService,
@@ -22,13 +23,18 @@ export class ListComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    await this.cargarRutas();
-  }
+    console.log('ListComponent: ngOnInit');
 
-  async cargarRutas() {
-    this.cargando = true;
-    this.rutas = await this.rutasService.obtenerRutasDelUsuario();
-    this.cargando = false;
+    try {
+      const data = await this.rutasService.obtenerMisRutas();
+      console.log('ListComponent: rutas cargadas', data);
+
+      this.rutas.set(data);     // 👈 AHORA Angular detecta cambios SIEMPRE
+    } catch (e) {
+      console.error('Error cargando rutas', e);
+    } finally {
+      this.cargando.set(false);
+    }
   }
 
   crearNuevaRuta() {

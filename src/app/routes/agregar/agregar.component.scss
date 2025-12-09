@@ -1,0 +1,29 @@
+.agregar {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  margin: 12px 0;
+}
+
+input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.acciones {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}

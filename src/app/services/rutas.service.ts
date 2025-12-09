@@ -7,6 +7,7 @@ import {
   updateDoc,
   deleteDoc,
   getDocs,
+  getDoc,
   query,
   where,
   orderBy
@@ -33,6 +34,7 @@ export class RutasService {
     nombreBase: Ruta['nombreBase'];
     nombrePersonalizado: string;
   }): Promise<string> {
+
     const user = this.auth.currentUser;
     if (!user) throw new Error('No hay usuario autenticado');
 
@@ -50,15 +52,21 @@ export class RutasService {
     return docRef.id;
   }
 
-  async obtenerRutasDelUsuario(): Promise<Ruta[]> {
+  // 👉 método simple: usa el usuario actual
+  async obtenerMisRutas(): Promise<Ruta[]> {
     const user = this.auth.currentUser;
-    if (!user) return [];
+    if (!user) {
+      console.warn('obtenerMisRutas: no hay usuario actual');
+      return [];
+    }
 
     const col = collection(this.firestore, 'routes');
-    const q = query(col, where('usuarioId', '==', user.uid), orderBy('creadaEn', 'asc'));
-
+    const q = query(col, where('usuarioId', '==', user.uid));
     const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...(d.data() as any) } as Ruta));
+
+    const rutas = snap.docs.map(d => ({ id: d.id, ...(d.data() as any) } as Ruta));
+    console.log('Rutas obtenidas desde Firestore:', rutas);
+    return rutas;
   }
 
   async actualizarRuta(id: string, parcial: Partial<Ruta>): Promise<void> {
@@ -91,6 +99,14 @@ export class RutasService {
     return docRef.id;
   }
 
+  async obtenerRutaPorId(id: string): Promise<Ruta | null> {
+  const ref = doc(this.firestore, 'routes', id);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return null;
+  return { id: snap.id, ...(snap.data() as any) } as Ruta;
+}
+
+  
   async obtenerDireccionesOrdenadas(rutaId: string): Promise<Direccion[]> {
     const col = collection(this.firestore, `routes/${rutaId}/stops`);
     const q = query(col, orderBy('indiceOrden', 'asc'));

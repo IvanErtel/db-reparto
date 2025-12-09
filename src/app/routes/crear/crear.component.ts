@@ -21,22 +21,24 @@ export class CrearRutaComponent {
     private router: Router
   ) {}
 
-  async guardar() {
-    if (!this.nombrePersonalizado.trim()) {
-      alert('Debes ingresar un nombre para la ruta.');
-      return;
-    }
-
-    const id = await this.rutasService.crearRuta({
-      nombreBase: this.nombreBase,
-      nombrePersonalizado: this.nombrePersonalizado
-    });
-
-    alert('Ruta creada correctamente');
-    this.router.navigate(['/rutas']);
+async guardar() {
+  if (!this.nombrePersonalizado.trim()) {
+    alert('Debes ingresar un nombre para la ruta.');
+    return;
   }
 
-  cancelar() {
-    this.router.navigate(['/rutas']);
-  }
+  await this.rutasService.crearRuta({
+    nombreBase: this.nombreBase,
+    nombrePersonalizado: this.nombrePersonalizado
+  });
+
+  alert('Ruta creada correctamente');
+
+  // Recarga completa de la app en /rutas
+  window.location.href = '/rutas';
+}
+
+cancelar() {
+  window.location.href = '/rutas';
+}
 }

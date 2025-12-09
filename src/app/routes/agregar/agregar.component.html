@@ -1,0 +1,22 @@
+<div class="agregar">
+
+  <h1>Nueva dirección</h1>
+
+  <label>Cliente:
+    <input type="text" [(ngModel)]="cliente">
+  </label>
+
+  <label>Dirección:
+    <input type="text" [(ngModel)]="direccion">
+  </label>
+
+  <label>Cantidad de diarios:
+    <input type="number" min="1" [(ngModel)]="cantidadDiarios">
+  </label>
+
+  <div class="acciones">
+    <button (click)="guardar()">Guardar</button>
+    <button (click)="cancelar()">Cancelar</button>
+  </div>
+
+</div>

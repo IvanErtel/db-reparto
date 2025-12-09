@@ -4,6 +4,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { authGuard } from './guards/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { CrearRutaComponent } from './routes/crear/crear.component';
+import { DetalleComponent } from './routes/detalle/detalle.component';
+import { AgregarComponent } from './routes/agregar/agregar.component';
 
 export const routes: Routes = [
   // Login
@@ -17,6 +19,10 @@ export const routes: Routes = [
 
   { path: 'rutas/crear', component: CrearRutaComponent, canActivate: [authGuard] },
 
+  { path: 'rutas/:id', component: DetalleComponent, canActivate: [authGuard] },
+
+  { path: 'rutas/:id/agregar', component: AgregarComponent, canActivate: [authGuard] },
+  
   // Redirecciones
   { path: '', redirectTo: 'rutas', pathMatch: 'full' },
   { path: '**', redirectTo: 'rutas' }
