@@ -6,6 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { CrearRutaComponent } from './routes/crear/crear.component';
 import { DetalleComponent } from './routes/detalle/detalle.component';
 import { AgregarComponent } from './routes/agregar/agregar.component';
+import { EditarComponent } from './routes/editar/editar.component';
 
 export const routes: Routes = [
   // Login
@@ -22,6 +23,8 @@ export const routes: Routes = [
   { path: 'rutas/:id', component: DetalleComponent, canActivate: [authGuard] },
 
   { path: 'rutas/:id/agregar', component: AgregarComponent, canActivate: [authGuard] },
+  
+  { path: 'rutas/:rutaId/editar/:direccionId', component: EditarComponent, canActivate: [authGuard] },
   
   // Redirecciones
   { path: '', redirectTo: 'rutas', pathMatch: 'full' },

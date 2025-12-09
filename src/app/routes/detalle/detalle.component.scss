@@ -1,35 +1,47 @@
 .detalle-ruta {
   max-width: 600px;
   margin: 20px auto;
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.btn-agregar {
-  padding: 10px;
-  margin-bottom: 20px;
-  background: #3498db;
-  color: white;
+button {
+  padding: 8px 14px;
   border-radius: 6px;
+  cursor: pointer;
 }
 
 ul {
-  padding: 0;
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 li {
-  padding: 12px;
-  margin: 8px 0;
-  background: #f4f4f4;
-  border-radius: 8px;
-  cursor: pointer;
   display: flex;
-  flex-direction: column;  // 👈 Esto deja cada dato en una línea
-  gap: 4px;                 // 👈 Separación entre líneas
+  align-items: center;
+  gap: 12px;
+  background: #f4f4f4;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: grab;
 }
 
-li:hover {
-  background: #e2e2e2;
+li:active {
+  cursor: grabbing;
+}
+
+.drag-handle {
+  font-size: 20px;
+  cursor: grab;
+  user-select: none;
+}
+
+.contenido {
+  display: flex;
+  flex-direction: column;
 }
 
 .detalle {
@@ -37,6 +49,14 @@ li:hover {
   color: #777;
 }
 
-.base {
-  opacity: 0.8;
+/* 🔥 PARA EL EDITOR DE DIRECCIONES (checkbox alineados) */
+.dias label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+input[type="checkbox"] {
+  transform: scale(1.1);
 }

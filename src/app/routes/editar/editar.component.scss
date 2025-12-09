@@ -1,0 +1,29 @@
+.editar {
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  margin: 12px 0;
+}
+
+textarea, input[type="text"], input[type="number"] {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* 🔥 ESTILO NUEVO PARA LAS CASILLAS DE DÍAS */
+.dias label {
+  display: flex;
+  flex-direction: row;   /* ⬅ Texto y checkbox en fila */
+  align-items: center;   /* ⬅ Alinea verticalmente */
+  gap: 8px;              /* ⬅ Separación entre checkbox y texto */
+  margin: 5px 0;
+}
+
+.dias input[type="checkbox"] {
+  transform: scale(1.2); /* ⬅ Opcional: checkbox un poquito más grande */
+}

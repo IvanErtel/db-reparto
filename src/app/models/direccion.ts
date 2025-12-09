@@ -1,18 +1,15 @@
 export interface Direccion {
   id?: string;
-  rutaId: string;             // ID de la ruta padre
-  indiceOrden: number;        // Para drag & drop
-
-  // Datos del cliente
+  rutaId: string;
   cliente: string;
   direccion: string;
-  latitud?: number;
-  longitud?: number;
-
-  // Datos del reparto
   cantidadDiarios: number;
 
-  // Días de suscripción
+  // NUEVO: coordenadas
+  lat?: number | null;
+  lng?: number | null;
+
+  // Días de entrega
   dias: {
     lunes: boolean;
     martes: boolean;
@@ -26,12 +23,11 @@ export interface Direccion {
   };
 
   notas?: string;
-  infoLlaves?: string;
+  indiceOrden: number;
 
-  // Alta/baja (opcionales)
   fechaAlta?: any;
   fechaBaja?: any;
 
-  creadaEn: any;
-  actualizadaEn: any;
+  creadaEn?: any;
+  actualizadaEn?: any;
 }

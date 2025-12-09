@@ -1,0 +1,64 @@
+<div class="editar">
+
+  <h1>Editar dirección</h1>
+
+  <div *ngIf="cargando()">Cargando...</div>
+
+  <div *ngIf="!cargando() && direccion()">
+
+    <!-- CLIENTE -->
+    <label>Cliente:
+      <input type="text" [(ngModel)]="direccion()!.cliente">
+    </label>
+
+    <!-- DIRECCIÓN -->
+    <label>Dirección:
+      <input type="text" [(ngModel)]="direccion()!.direccion">
+    </label>
+
+    <!-- DIARIOS -->
+    <label>Cantidad de diarios:
+      <input type="number" min="1" [(ngModel)]="direccion()!.cantidadDiarios">
+    </label>
+
+    <!-- DÍAS DE ENTREGA -->
+    <h3>Días de entrega</h3>
+    <div class="dias">
+      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.lunes"> Lunes</label>
+      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.martes"> Martes</label>
+      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.miercoles"> Miércoles</label>
+      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.jueves"> Jueves</label>
+      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.viernes"> Viernes</label>
+      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.sabado"> Sábado</label>
+      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.domingo"> Domingo</label>
+      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.festivos"> Festivos</label>
+      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.guardarFinSemanaParaLunes">
+        Guardar sáb-dom para entregar lunes
+      </label>
+    </div>
+
+    <!-- COORDENADAS -->
+    <h3>Coordenadas</h3>
+
+    <label>Latitud:
+      <input type="number" step="0.000001" [(ngModel)]="direccion()!.lat">
+    </label>
+
+    <label>Longitud:
+      <input type="number" step="0.000001" [(ngModel)]="direccion()!.lng">
+    </label>
+
+    <!-- NOTAS -->
+    <label>Notas:
+      <textarea rows="3" [(ngModel)]="direccion()!.notas"></textarea>
+    </label>
+
+    <!-- BOTONES -->
+    <div class="acciones">
+      <button (click)="guardar()">Guardar cambios</button>
+      <button (click)="cancelar()">Cancelar</button>
+    </div>
+
+  </div>
+
+</div>
