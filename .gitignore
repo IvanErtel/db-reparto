@@ -28,6 +28,9 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 
+# DO NOT COMMIT ENVIRONMENTS
+src/environments/*.ts
+
 # Miscellaneous
 /.angular/cache
 .sass-cache/
@@ -39,5 +42,14 @@ testem.log
 __screenshots__/
 
 # System files
+.DS_Store
+Thumbs.db
+
+
+# IDE files
+.vscode
+.idea
+
+# OS files
 .DS_Store
 Thumbs.db
