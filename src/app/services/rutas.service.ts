@@ -107,13 +107,27 @@ export class RutasService {
 }
 
   
-  async obtenerDireccionesOrdenadas(rutaId: string): Promise<Direccion[]> {
-    const col = collection(this.firestore, `routes/${rutaId}/stops`);
-    const q = query(col, orderBy('indiceOrden', 'asc'));
+async obtenerDireccionesOrdenadas(rutaId: string): Promise<Direccion[]> {
+  const colRef = collection(this.firestore, `routes/${rutaId}/stops`);
 
-    const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...(d.data() as any) } as Direccion));
-  }
+  const snap = await getDocs(colRef);
+
+  let dirs = snap.docs.map(d => {
+    const data = d.data() as any;
+
+    // Si no tiene indiceOrden, le asignamos uno grande para no romper
+    if (data.indiceOrden === undefined || data.indiceOrden === null) {
+      data.indiceOrden = 9999;
+    }
+
+    return { id: d.id, ...data } as Direccion;
+  });
+
+  // Ordenar en memoria por indiceOrden
+  dirs.sort((a, b) => (a.indiceOrden ?? 9999) - (b.indiceOrden ?? 9999));
+
+  return dirs;
+}
 
   async actualizarDireccion(rutaId: string, id: string, parcial: Partial<Direccion>): Promise<void> {
     const ref = doc(this.firestore, `routes/${rutaId}/stops/${id}`);

@@ -1,9 +1,9 @@
 <div class="detalle-ruta">
 
-  <button (click)="volver()">⬅ Volver</button>
+  <button class="btn-volver" (click)="volver()">⬅ Volver</button>
 
   <h1>{{ ruta()?.nombrePersonalizado }}</h1>
-  <p class="base">Zona base: {{ ruta()?.nombreBase }}</p>
+  <p class="base">Zona base: <strong>{{ ruta()?.nombreBase }}</strong></p>
 
   <button class="btn-agregar" (click)="agregarDireccion()">
     ➕ Agregar dirección
@@ -11,34 +11,30 @@
 
   <h2>Direcciones cargadas</h2>
 
-  <!-- Loader -->
-  <div *ngIf="cargandoDirecciones()">Cargando direcciones...</div>
+  <div *ngIf="cargandoDirecciones()" class="loading">
+    Cargando direcciones...
+  </div>
 
-  <!-- Lista con Drag & Drop -->
-  <ul
-    *ngIf="!cargandoDirecciones() && direcciones().length > 0"
-    cdkDropList
-    (cdkDropListDropped)="reordenar($event)"
-  >
-    <li
-      *ngFor="let d of direcciones(); let i = index"
-      cdkDrag
-      (click)="editarDireccion(d.id!)"
-    >
+  <div class="lista" *ngIf="!cargandoDirecciones() && direcciones().length > 0">
 
-      <div class="drag-handle" cdkDragHandle>☰</div>
+    <div class="card" *ngFor="let d of direcciones()" (click)="editarDireccion(d.id!)">
 
-      <div class="contenido">
-        <strong>{{ d.cliente }}</strong>
-        <div>{{ d.direccion }}</div>
-        <div class="detalle">({{ d.cantidadDiarios }} diarios)</div>
+      <div class="cliente">{{ d.cliente }}</div>
+
+      <div class="direccion">
+        📍 {{ d.direccion }}
       </div>
 
-    </li>
-  </ul>
+      <div class="info">
+        📰 {{ d.cantidadDiarios }} diarios
+      </div>
 
-  <!-- Vacío -->
-  <p *ngIf="!cargandoDirecciones() && direcciones().length === 0">
+    </div>
+
+  </div>
+
+  <p class="sin-datos"
+     *ngIf="!cargandoDirecciones() && direcciones().length === 0">
     Esta ruta todavía no tiene direcciones.
   </p>
 

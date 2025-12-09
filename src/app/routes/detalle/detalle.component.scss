@@ -1,62 +1,83 @@
 .detalle-ruta {
   max-width: 600px;
   margin: 20px auto;
+  padding: 0 15px;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  font-family: Arial, sans-serif;
 }
 
-button {
-  padding: 8px 14px;
+h1 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.base {
+  color: #555;
+}
+
+.btn-volver,
+.btn-agregar {
+  padding: 10px 14px;
+  border: none;
+  background: #1976d2;
+  color: white;
   border-radius: 6px;
   cursor: pointer;
+  width: fit-content;
 }
 
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.btn-volver {
+  background: #555;
 }
 
-li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #f4f4f4;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  cursor: grab;
+.btn-agregar {
+  background: #2e7d32;
 }
 
-li:active {
-  cursor: grabbing;
-}
-
-.drag-handle {
-  font-size: 20px;
-  cursor: grab;
-  user-select: none;
-}
-
-.contenido {
-  display: flex;
-  flex-direction: column;
-}
-
-.detalle {
-  font-size: 0.9em;
+.loading {
+  font-size: 14px;
   color: #777;
 }
 
-/* 🔥 PARA EL EDITOR DE DIRECCIONES (checkbox alineados) */
-.dias label {
+.lista {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 6px;
+  flex-direction: column;
+  gap: 12px;
 }
 
-input[type="checkbox"] {
-  transform: scale(1.1);
+.card {
+  background: #f1f1f1;
+  padding: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.15s ease;
+  border: 1px solid #ddd;
+}
+
+.card:hover {
+  background: #e9e9e9;
+}
+
+.cliente {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.direccion {
+  color: #444;
+  margin-top: 4px;
+}
+
+.info {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #666;
+}
+
+.sin-datos {
+  text-align: center;
+  margin-top: 20px;
+  color: #777;
 }
