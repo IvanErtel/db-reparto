@@ -30,6 +30,8 @@ yarn-error.log
 
 # DO NOT COMMIT ENVIRONMENTS
 src/environments/*.ts
+src/environments/environment.ts
+src/environments/environment.prod.ts
 
 # Miscellaneous
 /.angular/cache
@@ -45,6 +47,8 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
+#FIREBASE
+.firebase/
 
 # IDE files
 .vscode
