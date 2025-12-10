@@ -1,29 +1,86 @@
 .agregar {
-  max-width: 500px;
-  margin: 20px auto;
-  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 25px;
+  background: white;
+  border-radius: var(--radio);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
+h1 {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* LABELS E INPUTS */
 label {
   display: flex;
   flex-direction: column;
-  margin: 12px 0;
+  gap: 6px;
+  margin-bottom: 15px;
+  font-weight: 500;
 }
 
-input {
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+/* Checkbox group */
+.dias {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 20px;
+  background: #f9fafb;
+  padding: 15px;
+  border-radius: var(--radio);
+  border: var(--borde);
+  margin-bottom: 20px;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 400;
+    white-space: nowrap; /* IMPORTANTÍSIMO: mantiene cada día en una línea */
+  }
+
+  /* Opción que debe ocupar toda la fila */
+  label:last-child {
+    grid-column: span 2;
+    white-space: normal; /* Permite multi-línea en esta solo */
+  }
 }
 
+/* ACCIONES */
 .acciones {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: 25px;
+
+  button {
+    padding: 10px 16px;
+    border-radius: var(--radio);
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: .2s ease;
+    color: white;
+  }
+
+  .btn-primario {
+    background: var(--color-primario);
+  }
+
+  .btn-gris {
+    background: var(--color-gris);
+  }
+
+  button:hover {
+    opacity: .9;
+  }
 }
 
-button {
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
+/* TITULOS SECUNDARIOS */
+h3 {
+  font-size: 18px;
+  margin: 20px 0 10px;
+  font-weight: 600;
 }

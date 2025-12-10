@@ -15,6 +15,7 @@
   </label>
 
   <h3>Días de entrega</h3>
+
   <div class="dias">
     <label><input type="checkbox" [(ngModel)]="dias.lunes"> Lunes</label>
     <label><input type="checkbox" [(ngModel)]="dias.martes"> Martes</label>
@@ -24,10 +25,11 @@
     <label><input type="checkbox" [(ngModel)]="dias.sabado"> Sábado</label>
     <label><input type="checkbox" [(ngModel)]="dias.domingo"> Domingo</label>
     <label><input type="checkbox" [(ngModel)]="dias.festivos"> Festivos</label>
-    <label><input type="checkbox" [(ngModel)]="dias.guardarFinSemanaParaLunes"> Guardar sáb-dom para entregar el lunes</label>
+    <label><input type="checkbox" [(ngModel)]="dias.guardarFinSemanaParaLunes"> Guardar sáb-dom para entregar lunes</label>
   </div>
 
   <h3>Coordenadas</h3>
+
   <label>Latitud:
     <input type="number" step="0.000001" [(ngModel)]="lat">
   </label>
@@ -37,8 +39,8 @@
   </label>
 
   <div class="acciones">
-    <button (click)="guardar()">Guardar</button>
-    <button (click)="cancelar()">Cancelar</button>
+    <button class="btn-primario" (click)="guardar()">Guardar</button>
+    <button class="btn-gris" (click)="cancelar()">Cancelar</button>
   </div>
 
 </div>
