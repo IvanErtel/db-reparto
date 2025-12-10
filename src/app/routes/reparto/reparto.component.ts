@@ -23,6 +23,8 @@ export class RepartoComponent implements OnInit {
   diaSemana = '';
   fechaHoy = '';
 
+  finReparto = signal(false);
+
   totalDiariosHoy = computed(() =>
     this.direcciones().reduce((acc, d) => acc + (d.cantidadDiarios || 0), 0)
   );
@@ -83,12 +85,17 @@ this.ruta.set(dataRuta);
   );
 
   // Ir a siguiente
-  siguiente() {
-    if (this.indiceActual() < this.direcciones().length - 1) {
-      this.indiceActual.update(v => v + 1);
-      localStorage.setItem(`reparto_${this.rutaId}`, String(this.indiceActual()));
-    }
+siguiente() {
+  const i = this.indiceActual();
+
+  // ¿Quedó en el último?
+  if (i >= this.direcciones().length - 1) {
+    this.finReparto.set(true);
+    return;
   }
+
+  this.indiceActual.set(i + 1);
+}
 
   // Volver atrás
   anterior() {
@@ -126,17 +133,11 @@ async entregar() {
   const d = this.actual();
   if (!d) return;
 
-await this.rutasService.registrarEntrega(this.rutaId, d.id!, d);
+  await this.rutasService.registrarEntrega(this.rutaId, d.id!);
 
-  // Si era la última dirección
-  if (this.indiceActual() >= this.direcciones().length - 1) {
-    this.mostrarFinDeReparto();
-    return;
-  }
-
-  // Si no era la última → pasar a la siguiente
   this.siguiente();
 }
+
 
 mostrarFinDeReparto() {
   alert("🎉 ¡Reparto finalizado!\nTodos los diarios del día fueron procesados.");

@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/IvanErtel/db-reparto#readme",
   "dependencies": {
+    "@angular-devkit/build-angular": "^21.0.2",
+    "@angular/build": "^21.0.2",
     "@angular/cdk": "^21.0.2",
     "@angular/cli": "^21.0.2",
     "@angular/common": "^21.0.3",
