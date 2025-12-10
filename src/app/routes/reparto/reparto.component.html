@@ -3,20 +3,21 @@
   <button class="btn-volver" (click)="volver()">⬅ Volver</button>
 
   <!-- RESUMEN DEL DÍA -->
-<div class="resumen-simple" *ngIf="ruta() as r">
+  <div class="resumen-simple" *ngIf="ruta() as r">
 
-  <div class="linea1">
-    <strong>{{ r.nombrePersonalizado }}</strong>
-    <span class="fecha">{{ diaSemana }} {{ fechaHoy }}</span>
+    <div class="linea1">
+      <strong>{{ r.nombrePersonalizado }}</strong>
+      <span class="fecha">{{ diaSemana }} {{ fechaHoy }}</span>
+    </div>
+
+    <div class="linea2">
+      <span>{{ indiceActual() + 1 }} / {{ direcciones().length }}</span>
+      <span class="punto">•</span>
+      <!-- FIX → quitar [Computed] -->
+      <span>{{ totalDiariosHoy() }} diarios</span>
+    </div>
+
   </div>
-
-  <div class="linea2">
-    <span>{{ indiceActual() + 1 }} / {{ direcciones().length }}</span>
-    <span class="punto">•</span>
-    <span>{{ totalDiariosHoy() }} diarios</span>
-  </div>
-
-</div>
 
   <!-- DIRECCIÓN ACTUAL -->
   <div class="card-principal" *ngIf="actual() as d">
@@ -26,7 +27,7 @@
     <p><strong>Dirección:</strong> {{ d.direccion }}</p>
 
     <p *ngIf="d.notas">
-      <strong>Notas:</strong> <br>
+      <strong>Notas:</strong><br>
       {{ d.notas }}
     </p>
 
@@ -34,22 +35,18 @@
       📍 Abrir en Google Maps
     </button>
 
-    <!-- ANTERIOR -->
-    <button class="btn-anterior"
-            (click)="anterior()"
-            [disabled]="indiceActual() === 0">
+    <button class="btn-anterior" (click)="anterior()" [disabled]="indiceActual() === 0">
       ⬅ Anterior
     </button>
 
-    <!-- ENTREGAR -->
     <button class="btn-entregado" (click)="entregar()">
       ✔ Entregado
     </button>
 
-    <!-- SALTAR -->
     <button class="btn-saltar" (click)="saltar()">
       ⏭ Saltar
     </button>
+
   </div>
 
   <!-- SIGUIENTES DIRECCIONES -->

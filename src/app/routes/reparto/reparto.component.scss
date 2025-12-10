@@ -1,43 +1,100 @@
 .reparto {
-  max-width: 450px;
-  margin: 20px auto;
-  padding: 10px;
-}
-
-.card-principal {
-  background: white;
+  background: #121212;
+  color: #e5e5e5;
+  min-height: 100vh;
   padding: 16px;
-  border-radius: 10px;
-  margin-top: 15px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  font-family: 'Inter', sans-serif;
 }
 
+/* TITULOS */
+.resumen-simple {
+  background: #1e1e1e;
+  padding: 14px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #2a2a2a;
+}
+
+.resumen-simple .linea1 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.resumen-simple .linea2 {
+  margin-top: 6px;
+  display: flex;
+  gap: 8px;
+  opacity: 0.8;
+}
+
+/* TARJETA */
+.card-principal {
+  background: #1b1b1b;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  margin-bottom: 18px;
+  border: 1px solid #2a2a2a;
+}
+
+.card-principal h2 {
+  margin-top: 0;
+  font-size: 24px;
+}
+
+/* BOTONES GENERALES */
 button {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
+  margin-top: 12px;
+  font-size: 18px;
+  font-weight: 600;
   border: none;
-  border-radius: 6px;
-  color: white;
-  margin-top: 10px;
+  border-radius: 10px;
   cursor: pointer;
 }
 
-.btn-maps {
-  background: #4285F4;
-}
-
-.btn-entregado {
-  background: #4CAF50;
-}
-
-.btn-saltar {
-  background: #EF6C00;
-}
-
+/* VOLVER */
 .btn-volver {
+  background: transparent;
+  color: #bbb;
+  border: 1px solid #444;
+  width: auto;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* MAPS */
+.btn-maps {
+  background: #2962ff;
+  color: white;
+}
+
+/* ANTERIOR */
+.btn-anterior {
   background: #444;
   color: white;
-  margin-bottom: 10px;
+}
+
+/* ENTREGADO */
+.btn-entregado {
+  background: #00c853;
+  color: white;
+}
+
+/* SALTAR */
+.btn-saltar {
+  background: #ffb300;
+  color: black;
+}
+
+/* SIGUIENTES */
+.tit-siguientes {
+  margin-top: 20px;
+  font-size: 18px;
 }
 
 .lista-siguientes {
@@ -45,54 +102,10 @@ button {
 }
 
 .preview-card {
-  background: #f8f8f8;
+  background: #1e1e1e;
   padding: 10px;
-  border-radius: 6px;
-  margin-bottom: 8px;
-  border-left: 4px solid #4285F4;
-}
-
-.mini-dir {
-  font-size: 13px;
-  color: #555;
-}
-
-.btn-reiniciar {
-  background: #b71c1c;
-  margin-top: 25px;
-}
-
-.btn-anterior {
-  background: #757575;
-}
-
-.resumen-simple {
-  padding: 10px 15px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   border-radius: 8px;
-  background: #f7f7f7;
-  border: 1px solid #ddd;
-}
-
-.resumen-simple .linea1 {
-  display: flex;
-  justify-content: space-between;
-  font-size: 1.1rem;
-}
-
-.resumen-simple .linea1 .fecha {
-  color: #555;
-}
-
-.resumen-simple .linea2 {
-  margin-top: 5px;
-  display: flex;
-  gap: 10px;
-  font-size: 0.95rem;
-  color: #333;
-  align-items: center;
-}
-
-.resumen-simple .punto {
-  font-weight: bold;
+  border: 1px solid #2d2d2d;
+  opacity: 0.8;
 }

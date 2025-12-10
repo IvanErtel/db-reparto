@@ -23,8 +23,7 @@ export class RepartoComponent implements OnInit {
   diaSemana = '';
   fechaHoy = '';
 
-  finReparto = signal(false);
-
+  // total de diarios de las direcciones del día
   totalDiariosHoy = computed(() =>
     this.direcciones().reduce((acc, d) => acc + (d.cantidadDiarios || 0), 0)
   );
@@ -38,7 +37,7 @@ export class RepartoComponent implements OnInit {
   async ngOnInit() {
     this.rutaId = this.route.snapshot.params['id'];
     this.diaSemana = this.obtenerDia(this.hoy.getDay());
-    this.fechaHoy = this.hoy.toLocaleDateString("es-ES");
+    this.fechaHoy = this.hoy.toLocaleDateString('es-ES');
 
     // Restaurar progreso si existe
     const guardado = localStorage.getItem(`reparto_${this.rutaId}`);
@@ -46,33 +45,33 @@ export class RepartoComponent implements OnInit {
       this.indiceActual.set(Number(guardado));
     }
 
-    // Cargar direcciones
-// Cargar direcciones ordenadas
-let dirs = await this.rutasService.obtenerDireccionesOrdenadas(this.rutaId);
+    // Cargar direcciones ordenadas
+    const dirs = await this.rutasService.obtenerDireccionesOrdenadas(this.rutaId);
 
-// Filtrar SOLO las direcciones que hoy reciben diario
-const filtradas: Direccion[] = [];
-
-for (const d of dirs) {
-  if (await this.rutasService.esDiaDeEntrega(d, this.hoy)) {
-    filtradas.push(d);
-  }
-}
-
-this.direcciones.set(filtradas);
-this.direcciones.set(dirs);
+    // 🔥 Filtrar SOLO las que hoy reciben diario
+    const filtradas: Direccion[] = [];
+    for (const d of dirs) {
+      if (await this.rutasService.esDiaDeEntrega(d, this.hoy)) {
+        filtradas.push(d);
+      }
+    }
+    this.direcciones.set(filtradas);
 
     // Cargar datos de la ruta (nombre personalizado, etc.)
-const dataRuta = await this.rutasService.obtenerRutaPorId(this.rutaId);
-this.ruta.set(dataRuta);
+    const dataRuta = await this.rutasService.obtenerRutaPorId(this.rutaId);
+    this.ruta.set(dataRuta);
   }
 
   obtenerDia(n: number) {
     return ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][n];
   }
 
-  // Dirección actual
-  actual = computed(() => this.direcciones()[this.indiceActual()]);
+  // Dirección actual (puede ser null si se acabó)
+  actual = computed<Direccion | null>(() => {
+    const lista = this.direcciones();
+    const idx = this.indiceActual();
+    return idx >= 0 && idx < lista.length ? lista[idx] : null;
+  });
 
   // Siguientes 4
   siguientes = computed(() =>
@@ -84,24 +83,29 @@ this.ruta.set(dataRuta);
     this.indiceActual() > 0 ? this.direcciones()[this.indiceActual() - 1] : null
   );
 
-  // Ir a siguiente
-siguiente() {
-  const i = this.indiceActual();
+  // 👉 Ir a siguiente (gestiona fin de reparto para ENTREGAR y SALTAR)
+  siguiente() {
+    const i = this.indiceActual();
+    const total = this.direcciones().length;
 
-  // ¿Quedó en el último?
-  if (i >= this.direcciones().length - 1) {
-    this.finReparto.set(true);
-    return;
+    // Si ya estoy en la última, mostrar fin de reparto
+    if (i >= total - 1) {
+      this.mostrarFinDeReparto();
+      return;
+    }
+
+    // Si no, avanzar
+    const nuevo = i + 1;
+    this.indiceActual.set(nuevo);
+    localStorage.setItem(`reparto_${this.rutaId}`, String(nuevo));
   }
-
-  this.indiceActual.set(i + 1);
-}
 
   // Volver atrás
   anterior() {
     if (this.indiceActual() > 0) {
-      this.indiceActual.update(v => v - 1);
-      localStorage.setItem(`reparto_${this.rutaId}`, String(this.indiceActual()));
+      const nuevo = this.indiceActual() - 1;
+      this.indiceActual.set(nuevo);
+      localStorage.setItem(`reparto_${this.rutaId}`, String(nuevo));
     }
   }
 
@@ -111,12 +115,12 @@ siguiente() {
     if (!d) return;
 
     if (d.lat && d.lng) {
-      window.open(`https://www.google.com/maps/@${d.lat},${d.lng},20z`, "_blank");
+      window.open(`https://www.google.com/maps/@${d.lat},${d.lng},20z`, '_blank');
       return;
     }
 
     const encoded = encodeURIComponent(d.direccion);
-    window.open(`https://www.google.com/maps?q=${encoded}`, "_blank");
+    window.open(`https://www.google.com/maps?q=${encoded}`, '_blank');
   }
 
   // SALTAR
@@ -124,34 +128,32 @@ siguiente() {
     const d = this.actual();
     if (!d) return;
 
-    await this.rutasService.registrarSalto(this.rutaId, d, "Salteado");
-    this.siguiente();
+    await this.rutasService.registrarSalto(this.rutaId, d, 'Salteado');
+    this.siguiente();  // ahora también cierra bien en el último
   }
 
   // ENTREGAR
-async entregar() {
-  const d = this.actual();
-  if (!d) return;
+  async entregar() {
+    const d = this.actual();
+    if (!d) return;
 
-  await this.rutasService.registrarEntrega(this.rutaId, d.id!);
+    await this.rutasService.registrarEntrega(this.rutaId, d.id!, d);
+    this.siguiente();  // misma lógica que saltar()
+  }
 
-  this.siguiente();
-}
+  mostrarFinDeReparto() {
+    alert('🎉 ¡Reparto finalizado!\nTodos los diarios del día fueron procesados.');
 
+    // Limpiamos progreso guardado
+    localStorage.removeItem(`reparto_${this.rutaId}`);
 
-mostrarFinDeReparto() {
-  alert("🎉 ¡Reparto finalizado!\nTodos los diarios del día fueron procesados.");
+    // Volvemos a la lista de rutas
+    this.router.navigate(['/rutas', this.rutaId]);
+  }
 
-  // FUTURO: Redirigir a página resumen
-  // this.router.navigate(['/rutas', this.rutaId, 'resumen']);
-
-  // Por ahora volvemos a la ruta
-  window.location.href = `/rutas/${this.rutaId}`;
-}
-
-  // Reiniciar reparto
+  // Reiniciar reparto manualmente
   reiniciarReparto() {
-    const ok = confirm("¿Seguro que desea reiniciar el reparto?\nSe perderá el progreso del día.");
+    const ok = confirm('¿Seguro que desea reiniciar el reparto?\nSe perderá el progreso del día.');
     if (!ok) return;
 
     localStorage.removeItem(`reparto_${this.rutaId}`);

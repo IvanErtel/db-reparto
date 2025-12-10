@@ -8,12 +8,38 @@
 
   <div *ngIf="cargando()">Cargando rutas...</div>
 
-  <ul *ngIf="!cargando() && rutas().length > 0">
-    <li *ngFor="let r of rutas()" (click)="abrirRuta(r.id!)">
+<ul *ngIf="!cargando() && rutas().length > 0">
+
+  <li *ngFor="let r of rutas()">
+
+    <div class="info-ruta" (click)="abrirRuta(r.id!)">
       <strong>{{ r.nombrePersonalizado }}</strong>
       <span class="base">({{ r.nombreBase }})</span>
-    </li>
-  </ul>
+    </div>
+
+    <!-- BOTONES DE ACCIÓN -->
+    <div class="acciones">
+
+      <button *ngIf="estadoReparto(r.id!) === 'nuevo'"
+              (click)="iniciarReparto(r.id!)">
+        ▶ Iniciar reparto
+      </button>
+
+      <button *ngIf="estadoReparto(r.id!) === 'continuar'"
+              (click)="continuarReparto(r.id!)">
+        ⏯ Continuar reparto
+      </button>
+
+      <button *ngIf="estadoReparto(r.id!) === 'finalizado'"
+              (click)="reiniciarReparto(r.id!)">
+        🔄 Reiniciar reparto
+      </button>
+
+    </div>
+
+  </li>
+
+</ul>
 
   <p *ngIf="!cargando() && rutas().length === 0">
     No tienes rutas creadas todavía.
