@@ -28,10 +28,19 @@ export class EditarRutaComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.rutaId = this.route.snapshot.params['id'];
+    this.cargando = true;
+
+    // 🔥 FORMA 100% FIABLE
+    this.rutaId = this.route.snapshot.paramMap.get('id') || '';
+
+    if (!this.rutaId) {
+      alert('ID de ruta inválido');
+      this.router.navigate(['/rutas']);
+      return;
+    }
 
     try {
-      const data = await this.rutasService.obtenerUnaRuta(this.rutaId);
+      const data = await this.rutasService.obtenerRutaPorId(this.rutaId);
 
       if (!data) {
         alert('Ruta no encontrada');
@@ -53,7 +62,7 @@ export class EditarRutaComponent implements OnInit {
   async guardarCambios() {
     await this.rutasService.actualizarRuta(this.rutaId, {
       nombrePersonalizado: this.nombrePersonalizado,
-      nombreBase: this.nombreBase as Ruta['nombreBase'],
+      nombreBase: this.nombreBase as Ruta['nombreBase']
     });
 
     alert('Ruta actualizada');
@@ -61,13 +70,10 @@ export class EditarRutaComponent implements OnInit {
   }
 
   async eliminarRuta() {
-    const conf = confirm(
-      '¿Seguro que deseas eliminar esta ruta? Se borrarán también sus direcciones.'
-    );
+    const conf = confirm('¿Seguro que deseas eliminar esta ruta?');
     if (!conf) return;
 
     await this.rutasService.eliminarRuta(this.rutaId);
-
     alert('Ruta eliminada');
     this.router.navigate(['/rutas']);
   }

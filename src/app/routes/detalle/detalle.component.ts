@@ -119,7 +119,7 @@ export class DetalleComponent implements OnInit {
 }
 
 editarRuta() {
-  this.router.navigate(['/rutas', this.rutaId, 'editar']);
+  this.router.navigate(['/rutas', this.rutaId, 'editar-ruta']);
 }
 
 hayProgresoGuardado(): boolean {

@@ -7,34 +7,40 @@ import { CrearRutaComponent } from './routes/crear/crear.component';
 import { DetalleComponent } from './routes/detalle/detalle.component';
 import { AgregarComponent } from './routes/agregar/agregar.component';
 import { EditarComponent } from './routes/editar/editar.component';
-import { EditarRutaComponent } from './routes/editar-ruta/editar-ruta.component';
 
 export const routes: Routes = [
-  // Login
   { path: 'login', component: LoginComponent },
-
-  // Dashboard principal
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
 
-  // Ruta donde se listan todas las rutas del usuario
   { path: 'rutas', component: ListComponent, canActivate: [authGuard] },
-
   { path: 'rutas/crear', component: CrearRutaComponent, canActivate: [authGuard] },
 
+  // 🔥 EDITAR RUTA DEBE IR ANTES QUE rutas/:id
+  {
+    path: 'rutas/:id/editar-ruta',
+    loadComponent: () =>
+      import('./routes/editar-ruta/editar-ruta.component')
+        .then(m => m.EditarRutaComponent),
+    canActivate: [authGuard]
+  },
+
+  // Detalle de ruta
   { path: 'rutas/:id', component: DetalleComponent, canActivate: [authGuard] },
 
+  // Agregar dirección
   { path: 'rutas/:id/agregar', component: AgregarComponent, canActivate: [authGuard] },
-  
+
+  // Editar dirección
   { path: 'rutas/:rutaId/editar/:direccionId', component: EditarComponent, canActivate: [authGuard] },
-  
-  { path: 'rutas/:id/editar', component: EditarRutaComponent },
 
+  // Reparto
   {
-  path: 'rutas/:id/reparto',
-  loadComponent: () => import('./routes/reparto/reparto.component').then(m => m.RepartoComponent)
-},
+    path: 'rutas/:id/reparto',
+    loadComponent: () =>
+      import('./routes/reparto/reparto.component')
+        .then(m => m.RepartoComponent)
+  },
 
-  // Redirecciones
   { path: '', redirectTo: 'rutas', pathMatch: 'full' },
   { path: '**', redirectTo: 'rutas' }
 ];
