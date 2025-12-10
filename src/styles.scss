@@ -1,1 +1,77 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+html, body {
+  font-family: 'Inter', sans-serif;
+  background: #f4f6f8;
+  margin: 0;
+  padding: 0;
+  color: #1f1f1f;
+}
+
+:root {
+  --color-primario: #2563eb;     // azul moderno
+  --color-primario-hover: #1e4fc4;
+  --color-peligro: #dc2626;
+  --color-exito: #16a34a;
+  --color-gris: #6b7280;
+  --borde: 1px solid #e5e7eb;
+  --radio: 10px;
+}
+
+button {
+  padding: 10px 16px;
+  border-radius: var(--radio);
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.btn-primario {
+  background: var(--color-primario);
+  color: white;
+}
+
+.btn-peligro {
+  background: var(--color-peligro);
+  color: white;
+}
+
+.btn-exito {
+  background: var(--color-exito);
+  color: white;
+}
+
+.btn-gris {
+  background: var(--color-gris);
+  color: white;
+}
+
+.card {
+  background: white;
+  padding: 16px;
+  border-radius: var(--radio);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: 12px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radio);
+  border: var(--borde);
+  margin-top: 4px;
+  font-size: 15px;
+  background: #fff;
+}
+
+label {
+  display: block;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
