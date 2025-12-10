@@ -45,8 +45,21 @@ export class RepartoComponent implements OnInit {
     }
 
     // Cargar direcciones
-    const dirs = await this.rutasService.obtenerDireccionesOrdenadas(this.rutaId);
-    this.direcciones.set(dirs);
+// Cargar direcciones ordenadas
+let dirs = await this.rutasService.obtenerDireccionesOrdenadas(this.rutaId);
+
+// Filtrar SOLO las direcciones que hoy reciben diario
+const filtradas: Direccion[] = [];
+
+for (const d of dirs) {
+  if (await this.rutasService.esDiaDeEntrega(d, this.hoy)) {
+    filtradas.push(d);
+  }
+}
+
+this.direcciones.set(filtradas);
+this.direcciones.set(dirs);
+
     // Cargar datos de la ruta (nombre personalizado, etc.)
 const dataRuta = await this.rutasService.obtenerRutaPorId(this.rutaId);
 this.ruta.set(dataRuta);
@@ -109,13 +122,31 @@ this.ruta.set(dataRuta);
   }
 
   // ENTREGAR
-  async entregar() {
-    const d = this.actual();
-    if (!d) return;
+async entregar() {
+  const d = this.actual();
+  if (!d) return;
 
-    await this.rutasService.registrarEntrega(this.rutaId, d);
-    this.siguiente();
+await this.rutasService.registrarEntrega(this.rutaId, d.id!, d);
+
+  // Si era la última dirección
+  if (this.indiceActual() >= this.direcciones().length - 1) {
+    this.mostrarFinDeReparto();
+    return;
   }
+
+  // Si no era la última → pasar a la siguiente
+  this.siguiente();
+}
+
+mostrarFinDeReparto() {
+  alert("🎉 ¡Reparto finalizado!\nTodos los diarios del día fueron procesados.");
+
+  // FUTURO: Redirigir a página resumen
+  // this.router.navigate(['/rutas', this.rutaId, 'resumen']);
+
+  // Por ahora volvemos a la ruta
+  window.location.href = `/rutas/${this.rutaId}`;
+}
 
   // Reiniciar reparto
   reiniciarReparto() {

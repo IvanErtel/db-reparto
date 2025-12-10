@@ -1,45 +1,35 @@
 {
   "name": "db-reparto",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.2.",
+  "main": "index.js",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "prettier": {
-    "printWidth": 100,
-    "singleQuote": true,
-    "overrides": [
-      {
-        "files": "*.html",
-        "options": {
-          "parser": "angular"
-        }
-      }
-    ]
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IvanErtel/db-reparto.git"
   },
-  "private": true,
-  "packageManager": "npm@10.9.2",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IvanErtel/db-reparto/issues"
+  },
+  "homepage": "https://github.com/IvanErtel/db-reparto#readme",
   "dependencies": {
-    "@angular/common": "^21.0.0",
-    "@angular/compiler": "^21.0.0",
-    "@angular/core": "^21.0.0",
-    "@angular/fire": "^20.0.1",
-    "@angular/forms": "^21.0.0",
-    "@angular/platform-browser": "^21.0.0",
-    "@angular/router": "^21.0.0",
-    "firebase": "^11.10.0",
-    "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
-  },
-  "devDependencies": {
-    "@angular/build": "^21.0.2",
+    "@angular/cdk": "^21.0.2",
     "@angular/cli": "^21.0.2",
-    "@angular/compiler-cli": "^21.0.0",
-    "jsdom": "^27.1.0",
-    "typescript": "~5.9.2",
-    "vitest": "^4.0.8"
+    "@angular/common": "^21.0.3",
+    "@angular/compiler": "^21.0.3",
+    "@angular/core": "^21.0.3",
+    "@angular/fire": "^21.0.0-rc.0",
+    "@angular/forms": "^21.0.3",
+    "@angular/platform-browser": "^21.0.3",
+    "@angular/platform-browser-dynamic": "^21.0.3",
+    "@angular/router": "^21.0.3",
+    "@angular/service-worker": "^21.0.3",
+    "firebase": "^12.6.0",
+    "tslib": "^2.8.1"
   }
 }

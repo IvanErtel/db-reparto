@@ -232,12 +232,18 @@ async registrarSalto(rutaId: string, direccion: Direccion, razon: string = '') {
     return d.dias[clave] === true;
   }
 
-async registrarEntrega(rutaId: string, direccion: Direccion) {
+async registrarEntrega(rutaId: string, direccionId: string, datos?: Direccion) {
   const hoy = new Date().toISOString().split('T')[0]; // AAAA-MM-DD
+
+  // Si no recibimos datos, intentar obtener la dirección desde Firestore
+  let direccion: Direccion | null | undefined = datos;
+  if (!direccion) {
+    direccion = await this.obtenerDireccion(rutaId, direccionId);
+  }
 
   const ref = doc(
     this.firestore,
-    `routes/${rutaId}/historial/${hoy}/direcciones/${direccion.id}`
+    `routes/${rutaId}/historial/${hoy}/direcciones/${direccionId}`
   );
 
   await setDoc(ref, {
@@ -245,14 +251,22 @@ async registrarEntrega(rutaId: string, direccion: Direccion) {
     hora: serverTimestamp(),
     razonSalto: null,
 
-    // Guardamos información útil para el historial
-    cliente: direccion.cliente,
-    direccion: direccion.direccion,
-    cantidadDiarios: direccion.cantidadDiarios,
-    notas: direccion.notas || null,
-    lat: direccion.lat || null,
-    lng: direccion.lng || null
+    // Guardamos información útil
+    cliente: direccion?.cliente || null,
+    direccion: direccion?.direccion || null,
+    cantidadDiarios: direccion?.cantidadDiarios || null,
+    notas: direccion?.notas || null,
+    lat: direccion?.lat || null,
+    lng: direccion?.lng || null
   });
+}
+
+async obtenerDireccion(rutaId: string, direccionId: string): Promise<Direccion | null> {
+  const ref = doc(this.firestore, `routes/${rutaId}/stops/${direccionId}`);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return null;
+
+  return { id: snap.id, ...snap.data() } as Direccion;
 }
 
   async obtenerDireccionesParaReparto(rutaId: string, fecha: Date): Promise<Direccion[]> {
@@ -263,4 +277,44 @@ async registrarEntrega(rutaId: string, direccion: Direccion) {
       this.direccionSeEntregaEsteDia(d, fecha)
     );
   }
+
+async esDiaDeEntrega(d: Direccion, fecha: Date = new Date()): Promise<boolean> {
+  if (!d.dias) return true;
+
+  const dia = fecha.getDay(); // 0 domingo...
+  const esFestivo = await this.esFestivo(fecha);
+
+  const mapa = [
+    d.dias.domingo,
+    d.dias.lunes,
+    d.dias.martes,
+    d.dias.miercoles,
+    d.dias.jueves,
+    d.dias.viernes,
+    d.dias.sabado,
+  ];
+
+  // 🔥 FESTIVOS
+  if (esFestivo) {
+    return d.dias.festivos === true;
+  }
+
+  // 🔥 LUNES — entregar acumulado fin de semana
+  if (dia === 1 && d.dias.guardarFinSemanaParaLunes) {
+    return true;
+  }
+
+  // Normal
+  return mapa[dia] === true;
+}
+
+async esFestivo(fecha: Date = new Date()): Promise<boolean> {
+  const id = fecha.toISOString().split("T")[0]; // AAAA-MM-DD
+
+  const ref = doc(this.firestore, `festivos/${id}`);
+  const snap = await getDoc(ref);
+
+  return snap.exists();
+}
+
 }
