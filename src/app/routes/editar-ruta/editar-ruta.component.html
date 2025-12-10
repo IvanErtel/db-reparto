@@ -1,0 +1,29 @@
+<div class="editar-ruta" *ngIf="!cargando; else cargandoTpl">
+
+  <h1>Editar ruta</h1>
+
+  <label>Nombre de la ruta:
+    <input type="text" [(ngModel)]="nombrePersonalizado">
+  </label>
+
+<label>Zona base:
+  <select [(ngModel)]="nombreBase">
+    <option value="GAMONAL">GAMONAL</option>
+    <option value="ESTE">ESTE</option>
+    <option value="CENTRO">CENTRO</option>
+    <option value="OESTE">OESTE</option>
+    <option value="SUR">SUR</option>
+  </select>
+</label>
+
+  <div class="acciones">
+    <button class="btn-guardar" (click)="guardarCambios()">Guardar cambios</button>
+    <button class="btn-eliminar" (click)="eliminarRuta()">Eliminar ruta</button>
+    <button class="btn-cancelar" (click)="volver()">Cancelar</button>
+  </div>
+
+</div>
+
+<ng-template #cargandoTpl>
+  <p>Cargando ruta...</p>
+</ng-template>

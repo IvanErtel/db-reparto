@@ -171,11 +171,17 @@ async obtenerDireccionesOrdenadas(rutaId: string): Promise<Direccion[]> {
     return null;
   }
 
-  async obtenerUnaRuta(rutaId: string) {
-  const ref = doc(this.firestore, `routes/${rutaId}`);
-  const snap = await getDoc(ref);
-  return snap.exists() ? { id: rutaId, ...snap.data() } : null;
-}
+  async obtenerUnaRuta(id: string): Promise<Ruta | null> {
+    const ref = doc(this.firestore, 'routes', id);
+    const snap = await getDoc(ref);
+
+    if (!snap.exists()) return null;
+
+    return {
+      id: snap.id,
+      ...(snap.data() as any)
+    } as Ruta;
+  }
 
   direccionActivaEnFecha(d: Direccion, fecha: Date): boolean {
     const hoy = this.limpiarFecha(fecha);

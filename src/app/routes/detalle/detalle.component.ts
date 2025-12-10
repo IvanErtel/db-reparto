@@ -118,6 +118,10 @@ export class DetalleComponent implements OnInit {
   this.router.navigate(['/rutas', this.rutaId, 'reparto']);
 }
 
+editarRuta() {
+  this.router.navigate(['/rutas', this.rutaId, 'editar']);
+}
+
 hayProgresoGuardado(): boolean {
   return localStorage.getItem(`reparto_${this.rutaId}`) !== null;
 }

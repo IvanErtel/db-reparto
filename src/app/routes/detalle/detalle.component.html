@@ -1,13 +1,21 @@
 <div class="detalle-ruta">
 
-  <button class="btn-volver" (click)="volver()">⬅ Volver</button>
+  <div class="cabecera">
+    <button (click)="volver()">⬅ Volver</button>
+
+  </div>
 
   <h1>{{ ruta()?.nombrePersonalizado }}</h1>
-  <p class="base">Zona base: <strong>{{ ruta()?.nombreBase }}</strong></p>
+  <p class="base">Zona base: {{ ruta()?.nombreBase }}</p>
 
   <button class="btn-agregar" (click)="agregarDireccion()">
     ➕ Agregar dirección
   </button>
+
+  <button class="btn-editar-ruta"
+        (click)="editarRuta()">
+  ✏ Editar ruta
+</button>
 
   <div class="filtro-dia">
     <label>Día de reparto:
