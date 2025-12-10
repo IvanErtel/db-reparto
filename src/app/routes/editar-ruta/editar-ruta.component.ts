@@ -30,18 +30,24 @@ export class EditarRutaComponent implements OnInit {
   async ngOnInit() {
     this.rutaId = this.route.snapshot.params['id'];
 
-    const data = await this.rutasService.obtenerUnaRuta(this.rutaId);
+    try {
+      const data = await this.rutasService.obtenerUnaRuta(this.rutaId);
 
-    if (!data) {
-      alert('Ruta no encontrada');
+      if (!data) {
+        alert('Ruta no encontrada');
+        this.router.navigate(['/rutas']);
+        return;
+      }
+
+      this.nombrePersonalizado = data.nombrePersonalizado;
+      this.nombreBase = data.nombreBase as Ruta['nombreBase'];
+    } catch (error) {
+      console.error('Error obteniendo la ruta', error);
+      alert('Ocurrió un error al cargar la ruta.');
       this.router.navigate(['/rutas']);
-      return;
+    } finally {
+      this.cargando = false;
     }
-
-    this.nombrePersonalizado = data.nombrePersonalizado;
-    this.nombreBase = data.nombreBase as Ruta['nombreBase'];
-
-    this.cargando = false;
   }
 
   async guardarCambios() {
