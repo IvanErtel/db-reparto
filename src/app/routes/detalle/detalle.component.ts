@@ -26,6 +26,8 @@ export class DetalleComponent implements OnInit {
   direcciones = signal<Direccion[]>([]);
   cargandoRuta = signal(true);
   cargandoDirecciones = signal(true);
+busqueda = '';
+direccionesFiltradas = signal<Direccion[]>([]);
 
   // Para el filtro por día
   diaSeleccionado = 'todos';
@@ -62,10 +64,11 @@ export class DetalleComponent implements OnInit {
   async cargarDirecciones() {
     const dirs = await this.rutasService.obtenerDireccionesOrdenadas(this.rutaId);
 
-    this.todasLasDirecciones = dirs;   // Guardamos todo
-    this.direcciones.set(dirs);        // Mostramos por defecto
+this.todasLasDirecciones = dirs;
+this.direcciones.set(dirs);
+this.direccionesFiltradas.set(dirs);   // ← IMPORTANTE
+this.cargandoDirecciones.set(false);
 
-    this.cargandoDirecciones.set(false);
   }
 
   // -------------------------
@@ -86,16 +89,18 @@ export class DetalleComponent implements OnInit {
   // -------------------------
 
   filtrarPorDia() {
-    if (this.diaSeleccionado === 'todos') {
-      this.direcciones.set(this.todasLasDirecciones);
-      return;
-    }
+if (this.diaSeleccionado === 'todos') {
+  this.direcciones.set(this.todasLasDirecciones);
+  this.direccionesFiltradas.set(this.todasLasDirecciones);
+  return;
+}
 
-    const filtradas = this.todasLasDirecciones.filter(d => {
-      return d.dias[this.diaSeleccionado as keyof typeof d.dias];
-    });
+const filtradas = this.todasLasDirecciones.filter(d =>
+  d.dias[this.diaSeleccionado as keyof typeof d.dias]
+);
 
-    this.direcciones.set(filtradas);
+this.direcciones.set(filtradas);
+this.direccionesFiltradas.set(filtradas);
   }
 
   // -------------------------
@@ -109,6 +114,22 @@ export class DetalleComponent implements OnInit {
   agregarDireccion() {
     this.router.navigate(['/rutas', this.rutaId, 'agregar']);
   }
+
+  filtrarBusqueda() {
+  const texto = this.busqueda.toLowerCase().trim();
+
+  if (!texto) {
+    this.direccionesFiltradas.set(this.direcciones());
+    return;
+  }
+
+  const filtradas = this.direcciones().filter(d =>
+    d.cliente.toLowerCase().includes(texto) ||
+    d.direccion.toLowerCase().includes(texto)
+  );
+
+  this.direccionesFiltradas.set(filtradas);
+}
 
   editarDireccion(id: string) {
     this.router.navigate(['/rutas', this.rutaId, 'editar', id]);

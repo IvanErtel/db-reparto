@@ -20,7 +20,9 @@
   </div>
 
   <!-- DIRECCIÓN ACTUAL -->
-  <div class="card-principal" *ngIf="actual() as d">
+  <div class="card-principal"
+     *ngIf="actual() as d"
+     [class.anim-ok]="animando">
 
     <h2>{{ d.cliente }}</h2>
 

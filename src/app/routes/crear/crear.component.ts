@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
+import { ToastService } from '../../shared/toast.service';
 
 @Component({
   selector: 'app-crear-ruta',
@@ -18,12 +19,13 @@ export class CrearRutaComponent {
 
   constructor(
     private rutasService: RutasService,
-    private router: Router
+    private router: Router,
+    private toast: ToastService
   ) {}
 
 async guardar() {
   if (!this.nombrePersonalizado.trim()) {
-    alert('Debes ingresar un nombre para la ruta.');
+    this.toast.mostrar('Debes ingresar un nombre para la ruta.', 'error');
     return;
   }
 
@@ -32,7 +34,7 @@ async guardar() {
     nombrePersonalizado: this.nombrePersonalizado
   });
 
-  alert('Ruta creada correctamente');
+  this.toast.mostrar('Ruta creada correctamente', 'success');
 
   // Recarga completa de la app en /rutas
   window.location.href = '/rutas';

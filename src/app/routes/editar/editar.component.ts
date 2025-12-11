@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
 import { Direccion } from '../../models/direccion';
+import { ToastService } from '../../shared/toast.service';
 
 @Component({
   selector: 'app-editar-direccion',
@@ -24,7 +25,8 @@ export class EditarComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private rutasService: RutasService
+    private rutasService: RutasService,
+    private toast: ToastService
   ) {}
 
   async ngOnInit() {
@@ -52,7 +54,7 @@ async guardar() {
     notas: d.notas ?? ''
   });
 
-  alert("Dirección actualizada");
+  this.toast.mostrar("Dirección actualizada", "success");
   window.location.href = `/rutas/${this.rutaId}`;
 }
 

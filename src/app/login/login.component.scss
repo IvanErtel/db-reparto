@@ -1,19 +1,88 @@
 .login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   min-height: 100vh;
-  gap: 16px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f3f4f6;
+  padding: 20px;
 }
 
+.login-card {
+  background: white;
+  padding: 35px 25px;
+  border-radius: var(--radio);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  text-align: center;
+  max-width: 330px;
+  width: 100%;
+}
+
+.logo {
+  font-size: 50px;
+  margin-bottom: 10px;
+}
+
+.titulo-app {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.subtitulo {
+  margin: 5px 0 20px;
+  color: var(--color-gris);
+}
+
+/* BOTÓN GOOGLE */
+
 .google-btn {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4285f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  width: 100%;
+  padding: 12px 16px;
+
+  background: #ffffff;
+  border: 1px solid #d3d3d3;
+  border-radius: var(--radio);
+  cursor: pointer;
+
+  font-size: 15px;
+  font-weight: 500;
+  color: #444;
+
+  line-height: 1;        /* 🔥 evita que el texto suba/baje */
+  white-space: nowrap;   /* 🔥 evita que se corte */
+}
+
+.google-btn img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;   /* 🔥 evita deformación */
+  flex-shrink: 0;        /* 🔥 evita que el icono aplaste el texto */
+}
+
+.google-btn:hover {
+  background: #f1f1f1;
+}
+
+/* BOTÓN ENTRAR */
+.btn-entrar {
+  background: var(--color-exito);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radio);
+  padding: 12px;
+  font-size: 17px;
+  font-weight: 600;
   cursor: pointer;
+  width: 100%;
+  transition: 0.2s ease;
+  margin-top: 10px;
+}
+
+.btn-entrar:hover {
+  opacity: 0.9;
 }

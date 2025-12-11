@@ -3,6 +3,7 @@ import { Auth, GoogleAuthProvider, signInWithPopup, signOut, user, User } from '
 import { Firestore, collection, query, where, getDocs } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { ToastService } from '../shared/toast.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class AuthService {
   constructor(
     private auth: Auth,
     private firestore: Firestore,
-    private router: Router
+    private router: Router,
+    private toast: ToastService
   ) {
     // Ahora sí: se usa auth DESPUÉS de ser inicializado
     this.currentUser$ = user(this.auth);
@@ -29,7 +31,7 @@ export class AuthService {
 
       if (!email) {
         await this.logout();
-        alert("No se encontró email en la cuenta.");
+        this.toast.mostrar("No se encontró email en la cuenta.", "error");
         return;
       }
 
@@ -37,7 +39,7 @@ export class AuthService {
 
       if (!allowed) {
         await this.logout();
-        alert("Tu usuario no está autorizado.");
+        this.toast.mostrar("Tu usuario no está autorizado.", "error");
         return;
       }
 

@@ -75,3 +75,34 @@ label {
   margin-bottom: 15px;
   font-weight: 500;
 }
+
+/* ===== BUSCADOR EN DETALLE DE RUTA ===== */
+
+.detalle-ruta .buscador {
+  margin-top: 20px;
+  margin-bottom: 24px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.detalle-ruta .buscador input {
+  /* opcional: si querés que se vea un poco diferente al resto */
+  padding: 12px 14px;
+}
+
+/* ===========================
+   GLOBAL FOOTER
+=========================== */
+.app-footer {
+  text-align: center;
+  padding: 15px 0;
+  margin-top: 30px;
+  color: var(--color-gris);
+  font-size: 14px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.cabecera {
+  margin-left: 50px; /* mueve el botón para que no quede debajo del menú */
+}
+

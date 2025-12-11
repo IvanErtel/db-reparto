@@ -1,3 +1,20 @@
 
 
-<router-outlet></router-outlet>
+<app-menu></app-menu>
+
+<header class="app-header">
+  <button class="btn-hamburger" (click)="toggleMenu()" *ngIf="mostrarHamburguesa">☰</button>
+  <h1>{{ pageTitle }}</h1>
+</header>
+
+<div class="contenido">
+  <router-outlet></router-outlet>
+</div>
+
+<app-toast></app-toast>
+
+<footer class="app-footer">
+  <p>DB Reparto • © {{ currentYear }} • Creado por Alan Ivan Ertel Ramirez</p>
+</footer>
+
+

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
+import { ToastService } from '../../shared/toast.service';
 
 @Component({
   selector: 'app-agregar-direccion',
@@ -42,7 +43,8 @@ export class AgregarComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private rutasService: RutasService
+    private rutasService: RutasService,
+    private toast: ToastService
   ) {}
 
   ngOnInit() {
@@ -51,7 +53,7 @@ export class AgregarComponent implements OnInit {
 
   async guardar() {
     if (!this.cliente.trim() || !this.direccion.trim()) {
-      alert("Completa cliente y dirección");
+      this.toast.mostrar("Completa cliente y dirección", "error");
       return;
     }
 
@@ -67,7 +69,7 @@ export class AgregarComponent implements OnInit {
       notas: this.notas,
     });
 
-    alert("Dirección agregada");
+    this.toast.mostrar("Dirección agregada", "success");
     window.location.href = `/rutas/${this.rutaId}`;
   }
 

@@ -2,7 +2,7 @@
 
   <h1>Editar dirección</h1>
 
-  <div *ngIf="cargando()">Cargando...</div>
+  <div *ngIf="cargando()" class="loading">Cargando...</div>
 
   <div *ngIf="!cargando() && direccion()">
 
@@ -23,6 +23,7 @@
 
     <!-- DÍAS DE ENTREGA -->
     <h3>Días de entrega</h3>
+
     <div class="dias">
       <label><input type="checkbox" [(ngModel)]="direccion()!.dias.lunes"> Lunes</label>
       <label><input type="checkbox" [(ngModel)]="direccion()!.dias.martes"> Martes</label>
@@ -32,7 +33,9 @@
       <label><input type="checkbox" [(ngModel)]="direccion()!.dias.sabado"> Sábado</label>
       <label><input type="checkbox" [(ngModel)]="direccion()!.dias.domingo"> Domingo</label>
       <label><input type="checkbox" [(ngModel)]="direccion()!.dias.festivos"> Festivos</label>
-      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.guardarFinSemanaParaLunes">
+
+      <label class="full">
+        <input type="checkbox" [(ngModel)]="direccion()!.dias.guardarFinSemanaParaLunes">
         Guardar sáb-dom para entregar lunes
       </label>
     </div>
@@ -55,8 +58,8 @@
 
     <!-- BOTONES -->
     <div class="acciones">
-      <button (click)="guardar()">Guardar cambios</button>
-      <button (click)="cancelar()">Cancelar</button>
+      <button class="btn-primario" (click)="guardar()">Guardar cambios</button>
+      <button class="btn-gris" (click)="cancelar()">Cancelar</button>
     </div>
 
   </div>

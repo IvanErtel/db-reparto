@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
 import { Ruta } from '../../models/ruta';
+import { ToastService } from '../../shared/toast.service';
 
 @Component({
   selector: 'app-editar-ruta',
@@ -24,7 +25,8 @@ export class EditarRutaComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private rutasService: RutasService
+    private rutasService: RutasService,
+    private toast: ToastService
   ) {}
 
   async ngOnInit() {
@@ -34,7 +36,7 @@ export class EditarRutaComponent implements OnInit {
     this.rutaId = this.route.snapshot.paramMap.get('id') || '';
 
     if (!this.rutaId) {
-      alert('ID de ruta inválido');
+      this.toast.mostrar('ID de ruta inválido', 'error');
       this.router.navigate(['/rutas']);
       return;
     }
@@ -43,7 +45,7 @@ export class EditarRutaComponent implements OnInit {
       const data = await this.rutasService.obtenerRutaPorId(this.rutaId);
 
       if (!data) {
-        alert('Ruta no encontrada');
+        this.toast.mostrar('Ruta no encontrada', 'error');
         this.router.navigate(['/rutas']);
         return;
       }
@@ -52,7 +54,7 @@ export class EditarRutaComponent implements OnInit {
       this.nombreBase = data.nombreBase as Ruta['nombreBase'];
     } catch (error) {
       console.error('Error obteniendo la ruta', error);
-      alert('Ocurrió un error al cargar la ruta.');
+      this.toast.mostrar('Ocurrió un error al cargar la ruta.', 'error');
       this.router.navigate(['/rutas']);
     } finally {
       this.cargando = false;
@@ -65,7 +67,7 @@ export class EditarRutaComponent implements OnInit {
       nombreBase: this.nombreBase as Ruta['nombreBase']
     });
 
-    alert('Ruta actualizada');
+    this.toast.mostrar('Ruta actualizada', 'success');
     this.router.navigate(['/rutas']);
   }
 
@@ -74,7 +76,7 @@ export class EditarRutaComponent implements OnInit {
     if (!conf) return;
 
     await this.rutasService.eliminarRuta(this.rutaId);
-    alert('Ruta eliminada');
+    this.toast.mostrar('Ruta eliminada', 'success');
     this.router.navigate(['/rutas']);
   }
 

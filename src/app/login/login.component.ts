@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Auth } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { onAuthStateChanged } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-login',
@@ -11,9 +14,27 @@ import { AuthService } from '../services/auth.service';
 })
 export class LoginComponent {
 
-  constructor(private auth: AuthService) {}
+  usuarioLogueado = false;
+
+  constructor(
+    private authFirebase: Auth,
+    private auth: AuthService,
+    private router: Router
+  ) {
+
+    onAuthStateChanged(this.authFirebase, (user) => {
+      this.usuarioLogueado = !!user;
+    });
+  }
 
   loginGoogle() {
-    this.auth.loginWithGoogle();
+    // SOLO SI NO ESTÁ LOGUEADO
+    this.auth.loginWithGoogle().then(() => {
+      this.router.navigate(['/rutas']);
+    });
+  }
+
+  entrar() {
+    this.router.navigate(['/rutas']);
   }
 }

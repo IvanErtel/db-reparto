@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
 import { Direccion } from '../../models/direccion';
+import { ToastService } from '../../shared/toast.service';
 
 @Component({
   selector: 'app-reparto',
@@ -22,6 +23,10 @@ export class RepartoComponent implements OnInit {
   hoy = new Date();
   diaSemana = '';
   fechaHoy = '';
+animando = false;
+private esperar(ms: number) {
+  return new Promise(res => setTimeout(res, ms));
+}
 
   // total de diarios de las direcciones del día
   totalDiariosHoy = computed(() =>
@@ -31,7 +36,8 @@ export class RepartoComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private rutasService: RutasService
+    private rutasService: RutasService,
+    private toast: ToastService
   ) {}
 
   async ngOnInit() {
@@ -124,25 +130,40 @@ export class RepartoComponent implements OnInit {
   }
 
   // SALTAR
-  async saltar() {
-    const d = this.actual();
-    if (!d) return;
+async saltar() {
+  const d = this.actual();
+  if (!d) return;
 
-    await this.rutasService.registrarSalto(this.rutaId, d, 'Salteado');
-    this.siguiente();  // ahora también cierra bien en el último
-  }
+  this.animando = true;
+
+  await this.esperar(250);
+
+  // Tu código original
+  await this.rutasService.registrarSalto(this.rutaId, d, 'Salteado');
+  this.siguiente();
+
+  this.animando = false;
+}
 
   // ENTREGAR
-  async entregar() {
-    const d = this.actual();
-    if (!d) return;
+async entregar() {
+  const d = this.actual();
+  if (!d) return;
 
-    await this.rutasService.registrarEntrega(this.rutaId, d.id!, d);
-    this.siguiente();  // misma lógica que saltar()
-  }
+  this.animando = true;
+
+  // Espera 250ms para mostrar la animación
+  await this.esperar(250);
+
+  // Tu código original
+  await this.rutasService.registrarEntrega(this.rutaId, d.id!, d);
+  this.siguiente();
+
+  this.animando = false;
+}
 
   mostrarFinDeReparto() {
-    alert('🎉 ¡Reparto finalizado!\nTodos los diarios del día fueron procesados.');
+    this.toast.mostrar('🎉 ¡Reparto finalizado!', 'success');
 
     // Limpiamos progreso guardado
     localStorage.removeItem(`reparto_${this.rutaId}`);

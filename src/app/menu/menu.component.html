@@ -1,0 +1,25 @@
+<!-- Botón hamburguesa -->
+<div class="hamburger" *ngIf="!abierto()" (click)="toggle()">
+  ☰
+</div>
+
+<!-- Fondo oscuro al abrir -->
+<div class="overlay" *ngIf="abierto()" (click)="toggle()"></div>
+
+<!-- Panel lateral -->
+<div class="menu-lateral" [class.abierto]="abierto()">
+
+  <h2 class="titulo">DB Reparto</h2>
+
+  <button (click)="navegar('/dashboard')">🏠 Dashboard</button>
+  <button (click)="navegar('/rutas')">📦 Mis rutas</button>
+
+  <ng-container *ngIf="!usuarioLogueado">
+    <button (click)="navegar('/login')">🔐 Iniciar sesión</button>
+  </ng-container>
+
+  <ng-container *ngIf="usuarioLogueado">
+    <button class="logout" (click)="logout()">Cerrar sesión</button>
+  </ng-container>
+
+</div>

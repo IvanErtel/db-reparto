@@ -1,4 +1,20 @@
-<h1>Bienvenido al Panel</h1>
-<p>Acceso permitido solo a usuarios autorizados.</p>
+<div class="dashboard">
 
-<button (click)="logout()">Cerrar sesión</button>
+  <div class="perfil-card">
+
+    <div class="avatar">
+      {{ iniciales }}
+    </div>
+
+    <h2>Hola, {{ usuarioNombre }}</h2>
+    <p>Bienvenido al panel</p>
+
+    <button class="btn-ir-rutas" (click)="irRutas()">
+      📍 Ver mis rutas
+    </button>
+
+    <button class="btn-salir" (click)="logout()">Cerrar sesión</button>
+
+  </div>
+
+</div>

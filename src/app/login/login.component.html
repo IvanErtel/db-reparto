@@ -1,8 +1,28 @@
 <div class="login-container">
-  <h1>DB Reparto</h1>
-  <h2>Iniciar sesión</h2>
 
-  <button class="google-btn" (click)="loginGoogle()">
-    Iniciar con Google
-  </button>
+  <div class="login-card">
+
+    <div class="logo">
+      🚚
+    </div>
+
+    <h1 class="titulo-app">DB Reparto</h1>
+    <p class="subtitulo">Accede para continuar</p>
+
+    <!-- SI NO ESTÁ LOGUEADO -->
+    <button *ngIf="!usuarioLogueado"
+            class="google-btn"
+            (click)="loginGoogle()">
+      Iniciar sesión con Google
+    </button>
+
+    <!-- SI YA ESTÁ LOGUEADO -->
+    <button *ngIf="usuarioLogueado"
+            class="btn-entrar"
+            (click)="entrar()">
+      Entrar
+    </button>
+
+  </div>
+
 </div>

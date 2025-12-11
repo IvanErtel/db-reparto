@@ -19,19 +19,27 @@
 
   <h2>Direcciones cargadas</h2>
 
+  <div class="buscador">
+  <input
+    type="text"
+    placeholder="Buscar dirección o cliente..."
+    [(ngModel)]="busqueda"
+    (input)="filtrarBusqueda()">
+</div>
+
   <div *ngIf="cargandoDirecciones()" class="loading">
     Cargando direcciones...
   </div>
 
   <div class="lista" *ngIf="!cargandoDirecciones() && direcciones().length > 0">
-    <div class="card" *ngFor="let d of direcciones()" (click)="abrirDetalle(d)">
+    <div class="card" *ngFor="let d of direccionesFiltradas()" (click)="abrirDetalle(d)">
       <div class="cliente">{{ d.cliente }}</div>
       <div class="direccion">📍 {{ d.direccion }}</div>
       <div class="info">📰 {{ d.cantidadDiarios }} diarios</div>
     </div>
   </div>
 
-  <p class="sin-datos" *ngIf="!cargandoDirecciones() && direcciones().length === 0">
+  <p class="sin-datos" *ngIf="!cargandoDirecciones() && direccionesFiltradas().length === 0">
     Esta ruta todavía no tiene direcciones.
   </p>
 

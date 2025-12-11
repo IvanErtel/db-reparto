@@ -1,0 +1,69 @@
+.dashboard {
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+}
+
+.perfil-card {
+  background: white;
+  padding: 25px;
+  max-width: 330px;
+  width: 100%;
+  border-radius: var(--radio);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+.avatar {
+  width: 70px;
+  height: 70px;
+  background: var(--color-primario);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 35px;
+  margin: 0 auto 15px;
+}
+
+.perfil-card h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.perfil-card p {
+  color: var(--color-gris);
+  margin-bottom: 20px;
+}
+
+.btn-salir {
+  width: 100%;
+  background: var(--color-peligro);
+  color: white;
+  padding: 12px;
+  border-radius: var(--radio);
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-ir-rutas {
+  width: 100%;
+  background: var(--color-exito);
+  color: white;
+  padding: 12px;
+  border-radius: var(--radio);
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.btn-ir-rutas:hover {
+  opacity: 0.9;
+}
+
+
