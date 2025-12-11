@@ -33,6 +33,11 @@
       <label><input type="checkbox" [(ngModel)]="direccion()!.dias.sabado"> Sábado</label>
       <label><input type="checkbox" [(ngModel)]="direccion()!.dias.domingo"> Domingo</label>
       <label><input type="checkbox" [(ngModel)]="direccion()!.dias.festivos"> Festivos</label>
+      <label>
+  <input type="checkbox" [(ngModel)]="direccion()!.dias.noEntregarFestivos">
+  No entregar en festivos
+</label>
+
 
       <label class="full">
         <input type="checkbox" [(ngModel)]="direccion()!.dias.guardarFinSemanaParaLunes">

@@ -300,7 +300,12 @@ async esDiaDeEntrega(d: Direccion, fecha: Date = new Date()): Promise<boolean> {
     d.dias.sabado,
   ];
 
-  // 🔥 FESTIVOS
+  // 👉 NUEVO: Si hoy es festivo y la dirección NO debe entregarse, entonces NO entregar
+  if (esFestivo && d.dias.noEntregarFestivos) {
+    return false;
+  }
+
+  // 🔥 Si es festivo normal, entonces solo entregar si tiene marcado "festivos"
   if (esFestivo) {
     return d.dias.festivos === true;
   }
@@ -310,7 +315,7 @@ async esDiaDeEntrega(d: Direccion, fecha: Date = new Date()): Promise<boolean> {
     return true;
   }
 
-  // Normal
+  // 👉 Lógica normal por día
   return mapa[dia] === true;
 }
 

@@ -36,6 +36,10 @@
       <div class="cliente">{{ d.cliente }}</div>
       <div class="direccion">📍 {{ d.direccion }}</div>
       <div class="info">📰 {{ d.cantidadDiarios }} diarios</div>
+        <div class="orden-botones">
+<button (click)="subirDireccion(d); $event.stopPropagation()">⬆</button>
+<button (click)="bajarDireccion(d); $event.stopPropagation()">⬇</button>
+  </div>
     </div>
   </div>
 

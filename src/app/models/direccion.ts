@@ -4,7 +4,8 @@ export interface Direccion {
   cliente: string;
   direccion: string;
   cantidadDiarios: number;
-
+  orden?: number;
+  
   // NUEVO: coordenadas
   lat?: number | null;
   lng?: number | null;
@@ -19,6 +20,7 @@ export interface Direccion {
     sabado: boolean;
     domingo: boolean;
     festivos: boolean;
+    noEntregarFestivos?: boolean;
     guardarFinSemanaParaLunes: boolean;
   };
 

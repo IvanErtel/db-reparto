@@ -131,6 +131,46 @@ this.direccionesFiltradas.set(filtradas);
   this.direccionesFiltradas.set(filtradas);
 }
 
+async subirDireccion(d: Direccion) {
+  const lista = [...this.todasLasDirecciones];
+  const index = lista.findIndex(x => x.id === d.id);
+  if (index <= 0) return; // ya está arriba
+
+  // intercambiar con la anterior
+  const tmp = lista[index - 1];
+  lista[index - 1] = lista[index];
+  lista[index] = tmp;
+
+  // guardar nuevo orden en Firestore
+  await this.rutasService.reordenarDirecciones(this.rutaId, lista);
+
+  // actualizar en memoria y filtros
+  this.todasLasDirecciones = lista;
+  this.direcciones.set(lista);
+  this.filtrarPorDia();
+  this.filtrarBusqueda();
+}
+
+async bajarDireccion(d: Direccion) {
+  const lista = [...this.todasLasDirecciones];
+  const index = lista.findIndex(x => x.id === d.id);
+  if (index === -1 || index >= lista.length - 1) return; // ya está abajo o no existe
+
+  // intercambiar con la siguiente
+  const tmp = lista[index + 1];
+  lista[index + 1] = lista[index];
+  lista[index] = tmp;
+
+  // guardar nuevo orden en Firestore
+  await this.rutasService.reordenarDirecciones(this.rutaId, lista);
+
+  // actualizar en memoria y filtros
+  this.todasLasDirecciones = lista;
+  this.direcciones.set(lista);
+  this.filtrarPorDia();
+  this.filtrarBusqueda();
+}
+
   editarDireccion(id: string) {
     this.router.navigate(['/rutas', this.rutaId, 'editar', id]);
   }
