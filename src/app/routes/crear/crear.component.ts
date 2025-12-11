@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
 import { ToastService } from '../../shared/toast.service';
+import { LoadingService } from '../../loading/loading.service';
 
 @Component({
   selector: 'app-crear-ruta',
@@ -20,24 +21,33 @@ export class CrearRutaComponent {
   constructor(
     private rutasService: RutasService,
     private router: Router,
-    private toast: ToastService
+    private toast: ToastService,
+    private loading: LoadingService
   ) {}
 
 async guardar() {
-  if (!this.nombrePersonalizado.trim()) {
-    this.toast.mostrar('Debes ingresar un nombre para la ruta.', 'error');
-    return;
+  this.loading.mostrar();
+
+  try {
+    if (!this.nombrePersonalizado.trim()) {
+      this.toast.mostrar('Debes ingresar un nombre para la ruta.', 'error');
+      return;
+    }
+
+    await this.rutasService.crearRuta({
+      nombreBase: this.nombreBase,
+      nombrePersonalizado: this.nombrePersonalizado
+    });
+
+    this.toast.mostrar('Ruta creada correctamente', 'success');
+    window.location.href = '/rutas';
+
+  } catch (e) {
+    console.error("Error al crear la ruta", e);
+    this.toast.mostrar('Error al crear la ruta', 'error');
+  } finally {
+    this.loading.ocultar();
   }
-
-  await this.rutasService.crearRuta({
-    nombreBase: this.nombreBase,
-    nombrePersonalizado: this.nombrePersonalizado
-  });
-
-  this.toast.mostrar('Ruta creada correctamente', 'success');
-
-  // Recarga completa de la app en /rutas
-  window.location.href = '/rutas';
 }
 
 cancelar() {

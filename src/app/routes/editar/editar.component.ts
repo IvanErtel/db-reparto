@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
 import { Direccion } from '../../models/direccion';
 import { ToastService } from '../../shared/toast.service';
+import { LoadingService } from '../../loading/loading.service';
 
 @Component({
   selector: 'app-editar-direccion',
@@ -26,7 +27,8 @@ export class EditarComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private rutasService: RutasService,
-    private toast: ToastService
+    private toast: ToastService,
+    private loading: LoadingService
   ) {}
 
   async ngOnInit() {
@@ -41,21 +43,32 @@ export class EditarComponent implements OnInit {
   }
 
 async guardar() {
-  const d = this.direccion();
-  if (!d) return;
+  this.loading.mostrar();
 
-  await this.rutasService.actualizarDireccion(this.rutaId, this.direccionId, {
-    cliente: d.cliente,
-    direccion: d.direccion,
-    cantidadDiarios: d.cantidadDiarios,
-    dias: d.dias,
-    lat: d.lat ?? null,
-    lng: d.lng ?? null,
-    notas: d.notas ?? ''
-  });
+  try {
+    const d = this.direccion();
+    if (!d) return;
 
-  this.toast.mostrar("Dirección actualizada", "success");
-  window.location.href = `/rutas/${this.rutaId}`;
+    await this.rutasService.actualizarDireccion(this.rutaId, this.direccionId, {
+      cliente: d.cliente,
+      direccion: d.direccion,
+      cantidadDiarios: d.cantidadDiarios,
+      dias: d.dias,
+      lat: d.lat ?? null,
+      lng: d.lng ?? null,
+      notas: d.notas ?? ''
+    });
+
+    this.toast.mostrar("Dirección actualizada", "success");
+    window.location.href = `/rutas/${this.rutaId}`;
+
+  } catch (e) {
+    console.error("Error actualizando la dirección:", e);
+    this.toast.mostrar("Error al actualizar la dirección", "error");
+
+  } finally {
+    this.loading.ocultar();
+  }
 }
 
 async eliminarDireccion() {

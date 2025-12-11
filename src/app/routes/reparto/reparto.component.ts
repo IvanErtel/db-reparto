@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
 import { Direccion } from '../../models/direccion';
 import { ToastService } from '../../shared/toast.service';
+import { LoadingService } from '../../loading/loading.service';
 
 @Component({
   selector: 'app-reparto',
@@ -37,24 +38,26 @@ private esperar(ms: number) {
     private route: ActivatedRoute,
     private router: Router,
     private rutasService: RutasService,
+    private loading: LoadingService, 
     private toast: ToastService
   ) {}
 
-  async ngOnInit() {
+async ngOnInit() {
+  this.loading.mostrar();
+
+  try {
     this.rutaId = this.route.snapshot.params['id'];
+    this.hoy = new Date();
     this.diaSemana = this.obtenerDia(this.hoy.getDay());
     this.fechaHoy = this.hoy.toLocaleDateString('es-ES');
 
-    // Restaurar progreso si existe
     const guardado = localStorage.getItem(`reparto_${this.rutaId}`);
     if (guardado) {
       this.indiceActual.set(Number(guardado));
     }
 
-    // Cargar direcciones ordenadas
     const dirs = await this.rutasService.obtenerDireccionesOrdenadas(this.rutaId);
 
-    // 🔥 Filtrar SOLO las que hoy reciben diario
     const filtradas: Direccion[] = [];
     for (const d of dirs) {
       if (await this.rutasService.esDiaDeEntrega(d, this.hoy)) {
@@ -63,10 +66,18 @@ private esperar(ms: number) {
     }
     this.direcciones.set(filtradas);
 
-    // Cargar datos de la ruta (nombre personalizado, etc.)
     const dataRuta = await this.rutasService.obtenerRutaPorId(this.rutaId);
     this.ruta.set(dataRuta);
+
+  } catch (e) {
+    console.error('Error cargando datos para reparto', e);
+    this.toast.mostrar('Error al cargar los datos del reparto', 'error');
+    this.router.navigate(['/rutas', this.rutaId]);
+
+  } finally {
+    this.loading.ocultar();
   }
+}
 
   obtenerDia(n: number) {
     return ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][n];

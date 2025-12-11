@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
 import { Ruta } from '../../models/ruta';
 import { ToastService } from '../../shared/toast.service';
+import { LoadingService } from '../../loading/loading.service';
 
 @Component({
   selector: 'app-editar-ruta',
@@ -26,6 +27,7 @@ export class EditarRutaComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private rutasService: RutasService,
+    private loading: LoadingService,
     private toast: ToastService
   ) {}
 
@@ -61,24 +63,48 @@ export class EditarRutaComponent implements OnInit {
     }
   }
 
-  async guardarCambios() {
+async guardarCambios() {
+  this.loading.mostrar();
+
+  try {
     await this.rutasService.actualizarRuta(this.rutaId, {
       nombrePersonalizado: this.nombrePersonalizado,
-      nombreBase: this.nombreBase as Ruta['nombreBase']
+      nombreBase: this.nombreBase as Ruta['nombreBase'],
     });
 
     this.toast.mostrar('Ruta actualizada', 'success');
-    this.router.navigate(['/rutas']);
+    this.router.navigate(['/rutas', this.rutaId]);
+
+  } catch (e) {
+    console.error('Error actualizando la ruta', e);
+    this.toast.mostrar('Error al actualizar la ruta', 'error');
+
+  } finally {
+    this.loading.ocultar();
   }
+}
 
-  async eliminarRuta() {
-    const conf = confirm('¿Seguro que deseas eliminar esta ruta?');
-    if (!conf) return;
+async eliminarRuta() {
+  const conf = confirm(
+    '¿Seguro que deseas eliminar esta ruta? Se borrarán también sus direcciones.'
+  );
+  if (!conf) return;
 
+  this.loading.mostrar();
+
+  try {
     await this.rutasService.eliminarRuta(this.rutaId);
     this.toast.mostrar('Ruta eliminada', 'success');
     this.router.navigate(['/rutas']);
+
+  } catch (e) {
+    console.error('Error eliminando la ruta', e);
+    this.toast.mostrar('Error al eliminar la ruta', 'error');
+
+  } finally {
+    this.loading.ocultar();
   }
+}
 
   volver() {
     this.router.navigate(['/rutas']);

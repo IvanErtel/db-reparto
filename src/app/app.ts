@@ -4,13 +4,15 @@ import { ToastComponent } from './shared/toast.component';
 import { MenuComponent } from './menu/menu.component';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
+import { LoadingComponent } from './loading/loading.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, ToastComponent,
     MenuComponent,
-    CommonModule],
+    CommonModule,
+  LoadingComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
