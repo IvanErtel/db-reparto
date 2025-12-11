@@ -157,6 +157,18 @@ button:hover {
   animation: checkPop 0.25s ease-out;
 }
 
+.info-reparto {
+  background: #1e1e1e;
+  padding: 12px;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  border: 1px solid #2a2a2a;
+  color: #e5e5e5;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+}
+
 @keyframes flashOk {
   0%   { transform: scale(1);   opacity: 1;   filter: brightness(1); }
   40%  { transform: scale(1.03); opacity: 0.7; filter: brightness(0.8); }

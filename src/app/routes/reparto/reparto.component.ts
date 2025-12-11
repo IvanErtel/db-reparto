@@ -115,6 +115,16 @@ private esperar(ms: number) {
     }
   }
 
+  // Total del día (ya filtrado previamente)
+totalHoy = computed(() => this.direcciones().length);
+
+// Restantes = total - índiceActual - 1
+restantes = computed(() => {
+  const total = this.direcciones().length;
+  const actual = this.indiceActual();
+  return Math.max(0, total - actual - 1);
+});
+
   // Abrir Maps
   abrirMaps() {
     const d = this.actual();

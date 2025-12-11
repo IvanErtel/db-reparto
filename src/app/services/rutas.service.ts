@@ -284,12 +284,41 @@ async obtenerDireccion(rutaId: string, direccionId: string): Promise<Direccion |
     );
   }
 
+  async esFestivo(fecha: Date): Promise<boolean> {
+  const fechaISO = fecha.toISOString().split('T')[0]; // ejemplo: "2025-01-06"
+
+  const ref = doc(this.firestore, 'config/festivos');
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) return false;
+
+  const data = snap.data();
+  const dias: string[] = data['dias'] || [];
+
+  return dias.includes(fechaISO);   // true si es festivo
+}
+
 async esDiaDeEntrega(d: Direccion, fecha: Date = new Date()): Promise<boolean> {
   if (!d.dias) return true;
 
-  const dia = fecha.getDay(); // 0 domingo...
+  const dia = fecha.getDay(); // 0 Domingo, 1 Lunes...
   const esFestivo = await this.esFestivo(fecha);
 
+  // ----- 🔥 NUEVA LÓGICA DE FESTIVOS -----
+  if (esFestivo) {
+    // Si marcó "no entregar en festivos", NO SE ENTREGA
+    if (d.dias.noEntregarFestivos) return false;
+
+    // Si marcó "festivos", entonces SÍ se entrega
+    return d.dias.festivos === true;
+  }
+
+  // ----- 🔥 LÓGICA ESPECIAL DE FIN DE SEMANA → LUNES -----
+  if (dia === 1 && d.dias.guardarFinSemanaParaLunes) {
+    return true;
+  }
+
+  // ----- 🔥 MAPEO NORMAL -----
   const mapa = [
     d.dias.domingo,
     d.dias.lunes,
@@ -297,35 +326,10 @@ async esDiaDeEntrega(d: Direccion, fecha: Date = new Date()): Promise<boolean> {
     d.dias.miercoles,
     d.dias.jueves,
     d.dias.viernes,
-    d.dias.sabado,
+    d.dias.sabado
   ];
 
-  // 👉 NUEVO: Si hoy es festivo y la dirección NO debe entregarse, entonces NO entregar
-  if (esFestivo && d.dias.noEntregarFestivos) {
-    return false;
-  }
-
-  // 🔥 Si es festivo normal, entonces solo entregar si tiene marcado "festivos"
-  if (esFestivo) {
-    return d.dias.festivos === true;
-  }
-
-  // 🔥 LUNES — entregar acumulado fin de semana
-  if (dia === 1 && d.dias.guardarFinSemanaParaLunes) {
-    return true;
-  }
-
-  // 👉 Lógica normal por día
   return mapa[dia] === true;
-}
-
-async esFestivo(fecha: Date = new Date()): Promise<boolean> {
-  const id = fecha.toISOString().split("T")[0]; // AAAA-MM-DD
-
-  const ref = doc(this.firestore, `festivos/${id}`);
-  const snap = await getDoc(ref);
-
-  return snap.exists();
 }
 
 }
