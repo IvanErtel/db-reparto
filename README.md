@@ -1,59 +1,208 @@
-# DBReparto
+﻿**🚚 DB Reparto — Aplicación de gestión de rutas y reparto de diarios**
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.2.
+**DB Reparto** es una aplicación web moderna creada en **Angular 17 (standalone)** con integración completa en **Firebase**.\
+Permite administrar rutas, direcciones, días de entrega, reparto diario, seguimiento de progreso y orden de entrega mediante *drag & drop*.
 
-## Development server
+Optimizada para **uso móvil**, funciona como una **PWA** instalable estilo app nativa, ideal para repartidores.
 
-To start a local development server, run:
+-----
+**🧰 Tecnologías utilizadas**
 
-```bash
-ng serve
-```
+|**Tecnología**|**Descripción**|
+| :-: | :-: |
+|**Angular 17 (standalone components)**|Framework principal|
+|**Firebase**|Autenticación, Firestore, Hosting|
+|**Firestore**|Almacenamiento de rutas, direcciones y configuración|
+|**Firebase Auth (Google Login)**|Acceso exclusivo para usuarios autorizados|
+|**Firebase Hosting**|Despliegue del proyecto|
+|**Angular Service Worker**|Funcionalidades PWA|
+|**TypeScript**|Lenguaje principal|
+|**CSS Moderno + diseño mobile-first**|Interfaz rápida y limpia|
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+-----
+**✨ Características principales**
 
-## Code scaffolding
+**🗺️ 1. Gestión de rutas**
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Crear rutas personalizadas
+- Editarlas (nombre y zona base)
+- Eliminarlas
+- Ver cantidad total de direcciones
+- Orden dinámico por indiceOrden
+-----
+**🏠 2. Direcciones dentro de cada ruta**
 
-```bash
-ng generate component component-name
-```
+Cada dirección incluye:
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- Cliente
+- Dirección exacta
+- Cantidad de diarios
+- Días de entrega
+- Coordenadas GPS (opcional)
+- Notas
+- Indicadores especiales:
+  - **No entregar en festivos**
+  - **Guardar sáb-dom para entregar los lunes**
+-----
+**📍 3. Reparto diario (función principal)**
 
-```bash
-ng generate --help
-```
+Cuando comienza el reparto, la app:
 
-## Building
+- Filtra solo las direcciones que **corresponden al día**
+- Excluye automáticamente:
+  - direcciones que **no se entregan en festivos**
+  - direcciones que no corresponden al día actual
+- Muestra:
+  - Dirección actual
+  - Botón "Entregado"
+  - Botón "Saltar"
+  - Botón "Anterior"
+  - Vista previa de próximas direcciones
+- Guarda progreso automáticamente en localStorage
+- Anima los cambios para mejor feedback visual
+-----
+**🔄 4. Ordenar direcciones (subir / bajar / drag)**
 
-To build the project run:
+Cada dirección mantiene un campo:
 
-```bash
-ng build
-```
+indiceOrden: number
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+La app permite reorganizar direcciones:
 
-## Running unit tests
+- Subir (cambia indiceOrden -1)
+- Bajar (cambia indiceOrden +1)
+- Guarda automáticamente el nuevo orden en Firestore
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Esto permite definir el orden real del recorrido.
 
-```bash
-ng test
-```
+-----
+**🎉 5. Soporte de festivos automático**
 
-## Running end-to-end tests
+Firestore contiene:
 
-For end-to-end (e2e) testing, run:
+config/festivos → { dias: ["YYYY-MM-DD", ...] }
 
-```bash
-ng e2e
-```
+La app:
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- Chequea si la fecha actual es festiva
+- Si es festivo:
+  - Se excluyen direcciones con noEntregarFestivos = true
+  - Se incluyen solo si festivos = true
+-----
+**🔔 6. Sistema de notificaciones Toast**
 
-## Additional Resources
+Reemplaza todos los alert() por un sistema moderno:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Éxito
+- Error
+- Información
+
+Los toasts desaparecen automáticamente.
+
+-----
+**📱 7. PWA completa**
+
+✔ Instalación como app nativa\
+✔ Ícono personalizado\
+✔ Splash screen\
+✔ Offline básico\
+✔ Actualización automática al publicar nueva versión
+
+-----
+**🍔 8. Menú hamburguesa global**
+
+Incluye:
+
+- Dashboard
+- Mis rutas
+- Login / Logout
+- Toggle de panel lateral
+- Se oculta automáticamente en pantallas donde no corresponde (login)
+-----
+**📂 Estructura principal del proyecto**
+
+src/
+
+` `├── app/
+
+` `│    ├── routes/
+
+` `│    │     ├── list/
+
+` `│    │     ├── detalle/
+
+` `│    │     ├── agregar/
+
+` `│    │     ├── editar/
+
+` `│    │     └── editar-ruta/
+
+` `│    ├── reparto/
+
+` `│    ├── menu/
+
+` `│    ├── shared/
+
+` `│    │     ├── toast.component.ts
+
+` `│    │     └── toast.service.ts
+
+` `│    ├── dashboard/
+
+` `│    ├── login/
+
+` `│    └── app.ts / app.html / app.scss
+
+` `│
+
+` `├── manifest.webmanifest
+
+` `├── styles.scss
+
+` `└── assets/
+
+`      `└── icons/
+
+-----
+**🚀 Deploy en Firebase Hosting**
+
+**1. Compilar producción**
+
+ng build --configuration production
+
+**2. Subir a Firebase**
+
+firebase deploy
+
+-----
+**🔧 Configuraciones clave**
+
+**🔹 Rutas protegidas con AuthGuard**
+
+Solo usuarios autorizados pueden acceder a las rutas y reparto.
+
+**🔹 Firestore organiza datos así:**
+
+routes/
+
+`   `{rutaId}/
+
+`      `stops/
+
+`         `{direccionId}
+
+config/
+
+`   `festivos/
+
+-----
+**👨‍💻 Autor**
+
+**Alan Iván Ertel Ramírez**\
+Desarrollador y creador de **DB Reparto**.
+
+-----
+**📄 Licencia**
+
+Proyecto privado — uso interno para gestión de rutas y reparto.
+
