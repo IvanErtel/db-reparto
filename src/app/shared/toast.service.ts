@@ -20,4 +20,14 @@ export class ToastService {
   ocultar() {
     this.visible.set(false);
   }
+
+show(mensaje: string, tipo: 'success' | 'error' | 'info' = 'info') {
+  this.mensaje.set(mensaje);
+  this.tipo.set(tipo);
+  this.visible.set(true);
+
+  setTimeout(() => this.ocultar(), 2500);
+}
+
+
 }

@@ -57,10 +57,14 @@
     </label>
 
     <!-- BOTONES -->
-    <div class="acciones">
-      <button class="btn-primario" (click)="guardar()">Guardar cambios</button>
-      <button class="btn-gris" (click)="cancelar()">Cancelar</button>
-    </div>
+<div class="acciones">
+  <button class="btn-exito" (click)="guardar()">Guardar cambios</button>
+  <button class="btn-gris" (click)="cancelar()">Cancelar</button>
+
+  <button class="btn-peligro btn-eliminar" (click)="eliminarDireccion()">
+    Eliminar dirección
+  </button>
+</div>
 
   </div>
 

@@ -58,6 +58,25 @@ async guardar() {
   window.location.href = `/rutas/${this.rutaId}`;
 }
 
+async eliminarDireccion() {
+  const ok = confirm("¿Eliminar esta dirección? Esta acción no se puede deshacer.");
+  if (!ok) return;
+
+  const rutaId = this.route.snapshot.params['rutaId'];
+  const direccionId = this.route.snapshot.params['direccionId'];
+
+  try {
+    await this.rutasService.eliminarDireccion(rutaId, direccionId);
+    this.toast.show("Dirección eliminada", "success");
+
+    this.router.navigate(['/rutas', rutaId]);
+
+  } catch (e) {
+    console.error(e);
+    this.toast.show("Error al eliminar la dirección", "error");
+  }
+}
+
   cancelar() {
     window.location.href = `/rutas/${this.rutaId}`;
   }
