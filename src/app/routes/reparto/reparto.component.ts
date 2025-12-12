@@ -5,11 +5,12 @@ import { RutasService } from '../../services/rutas.service';
 import { Direccion } from '../../models/direccion';
 import { ToastService } from '../../shared/toast.service';
 import { LoadingService } from '../../loading/loading.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-reparto',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './reparto.component.html',
   styleUrl: './reparto.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -25,6 +26,8 @@ export class RepartoComponent implements OnInit {
   diaSemana = '';
   fechaHoy = '';
 animando = false;
+busqueda = signal('');
+
 private esperar(ms: number) {
   return new Promise(res => setTimeout(res, ms));
 }
@@ -94,6 +97,16 @@ async ngOnInit() {
   siguientes = computed(() =>
     this.direcciones().slice(this.indiceActual() + 1, this.indiceActual() + 5)
   );
+
+  resultadosBusqueda = computed(() => {
+  const texto = this.busqueda().toLowerCase().trim();
+  if (!texto) return [];
+
+  return this.direcciones().filter(d =>
+    d.cliente.toLowerCase().includes(texto) ||
+    d.direccion.toLowerCase().includes(texto)
+  );
+});
 
   // Dirección anterior
   anteriorDireccion = computed(() =>

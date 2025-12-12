@@ -169,6 +169,67 @@ button:hover {
   justify-content: space-between;
 }
 
+.busqueda-reparto input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 8px;
+}
+
+.resultados-busqueda {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  max-height: 240px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+
+.resultado {
+  padding: 10px;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.resultado:last-child {
+  border-bottom: none;
+}
+
+.mini-dir {
+  font-size: 13px;
+  color: #666;
+}
+
+.mini-diarios {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.diarios-reparto {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 6px 0 10px;
+}
+
+.acciones-reparto {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.fila-secundaria {
+  display: flex;
+  gap: 10px;
+}
+
+.fila-secundaria button {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+}
+
+
 @keyframes flashOk {
   0%   { transform: scale(1);   opacity: 1;   filter: brightness(1); }
   40%  { transform: scale(1.03); opacity: 0.7; filter: brightness(0.8); }
