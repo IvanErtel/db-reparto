@@ -171,6 +171,10 @@ async bajarDireccion(d: Direccion) {
   this.filtrarBusqueda();
 }
 
+estaDeBajaHoy(d: Direccion): boolean {
+  return (this.rutasService as any).direccionEstaDeBaja(d, new Date());
+}
+
   editarDireccion(id: string) {
     this.router.navigate(['/rutas', this.rutaId, 'editar', id]);
   }

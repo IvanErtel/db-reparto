@@ -45,6 +45,36 @@
       </label>
     </div>
 
+    <h3>Bajas temporales (vacaciones)</h3>
+
+<div class="bajas-box">
+  <div class="baja-form">
+    <label>
+      Desde:
+      <input type="date" [(ngModel)]="bajaDesde">
+    </label>
+
+    <label>
+      Hasta:
+      <input type="date" [(ngModel)]="bajaHasta">
+    </label>
+
+    <button type="button" class="btn-gris" (click)="agregarBaja()">
+      ➕ Agregar baja
+    </button>
+  </div>
+
+  <div *ngIf="bajas.length > 0" class="lista-bajas">
+    <div class="baja-item" *ngFor="let b of bajas; let i = index">
+      <span>📅 {{ b.desde }} → {{ b.hasta }}</span>
+
+      <button type="button" class="btn-peligro" (click)="eliminarBaja(i)">
+        ✖
+      </button>
+    </div>
+  </div>
+</div>
+
     <!-- COORDENADAS -->
     <h3>Coordenadas</h3>
 

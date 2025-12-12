@@ -164,6 +164,17 @@ async obtenerDireccionesOrdenadas(rutaId: string): Promise<Direccion[]> {
     return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
   }
 
+  private direccionEstaDeBaja(d: Direccion, fecha: Date): boolean {
+  if (!d.bajas || d.bajas.length === 0) return false;
+
+  const hoy = fecha.toISOString().split('T')[0]; // YYYY-MM-DD
+
+  return d.bajas.some(baja => {
+    if (!baja.desde || !baja.hasta) return false;
+    return hoy >= baja.desde && hoy <= baja.hasta;
+  });
+}
+
   private aDate(valor: any): Date | null {
     if (!valor) return null;
     if (valor instanceof Date) return valor;
@@ -300,6 +311,10 @@ async obtenerDireccion(rutaId: string, direccionId: string): Promise<Direccion |
 
 async esDiaDeEntrega(d: Direccion, fecha: Date = new Date()): Promise<boolean> {
   if (!d.dias) return true;
+  // 🚫 Si la dirección está de baja, NO se entrega
+if (this.direccionEstaDeBaja(d, fecha)) {
+  return false;
+}
 
   const dia = fecha.getDay(); // 0 = domingo, 1 = lunes...
   const esFestivo = await this.esFestivo(fecha);

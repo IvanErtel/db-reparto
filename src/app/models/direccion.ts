@@ -30,6 +30,10 @@ export interface Direccion {
   fechaAlta?: any;
   fechaBaja?: any;
 
+  bajas?: {
+  desde: string; // YYYY-MM-DD
+  hasta: string; // YYYY-MM-DD
+}[];
   creadaEn?: any;
   actualizadaEn?: any;
 }

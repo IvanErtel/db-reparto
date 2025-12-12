@@ -76,6 +76,31 @@ label {
   button:hover {
     opacity: .9;
   }
+  .bajas-box {
+  margin-top: 15px;
+  padding: 15px;
+  border: 1px dashed #ddd;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+
+.lista-bajas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.baja-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
 }
 
 /* TITULOS SECUNDARIOS */
@@ -84,3 +109,36 @@ h3 {
   margin: 20px 0 10px;
   font-weight: 600;
 }
+
+.bajas-box {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px dashed #d7d7d7;
+  border-radius: 12px;
+  background: #fafafa;
+}
+
+.lista-bajas {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.baja-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.baja-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+

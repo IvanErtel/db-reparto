@@ -41,6 +41,12 @@ dias = {
 };
 
   notas = '';
+  // 🔴 Bajas temporales (vacaciones)
+bajas: { desde: string; hasta: string }[] = [];
+
+bajaDesde = '';
+bajaHasta = '';
+
 
   constructor(
     private route: ActivatedRoute,
@@ -53,6 +59,31 @@ dias = {
   ngOnInit() {
     this.rutaId = this.route.snapshot.params['id'];
   }
+
+  agregarBaja() {
+  if (!this.bajaDesde || !this.bajaHasta) {
+    this.toast.mostrar('Debes completar desde y hasta', 'error');
+    return;
+  }
+
+  if (this.bajaDesde > this.bajaHasta) {
+    this.toast.mostrar('La fecha "desde" no puede ser mayor que "hasta"', 'error');
+    return;
+  }
+
+  this.bajas.push({
+    desde: this.bajaDesde,
+    hasta: this.bajaHasta
+  });
+
+  // limpiar inputs
+  this.bajaDesde = '';
+  this.bajaHasta = '';
+}
+
+eliminarBaja(i: number) {
+  this.bajas.splice(i, 1);
+}
 
 async guardar() {
   this.loading.mostrar();
@@ -77,6 +108,7 @@ async guardar() {
       lng: this.lng,
       indiceOrden: nuevoIndice,
       notas: this.notas,
+      bajas: this.bajas,
     });
 
     this.toast.mostrar("Dirección agregada", "success");

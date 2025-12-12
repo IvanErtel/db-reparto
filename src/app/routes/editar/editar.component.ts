@@ -22,7 +22,9 @@ export class EditarComponent implements OnInit {
 
   direccion = signal<Direccion | null>(null);
   cargando = signal(true);
-
+  bajas: { desde: string; hasta: string }[] = [];
+bajaDesde = '';
+bajaHasta = '';
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -39,6 +41,7 @@ export class EditarComponent implements OnInit {
     const d = dirs.find(x => x.id === this.direccionId) || null;
 
     this.direccion.set(d);
+    this.bajas = d?.bajas ? [...d.bajas] : [];
     this.cargando.set(false);
   }
 
@@ -56,7 +59,8 @@ async guardar() {
       dias: d.dias,
       lat: d.lat ?? null,
       lng: d.lng ?? null,
-      notas: d.notas ?? ''
+      notas: d.notas ?? '',
+      bajas: this.bajas,
     });
 
     this.toast.mostrar("Dirección actualizada", "success");
@@ -88,6 +92,23 @@ async eliminarDireccion() {
     console.error(e);
     this.toast.show("Error al eliminar la dirección", "error");
   }
+}
+
+agregarBaja() {
+  if (!this.bajaDesde || !this.bajaHasta) return;
+  if (this.bajaDesde > this.bajaHasta) return;
+
+  this.bajas.push({
+    desde: this.bajaDesde,
+    hasta: this.bajaHasta
+  });
+
+  this.bajaDesde = '';
+  this.bajaHasta = '';
+}
+
+eliminarBaja(i: number) {
+  this.bajas.splice(i, 1);
 }
 
   cancelar() {

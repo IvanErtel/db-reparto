@@ -13,27 +13,58 @@
   <label>Cantidad de diarios:
     <input type="number" min="1" [(ngModel)]="cantidadDiarios">
   </label>
+<h3>Días de entrega</h3>
 
-  <h3>Días de entrega</h3>
+<div class="dias">
+  <label><input type="checkbox" [(ngModel)]="dias.lunes"> Lunes</label>
+  <label><input type="checkbox" [(ngModel)]="dias.martes"> Martes</label>
+  <label><input type="checkbox" [(ngModel)]="dias.miercoles"> Miércoles</label>
+  <label><input type="checkbox" [(ngModel)]="dias.jueves"> Jueves</label>
+  <label><input type="checkbox" [(ngModel)]="dias.viernes"> Viernes</label>
+  <label><input type="checkbox" [(ngModel)]="dias.sabado"> Sábado</label>
+  <label><input type="checkbox" [(ngModel)]="dias.domingo"> Domingo</label>
+  <label><input type="checkbox" [(ngModel)]="dias.festivos"> Festivos</label>
 
-  <div class="dias">
-    <label><input type="checkbox" [(ngModel)]="dias.lunes"> Lunes</label>
-    <label><input type="checkbox" [(ngModel)]="dias.martes"> Martes</label>
-    <label><input type="checkbox" [(ngModel)]="dias.miercoles"> Miércoles</label>
-    <label><input type="checkbox" [(ngModel)]="dias.jueves"> Jueves</label>
-    <label><input type="checkbox" [(ngModel)]="dias.viernes"> Viernes</label>
-    <label><input type="checkbox" [(ngModel)]="dias.sabado"> Sábado</label>
-    <label><input type="checkbox" [(ngModel)]="dias.domingo"> Domingo</label>
-    <label><input type="checkbox" [(ngModel)]="dias.festivos"> Festivos</label>
+  <label>
+    <input type="checkbox" [(ngModel)]="dias.noEntregarFestivos">
+    No entregar en festivos
+  </label>
+
+  <label>
+    <input type="checkbox" [(ngModel)]="dias.guardarFinSemanaParaLunes">
+    Guardar sáb-dom para entregar lunes
+  </label>
+</div>
+
+<h3>Bajas temporales (vacaciones)</h3>
+
+<div class="bajas-box">
+  <div class="baja-form">
     <label>
-  <input type="checkbox" [(ngModel)]="dias.noEntregarFestivos">
-  No entregar en festivos
-</label>
+      Desde:
+      <input type="date" [(ngModel)]="bajaDesde">
+    </label>
 
+    <label>
+      Hasta:
+      <input type="date" [(ngModel)]="bajaHasta">
+    </label>
 
-    <label><input type="checkbox" [(ngModel)]="dias.guardarFinSemanaParaLunes"> Guardar sáb-dom para entregar lunes</label>
+    <button type="button" class="btn-gris" (click)="agregarBaja()">
+      ➕ Agregar baja
+    </button>
   </div>
 
+  <div *ngIf="bajas.length > 0" class="lista-bajas">
+    <div class="baja-item" *ngFor="let b of bajas; let i = index">
+      <span>📅 {{ b.desde }} → {{ b.hasta }}</span>
+
+      <button type="button" class="btn-peligro" (click)="eliminarBaja(i)">
+        ✖
+      </button>
+    </div>
+  </div>
+  </div>
   <h3>Coordenadas</h3>
 
   <label>Latitud:

@@ -52,6 +52,10 @@
     <div class="modal-contenido">
 
       <h2>{{ detalleSeleccionado()?.cliente }}</h2>
+ <div *ngIf="detalleSeleccionado()?.bajas?.length"
+     class="estado-baja">
+  🚫 Cliente con baja programada
+</div>
 
       <p><strong>Dirección:</strong> {{ detalleSeleccionado()?.direccion }}</p>
       <p><strong>Diarios:</strong> {{ detalleSeleccionado()?.cantidadDiarios }}</p>
