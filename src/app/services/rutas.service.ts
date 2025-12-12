@@ -301,24 +301,36 @@ async obtenerDireccion(rutaId: string, direccionId: string): Promise<Direccion |
 async esDiaDeEntrega(d: Direccion, fecha: Date = new Date()): Promise<boolean> {
   if (!d.dias) return true;
 
-  const dia = fecha.getDay(); // 0 Domingo, 1 Lunes...
+  const dia = fecha.getDay(); // 0 = domingo, 1 = lunes...
   const esFestivo = await this.esFestivo(fecha);
 
-  // ----- 🔥 NUEVA LÓGICA DE FESTIVOS -----
-  if (esFestivo) {
-    // Si marcó "no entregar en festivos", NO SE ENTREGA
-    if (d.dias.noEntregarFestivos) return false;
-
-    // Si marcó "festivos", entonces SÍ se entrega
-    return d.dias.festivos === true;
+  // 1) Si el usuario NO quiere entregar en festivos → nunca se entrega en festivo
+  if (d.dias.noEntregarFestivos === true && esFestivo) {
+    return false;
   }
 
-  // ----- 🔥 LÓGICA ESPECIAL DE FIN DE SEMANA → LUNES -----
-  if (dia === 1 && d.dias.guardarFinSemanaParaLunes) {
+  // 2) Si es festivo y el usuario SÍ marcó "festivos" → entregar SIEMPRE
+  if (esFestivo && d.dias.festivos === true) {
     return true;
   }
 
-  // ----- 🔥 MAPEO NORMAL -----
+  // 3) Si es festivo, pero NO marcó festivos → se entrega igual
+  //    si marcó el día de semana correspondiente.
+  if (esFestivo && d.dias.festivos === false) {
+    // se entrega si marcó el día de la semana (lunes, martes, etc.)
+    const mapa = [
+      d.dias.domingo,
+      d.dias.lunes,
+      d.dias.martes,
+      d.dias.miercoles,
+      d.dias.jueves,
+      d.dias.viernes,
+      d.dias.sabado,
+    ];
+    return mapa[dia] === true;
+  }
+
+  // 4) Día normal (no festivo)
   const mapa = [
     d.dias.domingo,
     d.dias.lunes,
@@ -326,7 +338,7 @@ async esDiaDeEntrega(d: Direccion, fecha: Date = new Date()): Promise<boolean> {
     d.dias.miercoles,
     d.dias.jueves,
     d.dias.viernes,
-    d.dias.sabado
+    d.dias.sabado,
   ];
 
   return mapa[dia] === true;

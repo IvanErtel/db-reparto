@@ -20,6 +20,7 @@ export class App {
 
   pageTitle = '';
   mostrarHamburguesa = signal(true);
+  mostrarFooter = signal(true);
 currentYear = new Date().getFullYear();
   constructor(private router: Router) {
 
@@ -39,8 +40,10 @@ currentYear = new Date().getFullYear();
         if (url.includes('/login')) {
           this.pageTitle = '';
           this.mostrarHamburguesa.set(false);
+          this.mostrarFooter.set(false);
         } else {
           this.mostrarHamburguesa.set(true);
+          this.mostrarFooter.set(true);
         }
       });
   }

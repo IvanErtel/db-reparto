@@ -31,3 +31,31 @@
 .contenido {
   padding: 20px;
 }
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.contenido {
+  flex: 1;
+}
+
+/* matar sombras/bordes raros del header/hamburguesa */
+.app-header {
+  box-shadow: none !important;
+  border-bottom: none !important;
+}
+
+.btn-hamburger {
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+}
+

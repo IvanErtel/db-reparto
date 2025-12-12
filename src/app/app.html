@@ -1,21 +1,23 @@
+<div class="app-layout">
 
+  <!-- ocultar menú completo en login -->
+  <app-menu *ngIf="mostrarHamburguesa()"></app-menu>
 
-<app-menu></app-menu>
+  <header class="app-header" *ngIf="mostrarHamburguesa()">
+    <button class="btn-hamburger" (click)="toggleMenu()">☰</button>
+    <h1>{{ pageTitle }}</h1>
+  </header>
 
-<header class="app-header">
-  <button class="btn-hamburger" (click)="toggleMenu()" *ngIf="mostrarHamburguesa">☰</button>
-  <h1>{{ pageTitle }}</h1>
-</header>
+  <main class="contenido">
+    <router-outlet></router-outlet>
+  </main>
 
-<div class="contenido">
-  <router-outlet></router-outlet>
+  <app-toast></app-toast>
+  <app-loading></app-loading>
+
+  <!-- ocultar footer en login -->
+  <footer class="app-footer" *ngIf="mostrarFooter()">
+    <p>DB Reparto • © {{ currentYear }} • Creado por Alan Ivan Ertel Ramirez</p>
+  </footer>
+
 </div>
-
-<app-toast></app-toast>
-<app-loading></app-loading>
-
-<footer class="app-footer">
-  <p>DB Reparto • © {{ currentYear }} • Creado por Alan Ivan Ertel Ramirez</p>
-</footer>
-
-
