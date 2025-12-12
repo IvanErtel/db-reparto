@@ -40,19 +40,24 @@ input, textarea {
 .dias {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px 20px;
-  background: #f9fafb;
-  padding: 15px;
-  border-radius: var(--radio);
-  border: var(--borde);
-  margin-bottom: 20px;
+  gap: 10px 16px;
+  justify-content: center;
+  align-items: center;
+  text-align: left;
+}
 
-  label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 400;
-    white-space: nowrap;
+.dias label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+@media (max-width: 480px) {
+  .dias {
+    grid-template-columns: 1fr;
+    max-width: 280px;
+    margin: 0 auto;
   }
 
   /* Opción larga ocupa todo */
