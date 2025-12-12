@@ -20,9 +20,9 @@
     <!-- BOTONES DE ACCIÓN -->
     <div class="acciones">
 
-      <button *ngIf="estadoReparto(r.id!) === 'nuevo'"
+      <button class="btn-iniciar" *ngIf="estadoReparto(r.id!) === 'nuevo'"
               (click)="iniciarReparto(r.id!)">
-        ▶ Iniciar reparto
+        ▶ Repartir
       </button>
 
       <button *ngIf="estadoReparto(r.id!) === 'continuar'"

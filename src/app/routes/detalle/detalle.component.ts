@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
@@ -28,6 +28,7 @@ export class DetalleComponent implements OnInit {
   cargandoDirecciones = signal(true);
 busqueda = '';
 direccionesFiltradas = signal<Direccion[]>([]);
+mostrarScrollTop = false;
 
   // Para el filtro por día
   diaSeleccionado = 'todos';
@@ -49,6 +50,7 @@ direccionesFiltradas = signal<Direccion[]>([]);
   // -------------------------
 
   async ngOnInit() {
+
     this.rutaId = this.route.snapshot.params['id'];
 
     await this.cargarRuta();
@@ -71,6 +73,10 @@ this.cargandoDirecciones.set(false);
 
   }
 
+      @HostListener('window:scroll', [])
+onWindowScroll() {
+  this.mostrarScrollTop = window.scrollY > 300;
+}
   // -------------------------
   // MODAL
   // -------------------------
@@ -149,6 +155,10 @@ async subirDireccion(d: Direccion) {
   this.direcciones.set(lista);
   this.filtrarPorDia();
   this.filtrarBusqueda();
+}
+
+volverArriba() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 async bajarDireccion(d: Direccion) {

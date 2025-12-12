@@ -1,7 +1,19 @@
 .lista-rutas {
-  max-width: 900px;
+  width: 90%;
+  max-width: 1000px;   /* más ancho en PC */
   margin: 0 auto;
-  padding: 25px;
+  padding: 16px;       /* para que no quede pegado en mobile */
+  box-sizing: border-box;
+}
+
+.lista-rutas ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0 0;
+}
+
+.lista-rutas li {
+  width: 100%;
 }
 
 h1 {
@@ -93,4 +105,15 @@ li:hover {
 
 .acciones button:nth-child(3) {
   background: var(--color-peligro);
+}
+
+.btn-iniciar {
+  background: #16a34a; /* verde más sobrio */
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
 }
