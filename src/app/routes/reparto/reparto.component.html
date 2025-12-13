@@ -38,6 +38,9 @@
 
   <!-- RESUMEN DEL DÍA -->
   <div class="resumen-simple" *ngIf="ruta() as r">
+    <p class="mensaje-animo">
+  💪 Vamos, reparto en marcha
+</p>
 
     <div class="linea1">
       <strong>{{ r.nombrePersonalizado }}</strong>
@@ -81,25 +84,28 @@
   </button>
 
   <!-- ACCIONES -->
-  <div class="acciones-reparto">
+ <div class="acciones-reparto">
 
-        <button class="btn-entregado" (click)="entregar()">
-      ✔ Entregado
+  <!-- ACCIÓN PRINCIPAL -->
+  <button class="btn-primario btn-entregar" (click)="entregar()">
+    ✔ Entregado
+  </button>
+
+  <!-- ACCIONES SECUNDARIAS -->
+  <div class="fila-secundaria">
+    <button class="btn-secundario"
+            (click)="anterior()"
+            [disabled]="indiceActual() === 0">
+      ⬅ Anterior
     </button>
-    
-    <div class="fila-secundaria">
-      <button class="btn-anterior"
-              (click)="anterior()"
-              [disabled]="indiceActual() === 0">
-        ⬅ Anterior
-      </button>
 
-      <button class="btn-saltar" (click)="saltar()">
-        ⏭ Saltar
-      </button>
-    </div>
-
+    <button class="btn-secundario" (click)="saltar()">
+      ⏭ Saltar
+    </button>
   </div>
+
+</div>
+
 
 </div>
 

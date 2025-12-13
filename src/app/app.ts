@@ -18,12 +18,17 @@ import { LoadingComponent } from './loading/loading.component';
 })
 export class App {
 
+  appLista = false;
   pageTitle = '';
   mostrarHamburguesa = signal(true);
   mostrarFooter = signal(true);
 currentYear = new Date().getFullYear();
   constructor(private router: Router) {
 
+      setTimeout(() => {
+    this.appLista = true;
+  }, 1000);
+  
     // Cambiar título dinámicamente según ruta
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
@@ -37,14 +42,22 @@ currentYear = new Date().getFullYear();
         if (url.includes('/agregar')) this.pageTitle = 'Agregar dirección';
         if (url.includes('/dashboard')) this.pageTitle = 'Dashboard';
 
-        if (url.includes('/login')) {
-          this.pageTitle = '';
-          this.mostrarHamburguesa.set(false);
-          this.mostrarFooter.set(false);
-        } else {
-          this.mostrarHamburguesa.set(true);
-          this.mostrarFooter.set(true);
-        }
+if (url.includes('/login')) {
+  this.pageTitle = '';
+
+  setTimeout(() => {
+    this.mostrarHamburguesa.set(false);
+    this.mostrarFooter.set(false);
+  });
+
+} else {
+
+  setTimeout(() => {
+    this.mostrarHamburguesa.set(true);
+    this.mostrarFooter.set(true);
+  });
+}
+
       });
   }
 

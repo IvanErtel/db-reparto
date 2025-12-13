@@ -1,108 +1,135 @@
-/* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-html, body {
-  font-family: 'Inter', sans-serif;
-  background: #f4f6f8;
-  margin: 0;
-  padding: 0;
-  color: #1f1f1f;
-}
+/* =========================
+   SISTEMA VISUAL GLOBAL
+   ========================= */
 
 :root {
-  --color-primario: #2563eb;     // azul moderno
-  --color-primario-hover: #1e4fc4;
-  --color-peligro: #dc2626;
+  --color-primario: #2563eb;
   --color-exito: #16a34a;
+  --color-peligro: #dc2626;
   --color-gris: #6b7280;
-  --borde: 1px solid #e5e7eb;
-  --radio: 10px;
+
+  --fondo-app: #f9fafb;
+  --fondo-card: #ffffff;
+
+  --texto-principal: #111827;
+  --texto-secundario: #4b5563;
+
+  --radio: 14px;
+  --sombra-card: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
-button {
-  padding: 10px 16px;
-  border-radius: var(--radio);
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-  transition: 0.2s ease;
+/* Reset básico */
+* {
+  box-sizing: border-box;
 }
 
-button:hover {
-  opacity: 0.9;
+/* BODY */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+               Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background: var(--fondo-app);
+  color: var(--texto-principal);
 }
 
-.btn-primario {
-  background: var(--color-primario);
-  color: white;
+/* TÍTULOS */
+h1 {
+  font-size: 1.4rem;
+  margin: 0 0 1rem;
 }
 
-.btn-peligro {
-  background: var(--color-peligro);
-  color: white;
+h2 {
+  font-size: 1.2rem;
+  margin: 0 0 0.75rem;
 }
 
-.btn-exito {
-  background: var(--color-exito);
-  color: white;
+p {
+  color: var(--texto-secundario);
+  line-height: 1.5;
 }
 
-.btn-gris {
-  background: var(--color-gris);
-  color: white;
-}
-
-.card {
-  background: white;
-  padding: 16px;
-  border-radius: var(--radio);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  margin-bottom: 12px;
-}
-
-input, select, textarea {
+/* INPUTS */
+input,
+select,
+textarea {
   width: 100%;
-  padding: 10px;
+  padding: 0.75rem;
+  font-size: 1rem;
   border-radius: var(--radio);
-  border: var(--borde);
-  margin-top: 4px;
-  font-size: 15px;
+  border: 1px solid #d1d5db;
   background: #fff;
 }
 
-label {
-  display: block;
-  margin-bottom: 15px;
-  font-weight: 500;
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-primario);
 }
 
-/* ===== BUSCADOR EN DETALLE DE RUTA ===== */
-
-.detalle-ruta .buscador {
-  margin-top: 20px;
-  margin-bottom: 24px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #e5e5e5;
+/* CARD BASE */
+.card {
+  background: var(--fondo-card);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-card);
+  padding: 1rem;
+  margin-bottom: 1rem;
 }
 
-.detalle-ruta .buscador input {
-  /* opcional: si querés que se vea un poco diferente al resto */
-  padding: 12px 14px;
+/* =========================
+   BOTONES - SISTEMA GLOBAL
+   ========================= */
+
+button {
+  font-family: inherit;
 }
 
-/* ===========================
-   GLOBAL FOOTER
-=========================== */
-.app-footer {
-  text-align: center;
-  padding: 15px 0;
-  margin-top: 30px;
-  color: var(--color-gris);
-  font-size: 14px;
-  border-top: 1px solid #e5e7eb;
+/* BOTÓN PRIMARIO */
+.btn-primario {
+  background: var(--color-primario);
+  color: #fff;
+  border: none;
+  border-radius: var(--radio);
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  width: 100%;
+  cursor: pointer;
 }
 
-.cabecera {
-  margin-left: 50px; /* mueve el botón para que no quede debajo del menú */
+.btn-primario:active {
+  transform: scale(0.98);
 }
 
+/* BOTÓN SECUNDARIO */
+.btn-secundario {
+  background: #fff;
+  color: var(--texto-principal);
+  border: 1px solid #d1d5db;
+  border-radius: var(--radio);
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  width: 100%;
+}
+
+/* BOTÓN PELIGRO */
+.btn-peligro {
+  background: var(--color-peligro);
+  color: #fff;
+  border: none;
+  border-radius: var(--radio);
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  width: 100%;
+}
+
+/* BOTÓN DESHABILITADO */
+button:disabled {
+  opacity: 0.5;
+}
+
+/* feedback táctil */
+button:active {
+  transform: scale(0.97);
+}

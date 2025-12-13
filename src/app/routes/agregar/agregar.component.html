@@ -2,70 +2,83 @@
 
   <h1>Nueva dirección</h1>
 
-  <label>Cliente:
-    <input type="text" [(ngModel)]="cliente">
-  </label>
-
-  <label>Dirección:
-    <input type="text" [(ngModel)]="direccion">
-  </label>
-
-  <label>Cantidad de diarios:
-    <input type="number" min="1" [(ngModel)]="cantidadDiarios">
-  </label>
-<h3>Días de entrega</h3>
-
-<div class="dias">
-  <label><input type="checkbox" [(ngModel)]="dias.lunes"> Lunes</label>
-  <label><input type="checkbox" [(ngModel)]="dias.martes"> Martes</label>
-  <label><input type="checkbox" [(ngModel)]="dias.miercoles"> Miércoles</label>
-  <label><input type="checkbox" [(ngModel)]="dias.jueves"> Jueves</label>
-  <label><input type="checkbox" [(ngModel)]="dias.viernes"> Viernes</label>
-  <label><input type="checkbox" [(ngModel)]="dias.sabado"> Sábado</label>
-  <label><input type="checkbox" [(ngModel)]="dias.domingo"> Domingo</label>
-  <label><input type="checkbox" [(ngModel)]="dias.festivos"> Festivos</label>
-
-  <label>
-    <input type="checkbox" [(ngModel)]="dias.noEntregarFestivos">
-    No entregar en festivos
-  </label>
-
-  <label>
-    <input type="checkbox" [(ngModel)]="dias.guardarFinSemanaParaLunes">
-    Guardar sáb-dom para entregar lunes
-  </label>
-</div>
-
-<h3>Bajas temporales (vacaciones)</h3>
-
-<div class="bajas-box">
-  <div class="baja-form">
+  <!-- CARD: DATOS PRINCIPALES -->
+  <div class="card">
     <label>
-      Desde:
-      <input type="date" [(ngModel)]="bajaDesde">
+      Cliente
+      <input type="text" [(ngModel)]="cliente" placeholder="Nombre del cliente">
     </label>
 
     <label>
-      Hasta:
-      <input type="date" [(ngModel)]="bajaHasta">
+      Dirección
+      <input type="text" [(ngModel)]="direccion" placeholder="Calle, número, local…">
     </label>
 
-    <button type="button" class="btn-gris" (click)="agregarBaja()">
-      ➕ Agregar baja
-    </button>
+    <label>
+      Cantidad de diarios
+      <input type="number" min="1" [(ngModel)]="cantidadDiarios">
+    </label>
   </div>
 
-  <div *ngIf="bajas.length > 0" class="lista-bajas">
-    <div class="baja-item" *ngFor="let b of bajas; let i = index">
-      <span>📅 {{ b.desde }} → {{ b.hasta }}</span>
+  <!-- CARD: DÍAS -->
+  <div class="card">
+    <h2>Días de entrega</h2>
 
-      <button type="button" class="btn-peligro" (click)="eliminarBaja(i)">
-        ✖
+    <div class="dias">
+      <label><input type="checkbox" [(ngModel)]="dias.lunes"> Lunes</label>
+      <label><input type="checkbox" [(ngModel)]="dias.martes"> Martes</label>
+      <label><input type="checkbox" [(ngModel)]="dias.miercoles"> Miércoles</label>
+      <label><input type="checkbox" [(ngModel)]="dias.jueves"> Jueves</label>
+      <label><input type="checkbox" [(ngModel)]="dias.viernes"> Viernes</label>
+      <label><input type="checkbox" [(ngModel)]="dias.sabado"> Sábado</label>
+      <label><input type="checkbox" [(ngModel)]="dias.domingo"> Domingo</label>
+      <label><input type="checkbox" [(ngModel)]="dias.festivos"> Festivos</label>
+    </div>
+
+    <label>
+      <input type="checkbox" [(ngModel)]="dias.noEntregarFestivos">
+      No entregar en festivos
+    </label>
+
+    <label>
+      <input type="checkbox" [(ngModel)]="dias.guardarFinSemanaParaLunes">
+      Guardar sáb-dom para entregar lunes
+    </label>
+  </div>
+
+  <!-- CARD: BAJAS -->
+  <div class="card">
+    <h2>Bajas temporales</h2>
+
+    <div class="baja-form">
+      <label>
+        Desde
+        <input type="date" [(ngModel)]="bajaDesde">
+      </label>
+
+      <label>
+        Hasta
+        <input type="date" [(ngModel)]="bajaHasta">
+      </label>
+
+      <button class="btn-secundario" type="button" (click)="agregarBaja()">
+        ➕ Agregar baja
       </button>
     </div>
+
+    <div *ngIf="bajas.length" class="lista-bajas">
+      <div class="baja-item" *ngFor="let b of bajas; let i = index">
+        <span>📅 {{ b.desde }} → {{ b.hasta }}</span>
+
+        <button class="btn-peligro" type="button" (click)="eliminarBaja(i)">
+          ✖
+        </button>
+      </div>
+    </div>
   </div>
-  </div>
-  <h3>Coordenadas</h3>
+
+  <div class="card">
+    <h3>Coordenadas</h3>
 
   <label>Latitud:
     <input type="number" step="0.000001" [(ngModel)]="lat">
@@ -74,10 +87,17 @@
   <label>Longitud:
     <input type="number" step="0.000001" [(ngModel)]="lng">
   </label>
-
+</div>
+  <!-- ACCIONES -->
   <div class="acciones">
-    <button class="btn-primario" (click)="guardar()">Guardar</button>
-    <button class="btn-gris" (click)="cancelar()">Cancelar</button>
+    <button class="btn-primario" (click)="guardar()">
+      Guardar dirección
+    </button>
+
+    <button class="btn-secundario" (click)="cancelar()">
+      Cancelar
+    </button>
   </div>
 
 </div>
+

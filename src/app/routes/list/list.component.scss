@@ -65,7 +65,15 @@ li:hover {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
+.ruta-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
 .info-ruta {
+  flex: 1;
   cursor: pointer;
 }
 
@@ -80,31 +88,37 @@ li:hover {
   font-size: 14px;
 }
 
-.acciones button {
-  background: var(--color-gris);
-  color: white;
-  padding: 8px 12px;
-  border-radius: var(--radio);
-  border: none;
-  cursor: pointer;
-  font-size: 13px;
-  transition: 0.2s ease;
+.titulo {
+  font-weight: 600;
+  font-size: 1.05rem;
 }
 
-.acciones button:hover {
-  opacity: 0.9;
+.sub {
+  font-size: 0.85rem;
+  color: var(--texto-secundario);
 }
 
-.acciones button:nth-child(1) {
-  background: var(--color-exito);
+/* Estados */
+.estado {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-weight: 600;
 }
 
-.acciones button:nth-child(2) {
-  background: var(--color-primario);
+.estado.nuevo {
+  background: #f3f4f6;
+  color: #374151;
 }
 
-.acciones button:nth-child(3) {
-  background: var(--color-peligro);
+.estado.continuar {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.estado.finalizado {
+  background: #dcfce7;
+  color: #166534;
 }
 
 .btn-iniciar {

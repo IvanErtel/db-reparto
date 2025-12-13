@@ -1,7 +1,7 @@
 .reparto {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 /* BOTÓN VOLVER */
@@ -42,22 +42,15 @@
 
 /* TARJETA ACTUAL */
 .card-principal {
-  background: white;
-  padding: 20px;
+  background: var(--fondo-card);
   border-radius: var(--radio);
-  border: var(--borde);
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: var(--sombra-card);
+  padding: 1rem;
+}
 
-  h2 {
-    margin: 0 0 10px;
-    font-size: 22px;
-    font-weight: 600;
-  }
-
-  p {
-    margin: 10px 0;
-  }
+.btn-entregar {
+  font-size: 1.2rem;
+  padding: 1.1rem;
 }
 
 /* BOTONES GRANDES, MÓVIL-FIRST */
@@ -83,17 +76,14 @@ button:hover {
   background: var(--color-primario);
 }
 
-.btn-anterior {
-  background: var(--color-gris);
-}
-
 .btn-entregado {
   background: var(--color-exito);
 }
 
-.btn-saltar {
-  background: #fbbf24; /* amarillo suave */
-  color: black;
+.mensaje-animo {
+  font-size: 0.9rem;
+  color: var(--texto-secundario);
+  margin-top: 0.25rem;
 }
 
 /* LISTA DE SIGUIENTES */
@@ -214,13 +204,17 @@ button:hover {
 .acciones-reparto {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 12px;
+  gap: 0.75rem;
 }
 
 .fila-secundaria {
-  display: flex;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.card-principal.anim-ok {
+  animation: flashOk 0.25s ease-in-out;
 }
 
 .fila-secundaria button {
@@ -229,11 +223,25 @@ button:hover {
   font-size: 14px;
 }
 
+/* Botones secundarios visibles sobre card blanca */
+.acciones-reparto .btn-secundario {
+  background: #f3f4f6;            // gris claro
+  border: 1px solid #d1d5db;
+  color: var(--texto-principal);
+}
+
+/* Disabled más claro */
+.acciones-reparto .btn-secundario:disabled {
+  opacity: 0.4;
+}
 
 @keyframes flashOk {
-  0%   { transform: scale(1);   opacity: 1;   filter: brightness(1); }
-  40%  { transform: scale(1.03); opacity: 0.7; filter: brightness(0.8); }
-  100% { transform: scale(1);   opacity: 0.5; filter: brightness(0.6); }
+  from {
+    background: #dcfce7;
+  }
+  to {
+    background: var(--fondo-card);
+  }
 }
 
 @keyframes checkPop {

@@ -1,6 +1,6 @@
 <div class="dashboard">
 
-  <div class="perfil-card">
+  <div class="card perfil-card">
 
     <div class="avatar">
       {{ iniciales }}
@@ -9,11 +9,13 @@
     <h2>Hola, {{ usuarioNombre }}</h2>
     <p>Bienvenido al panel</p>
 
-    <button class="btn-ir-rutas" (click)="irRutas()">
+    <button class="btn-primario" (click)="irRutas()">
       📍 Ver mis rutas
     </button>
 
-    <button class="btn-salir" (click)="logout()">Cerrar sesión</button>
+    <button class="btn-peligro" (click)="logout()">
+      Cerrar sesión
+    </button>
 
   </div>
 

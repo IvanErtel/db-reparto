@@ -36,10 +36,17 @@
       <div class="cliente">{{ d.cliente }}</div>
       <div class="direccion">📍 {{ d.direccion }}</div>
       <div class="info">📰 {{ d.cantidadDiarios }} diarios</div>
-        <div class="orden-botones">
-<button (click)="subirDireccion(d); $event.stopPropagation()">⬆</button>
-<button (click)="bajarDireccion(d); $event.stopPropagation()">⬇</button>
-  </div>
+<div class="orden-botones">
+  <button class="btn-orden"
+          (click)="subirDireccion(d); $event.stopPropagation()">
+    ⬆ Subir
+  </button>
+
+  <button class="btn-orden"
+          (click)="bajarDireccion(d); $event.stopPropagation()">
+    ⬇ Bajar
+  </button>
+</div>
     </div>
   </div>
 
@@ -86,18 +93,19 @@
       </p>
 
       <div class="acciones-modal">
-        <button class="btn-maps" (click)="abrirEnMaps()">
-          📍 Ver en Google Maps
-        </button>
+<button class="btn-primario" (click)="abrirEnMaps()">
+  📍 Ver en Google Maps
+</button>
 
-        <button class="btn-editar"
-                (click)="editarDireccion(detalleSeleccionado()!.id!)">
-          Editar
-        </button>
+<button class="btn-secundario"
+        (click)="editarDireccion(detalleSeleccionado()!.id!)">
+  Editar
+</button>
 
-        <button class="btn-cerrar" (click)="cerrarModal()">
-          Cerrar
-        </button>
+<button class="btn-peligro" (click)="cerrarModal()">
+  Cerrar
+</button>
+
       </div>
 
     </div>

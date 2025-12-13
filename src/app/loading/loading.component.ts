@@ -6,11 +6,7 @@ import { LoadingService } from './loading.service';
   selector: 'app-loading',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="loading-overlay" *ngIf="loading.cargando()">
-      <div class="spinner"></div>
-    </div>
-  `,
+  templateUrl: './loading.component.html',
   styleUrls: ['./loading.component.scss']
 })
 export class LoadingComponent {

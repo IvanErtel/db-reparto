@@ -197,7 +197,7 @@ async entregar() {
 }
 
   mostrarFinDeReparto() {
-    this.toast.mostrar('🎉 ¡Reparto finalizado!', 'success');
+    this.toast.mostrar('🎉 Reparto finalizado. Buen trabajo.', 'success');
 
     // Limpiamos progreso guardado
     localStorage.removeItem(`reparto_${this.rutaId}`);

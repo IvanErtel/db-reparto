@@ -3,41 +3,58 @@
   <h1>Mis rutas</h1>
 
   <button class="btn-crear" (click)="crearNuevaRuta()">
-    ➕ Crear nueva ruta
+    ➕ Nueva ruta
   </button>
 
   <div *ngIf="cargando()">Cargando rutas...</div>
 
 <ul *ngIf="!cargando() && rutas().length > 0">
 
-  <li *ngFor="let r of rutas()">
+<li *ngFor="let r of rutas()" class="card ruta-card">
 
-    <div class="info-ruta" (click)="abrirRuta(r.id!)">
-      <strong>{{ r.nombrePersonalizado }}</strong>
-      <span class="base">({{ r.nombreBase }})</span>
+  <div class="info-ruta" (click)="abrirRuta(r.id!)">
+    <div class="titulo">
+      {{ r.nombrePersonalizado }}
     </div>
 
-    <!-- BOTONES DE ACCIÓN -->
-    <div class="acciones">
-
-      <button class="btn-iniciar" *ngIf="estadoReparto(r.id!) === 'nuevo'"
-              (click)="iniciarReparto(r.id!)">
-        ▶ Repartir
-      </button>
-
-      <button *ngIf="estadoReparto(r.id!) === 'continuar'"
-              (click)="continuarReparto(r.id!)">
-        ⏯ Continuar reparto
-      </button>
-
-      <button *ngIf="estadoReparto(r.id!) === 'finalizado'"
-              (click)="reiniciarReparto(r.id!)">
-        🔄 Reiniciar reparto
-      </button>
-
+    <div class="sub">
+      Zona {{ r.nombreBase }}
     </div>
+  </div>
 
-  </li>
+  <div class="acciones">
+
+<span class="estado"
+      [class.nuevo]="estadoReparto(r.id!) === 'nuevo'"
+      [class.continuar]="estadoReparto(r.id!) === 'continuar'"
+      [class.finalizado]="estadoReparto(r.id!) === 'finalizado'">
+
+  {{ estadoReparto(r.id!) === 'nuevo' ? 'Sin iniciar' :
+     estadoReparto(r.id!) === 'continuar' ? 'En curso' : 'Finalizada' }}
+</span>
+
+
+    <button class="btn-secundario"
+            *ngIf="estadoReparto(r.id!) === 'nuevo'"
+            (click)="iniciarReparto(r.id!)">
+      ▶ Repartir
+    </button>
+
+    <button class="btn-secundario"
+            *ngIf="estadoReparto(r.id!) === 'continuar'"
+            (click)="continuarReparto(r.id!)">
+      ⏯ Continuar
+    </button>
+
+    <button class="btn-peligro"
+            *ngIf="estadoReparto(r.id!) === 'finalizado'"
+            (click)="reiniciarReparto(r.id!)">
+      🔄 Reiniciar
+    </button>
+
+  </div>
+
+</li>
 
 </ul>
 

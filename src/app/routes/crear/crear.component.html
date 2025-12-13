@@ -1,24 +1,37 @@
 <div class="crear-ruta">
+
   <h1>Crear nueva ruta</h1>
 
-  <label>
-    Zona base:
-    <select [(ngModel)]="nombreBase">
-      <option value="GAMONAL">Gamonal</option>
-      <option value="ESTE">Este</option>
-      <option value="CENTRO">Centro</option>
-      <option value="OESTE">Oeste</option>
-      <option value="SUR">Sur</option>
-    </select>
-  </label>
+  <div class="card">
 
-  <label>
-    Nombre personalizado:
-    <input type="text" [(ngModel)]="nombrePersonalizado" placeholder="Ej: Gamonal Iván">
-  </label>
+    <label>
+      Zona base
+      <select [(ngModel)]="nombreBase">
+        <option value="GAMONAL">Gamonal</option>
+        <option value="ESTE">Este</option>
+        <option value="CENTRO">Centro</option>
+        <option value="OESTE">Oeste</option>
+        <option value="SUR">Sur</option>
+      </select>
+    </label>
+
+    <label>
+      Nombre de la ruta
+      <input type="text"
+             [(ngModel)]="nombrePersonalizado"
+             placeholder="Ej: Gamonal Iván">
+    </label>
+
+  </div>
 
   <div class="acciones">
-    <button class="guardar" (click)="guardar()">Guardar</button>
-    <button class="cancelar" (click)="cancelar()">Cancelar</button>
+    <button class="btn-primario" (click)="guardar()">
+      Guardar ruta
+    </button>
+
+    <button class="btn-secundario" (click)="cancelar()">
+      Cancelar
+    </button>
   </div>
+
 </div>
