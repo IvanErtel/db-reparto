@@ -9,7 +9,7 @@
   [ngModel]="busqueda()"
   (ngModelChange)="busqueda.set($event)">
 
-  <div *ngIf="busqueda"
+  <div *ngIf="busqueda()"
        class="overlay-busqueda">
 
     <div *ngIf="resultadosBusqueda().length; else sinResultados"

@@ -66,6 +66,8 @@ async ngOnInit() {
 
   try {
     this.rutaId = this.route.snapshot.params['id'];
+    localStorage.setItem(`reparto_${this.rutaId}_iniciado`, 'true');
+localStorage.removeItem(`reparto_${this.rutaId}_completado`);
     this.hoy = new Date();
     this.diaSemana = this.obtenerDia(this.hoy.getDay());
     this.fechaHoy = this.hoy.toLocaleDateString('es-ES');
@@ -157,18 +159,27 @@ restantes = computed(() => {
 });
 
   // Abrir Maps
-  abrirMaps() {
-    const d = this.actual();
-    if (!d) return;
+// Abrir Maps (modo "Cómo llegar")
+abrirMaps() {
+  const d = this.actual();
+  if (!d) return;
 
-    if (d.lat && d.lng) {
-      window.open(`https://www.google.com/maps/@${d.lat},${d.lng},20z`, '_blank');
-      return;
-    }
-
-    const encoded = encodeURIComponent(d.direccion);
-    window.open(`https://www.google.com/maps?q=${encoded}`, '_blank');
+  // Si hay coordenadas: destino exacto
+  if (d.lat && d.lng) {
+    const destino = `${d.lat},${d.lng}`;
+    window.open(
+      `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destino)}&travelmode=driving`,
+      '_blank'
+    );
+    return;
   }
+
+  // Si no: destino por texto
+  window.open(
+    `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(d.direccion)}&travelmode=driving`,
+    '_blank'
+  );
+}
 
   // SALTAR
 async saltar() {
@@ -243,21 +254,28 @@ mostrarFinDeReparto() {
   this.cdr.detectChanges();
 }
 
-  cerrarResumen() {
+cerrarResumen() {
   this.resumenFinal = null;
+
   localStorage.removeItem(`reparto_${this.rutaId}`);
+  localStorage.removeItem(`reparto_${this.rutaId}_iniciado`);
+  localStorage.setItem(`reparto_${this.rutaId}_completado`, 'true');
+
   this.toast.mostrar('🎉 Reparto finalizado. Buen trabajo.', 'success');
   this.router.navigate(['/rutas', this.rutaId]);
 }
 
   // Reiniciar reparto manualmente
-  reiniciarReparto() {
-    const ok = confirm('¿Seguro que desea reiniciar el reparto?\nSe perderá el progreso del día.');
-    if (!ok) return;
+reiniciarReparto() {
+  const ok = confirm('¿Seguro que desea reiniciar el reparto?\nSe perderá el progreso del día.');
+  if (!ok) return;
 
-    localStorage.removeItem(`reparto_${this.rutaId}`);
-    this.indiceActual.set(0);
-  }
+  localStorage.removeItem(`reparto_${this.rutaId}`);
+  localStorage.removeItem(`reparto_${this.rutaId}_completado`);
+  localStorage.setItem(`reparto_${this.rutaId}_iniciado`, 'true');
+
+  this.indiceActual.set(0);
+}
 
   volver() {
     this.router.navigate(['/rutas', this.rutaId]);

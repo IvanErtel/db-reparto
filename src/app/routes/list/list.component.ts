@@ -22,9 +22,12 @@ export class ListComponent implements OnInit {
     private router: Router
   ) {}
 
-  iniciarReparto(rutaId: string) {
+iniciarReparto(rutaId: string) {
+  // Empezar desde cero
   localStorage.removeItem(`reparto_${rutaId}`);
+  localStorage.removeItem(`reparto_${rutaId}_iniciado`);
   localStorage.removeItem(`reparto_${rutaId}_completado`);
+
   this.router.navigate(['/rutas', rutaId, 'reparto']);
 }
 
@@ -35,8 +38,11 @@ continuarReparto(rutaId: string) {
 reiniciarReparto(rutaId: string) {
   if (!confirm("¿Seguro que deseas reiniciar el reparto?")) return;
 
+  // Reiniciar = empezar desde cero también
   localStorage.removeItem(`reparto_${rutaId}`);
+  localStorage.removeItem(`reparto_${rutaId}_iniciado`);
   localStorage.removeItem(`reparto_${rutaId}_completado`);
+
   this.router.navigate(['/rutas', rutaId, 'reparto']);
 }
 
@@ -63,12 +69,14 @@ reiniciarReparto(rutaId: string) {
     this.router.navigate(['/rutas', id]);
   }
 
-  estadoReparto(rutaId: string): "nuevo" | "continuar" | "finalizado" {
-  const iniciado = localStorage.getItem(`reparto_${rutaId}_iniciado`) === "true";
+estadoReparto(rutaId: string): "nuevo" | "continuar" | "finalizado" {
   const terminado = localStorage.getItem(`reparto_${rutaId}_completado`) === "true";
-
   if (terminado) return "finalizado";
-  if (iniciado) return "continuar";
+
+  const iniciado = localStorage.getItem(`reparto_${rutaId}_iniciado`) === "true";
+  const tieneIndice = localStorage.getItem(`reparto_${rutaId}`) !== null;
+
+  if (iniciado || tieneIndice) return "continuar";
   return "nuevo";
 }
 
