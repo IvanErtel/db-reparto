@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, signal, computed, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
@@ -6,11 +6,13 @@ import { Direccion } from '../../models/direccion';
 import { ToastService } from '../../shared/toast.service';
 import { LoadingService } from '../../loading/loading.service';
 import { FormsModule } from '@angular/forms';
+import { ResumenReparto } from '../../models/resumen-reparto';
+import { ResumenRepartoComponent } from '../../resumen-reparto/resumen-reparto.component';
 
 @Component({
   selector: 'app-reparto',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ResumenRepartoComponent],
   templateUrl: './reparto.component.html',
   styleUrl: './reparto.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -28,6 +30,14 @@ export class RepartoComponent implements OnInit {
 animando = false;
 busqueda = signal('');
 
+inicioReparto = 0;
+entregadas = 0;
+saltadas = 0;
+entregados: string[] = [];
+salteados: string[] = [];
+
+resumenFinal: ResumenReparto | null = null;
+
 private esperar(ms: number) {
   return new Promise(res => setTimeout(res, ms));
 }
@@ -42,11 +52,17 @@ private esperar(ms: number) {
     private router: Router,
     private rutasService: RutasService,
     private loading: LoadingService, 
-    private toast: ToastService
+    private toast: ToastService,
+    private cdr: ChangeDetectorRef
   ) {}
 
 async ngOnInit() {
   this.loading.mostrar();
+
+    this.inicioReparto = Date.now();
+  this.entregados = [];
+  this.salteados = [];
+
 
   try {
     this.rutaId = this.route.snapshot.params['id'];
@@ -115,19 +131,10 @@ async ngOnInit() {
 
   // 👉 Ir a siguiente (gestiona fin de reparto para ENTREGAR y SALTAR)
   siguiente() {
-    const i = this.indiceActual();
-    const total = this.direcciones().length;
 
-    // Si ya estoy en la última, mostrar fin de reparto
-    if (i >= total - 1) {
-      this.mostrarFinDeReparto();
-      return;
-    }
-
-    // Si no, avanzar
-    const nuevo = i + 1;
-    this.indiceActual.set(nuevo);
-    localStorage.setItem(`reparto_${this.rutaId}`, String(nuevo));
+      const nuevo = this.indiceActual() + 1;
+  this.indiceActual.set(nuevo);
+  localStorage.setItem(`reparto_${this.rutaId}`, String(nuevo));
   }
 
   // Volver atrás
@@ -165,46 +172,83 @@ restantes = computed(() => {
 
   // SALTAR
 async saltar() {
+  if (this.resumenFinal) return;
+
   const d = this.actual();
   if (!d) return;
 
-  this.animando = true;
+  this.salteados.push(d.cliente);
 
+  this.animando = true;
   await this.esperar(250);
 
-  // Tu código original
   await this.rutasService.registrarSalto(this.rutaId, d, 'Salteado');
-  this.siguiente();
 
+  const i = this.indiceActual();
+  const total = this.direcciones().length;
+
+  // 👇 SI ES LA ÚLTIMA → FIN DIRECTO
+  if (i >= total - 1) {
+    this.animando = false;
+    this.mostrarFinDeReparto();
+    return;
+  }
+
+  this.siguiente();
   this.animando = false;
 }
 
   // ENTREGAR
 async entregar() {
+  if (this.resumenFinal) return;
+
   const d = this.actual();
   if (!d) return;
 
-  this.animando = true;
+  this.entregados.push(d.cliente);
 
-  // Espera 250ms para mostrar la animación
+  this.animando = true;
   await this.esperar(250);
 
-  // Tu código original
   await this.rutasService.registrarEntrega(this.rutaId, d.id!, d);
-  this.siguiente();
 
+  const i = this.indiceActual();
+  const total = this.direcciones().length;
+
+  // 👇 SI ES LA ÚLTIMA → FIN DIRECTO
+  if (i >= total - 1) {
+    this.animando = false;
+    this.mostrarFinDeReparto();
+    return;
+  }
+
+  this.siguiente();
   this.animando = false;
 }
 
-  mostrarFinDeReparto() {
-    this.toast.mostrar('🎉 Reparto finalizado. Buen trabajo.', 'success');
+mostrarFinDeReparto() {
+  const resumen: ResumenReparto = {
+    rutaId: this.rutaId,
+    rutaNombre: this.ruta()?.nombrePersonalizado || 'Ruta',
+    fecha: new Date().toISOString().slice(0, 10),
+    inicio: this.inicioReparto,
+    fin: Date.now(),
+    entregados: this.entregados,
+    salteados: this.salteados
+  };
 
-    // Limpiamos progreso guardado
-    localStorage.removeItem(`reparto_${this.rutaId}`);
+  this.rutasService.guardarResumen(resumen);
 
-    // Volvemos a la lista de rutas
-    this.router.navigate(['/rutas', this.rutaId]);
-  }
+  this.resumenFinal = resumen;
+  this.cdr.detectChanges();
+}
+
+  cerrarResumen() {
+  this.resumenFinal = null;
+  localStorage.removeItem(`reparto_${this.rutaId}`);
+  this.toast.mostrar('🎉 Reparto finalizado. Buen trabajo.', 'success');
+  this.router.navigate(['/rutas', this.rutaId]);
+}
 
   // Reiniciar reparto manualmente
   reiniciarReparto() {

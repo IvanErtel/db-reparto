@@ -1,0 +1,31 @@
+<div class="card-resumen" *ngIf="resumen">
+
+  <h2>📊 Resumen del reparto</h2>
+
+  <p class="ruta">
+    <strong>Ruta:</strong> {{ resumen.rutaNombre }}
+  </p>
+
+  <p class="fecha">
+    <strong>Fecha:</strong> {{ resumen.fecha }}
+  </p>
+
+  <div class="bloque">
+    <h3>✅ Entregados ({{ resumen.entregados.length }})</h3>
+    <ul>
+      <li *ngFor="let c of resumen.entregados">{{ c }}</li>
+    </ul>
+  </div>
+
+  <div class="bloque">
+    <h3>⏭️ Salteados ({{ resumen.salteados.length }})</h3>
+    <ul>
+      <li *ngFor="let c of resumen.salteados">{{ c }}</li>
+    </ul>
+  </div>
+
+  <button class="btn-primario" (click)="cerrar()">
+    Cerrar
+  </button>
+
+</div>

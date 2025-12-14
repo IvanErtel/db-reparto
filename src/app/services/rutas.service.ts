@@ -16,6 +16,7 @@ import { Auth } from '@angular/fire/auth';
 import { Ruta } from '../models/ruta';
 import { Direccion } from '../models/direccion';
 import { setDoc, serverTimestamp } from 'firebase/firestore';
+import { ResumenReparto } from '../models/resumen-reparto';
 
 @Injectable({
   providedIn: 'root'
@@ -277,6 +278,18 @@ async registrarEntrega(rutaId: string, direccionId: string, datos?: Direccion) {
     lng: direccion?.lng || null
   });
 }
+
+async guardarResumen(resumen: ResumenReparto): Promise<void> {
+  const user = this.auth.currentUser;
+  if (!user) throw new Error('No hay usuario autenticado');
+
+  const fecha = resumen.fecha; // YYYY-MM-DD
+
+  // lo guardamos en: users/{uid}/resumenes/{fecha}_{rutaId}
+  const ref = doc(this.firestore, `users/${user.uid}/resumenes/${fecha}_${resumen.rutaId}`);
+  await setDoc(ref, resumen);
+}
+
 
 async obtenerDireccion(rutaId: string, direccionId: string): Promise<Direccion | null> {
   const ref = doc(this.firestore, `routes/${rutaId}/stops/${direccionId}`);

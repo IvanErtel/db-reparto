@@ -1,4 +1,4 @@
-<div class="reparto">
+<div class="reparto" *ngIf="!resumenFinal">
 
   <button class="btn-volver" (click)="volver()">⬅ Volver</button>
 <div class="busqueda-reparto">
@@ -62,9 +62,11 @@
   </div>
 
  <!-- DIRECCIÓN ACTUAL -->
-<div class="card-principal"
-     *ngIf="actual() as d"
-     [class.anim-ok]="animando">
+<div
+  class="card-principal"
+  *ngIf="!resumenFinal && actual() as d"
+  [class.anim-ok]="animando"
+>
 
   <h2>{{ d.cliente }}</h2>
 
@@ -87,7 +89,7 @@
  <div class="acciones-reparto">
 
   <!-- ACCIÓN PRINCIPAL -->
-  <button class="btn-primario btn-entregar" (click)="entregar()">
+  <button class="btn-primario btn-entregar" (click)="entregar()" [disabled]="resumenFinal">
     ✔ Entregado
   </button>
 
@@ -99,7 +101,7 @@
       ⬅ Anterior
     </button>
 
-    <button class="btn-secundario" (click)="saltar()">
+    <button class="btn-secundario" (click)="saltar()" [disabled]="resumenFinal">
       ⏭ Saltar
     </button>
   </div>
@@ -124,3 +126,10 @@
   </button>
 
 </div>
+
+<app-resumen-reparto
+  *ngIf="resumenFinal"
+  [resumen]="resumenFinal"
+  (cerrarResumen)="cerrarResumen()">
+</app-resumen-reparto>
+
