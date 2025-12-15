@@ -290,6 +290,35 @@ async guardarResumen(resumen: ResumenReparto): Promise<void> {
   await setDoc(ref, resumen);
 }
 
+async obtenerResumenes(): Promise<(ResumenReparto & { id: string })[]> {
+  const user = this.auth.currentUser;
+  if (!user) throw new Error('No hay usuario autenticado');
+
+  const col = collection(this.firestore, `users/${user.uid}/resumenes`);
+  const q = query(col, orderBy('fecha', 'desc'));
+
+  const snap = await getDocs(q);
+
+  return snap.docs.map(d => ({
+    id: d.id,
+    ...(d.data() as any)
+  }));
+}
+
+async obtenerResumen(id: string): Promise<(ResumenReparto & { id: string }) | null> {
+  const user = this.auth.currentUser;
+  if (!user) throw new Error('No hay usuario autenticado');
+
+  const ref = doc(this.firestore, `users/${user.uid}/resumenes/${id}`);
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) return null;
+
+  return {
+    id: snap.id,
+    ...(snap.data() as any)
+  };
+}
 
 async obtenerDireccion(rutaId: string, direccionId: string): Promise<Direccion | null> {
   const ref = doc(this.firestore, `routes/${rutaId}/stops/${direccionId}`);

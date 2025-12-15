@@ -1,0 +1,35 @@
+<div class="contenedor">
+  <h2>📊 Resúmenes</h2>
+
+  <input
+    type="text"
+    placeholder="Buscar por ruta o fecha (YYYY-MM-DD)"
+    [ngModel]="filtro()"
+    (ngModelChange)="filtro.set($event)"
+  />
+
+  <div *ngIf="filtrados().length === 0" class="vacio">
+    No hay resúmenes todavía.
+  </div>
+
+  <div class="card" *ngFor="let r of filtrados()">
+    <div class="fila fila-top">
+      <div class="titulo">
+        <strong>{{ r.fecha }}</strong>
+        <span class="ruta">— {{ r.rutaNombre }}</span>
+      </div>
+
+      <button class="btn-mini" (click)="verDetalle(r.id)">
+        👁️ Ver detalle
+      </button>
+    </div>
+
+    <div class="fila fila-bottom">
+      ✅ Entregados: <strong>{{ (r.entregados?.length || 0) }}</strong>
+      &nbsp; | &nbsp;
+      ⏭️ Salteados: <strong>{{ (r.salteados?.length || 0) }}</strong>
+      &nbsp; | &nbsp;
+      ⏱️ {{ duracionMin(r.inicio, r.fin) }} min
+    </div>
+  </div>
+</div>

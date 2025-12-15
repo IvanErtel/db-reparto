@@ -252,4 +252,15 @@ h2 {
   border: 1px solid #d1d5db;
 }
 
+.btn-exportar {
+  border: 1px solid rgba(0,0,0,.15);
+  background: rgba(0,0,0,.04);
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.btn-exportar:hover {
+  background: rgba(0,0,0,.07);
+}
 

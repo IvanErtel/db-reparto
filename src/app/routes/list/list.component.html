@@ -1,5 +1,39 @@
 <div class="lista-rutas">
 
+<h1>Rutas base</h1>
+
+<div *ngIf="cargandoBase()">Cargando rutas base...</div>
+
+<ul *ngIf="!cargandoBase() && rutasBase().length > 0">
+
+  <li *ngFor="let b of rutasBase()" class="card ruta-card">
+
+    <!-- ✅ click para entrar a verla -->
+    <div class="info-ruta" (click)="abrirRuta(b.id!)">
+      <div class="titulo">{{ b.nombreBase }}</div>
+      <div class="sub">Ruta BASE</div>
+    </div>
+
+    <div class="acciones">
+      <!-- ✅ stopPropagation para que no abra la base al crear copia -->
+      <button class="btn-secundario"
+              [disabled]="copiando()"
+              (click)="crearMiCopiaDesdeBase(b, $event)">
+        📄 Crear mi copia
+      </button>
+    </div>
+
+  </li>
+
+</ul>
+
+<p *ngIf="!cargandoBase() && rutasBase().length === 0">
+  No hay rutas base todavía. Importá GAMONAL / SUR / OESTE.
+</p>
+
+<hr style="margin: 14px 0; opacity: .2;">
+
+
   <h1>Mis rutas</h1>
 
   <button class="btn-crear" (click)="crearNuevaRuta()">

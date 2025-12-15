@@ -33,6 +33,23 @@ export const routes: Routes = [
   // Editar dirección
   { path: 'rutas/:rutaId/editar/:direccionId', component: EditarComponent, canActivate: [authGuard] },
 
+  //RESUMENES
+  { path: 'resumenes', loadComponent: () => import('./panel-resumen/panel-resumen.component').then(m => m.ResumenesComponent) },
+
+  {
+  path: 'resumenes/:id',
+  loadComponent: () =>
+    import('./panel-resumen/panel-resumen-detalle.component')
+      .then(m => m.PanelResumenDetalleComponent)
+},
+
+{
+  path: 'importar',
+  loadComponent: () =>
+    import('./importar-csv/importar-csv.component')
+      .then(m => m.ImportarCsvComponent)
+},
+
   // Reparto
   {
     path: 'rutas/:id/reparto',

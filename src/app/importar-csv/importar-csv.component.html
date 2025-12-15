@@ -1,0 +1,17 @@
+<div class="contenedor">
+  <h2>📥 Importar CSV</h2>
+
+  <label>Zona (base)</label>
+  <select [(ngModel)]="nombreBase">
+    <option value="GAMONAL">GAMONAL</option>
+    <option value="OESTE">OESTE</option>
+    <option value="SUR">SUR</option>
+    <option value="ESTE">ESTE</option>
+    <option value="CENTRO">CENTRO</option>
+  </select>
+
+  <label>Archivo CSV</label>
+  <input type="file" accept=".csv" (change)="onFileChange($event)" />
+
+  <button class="btn" (click)="importar()">Importar</button>
+</div>

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
 import { Ruta } from '../../models/ruta';
+import { RutasBaseService } from '../../services/rutas-base.service';
+import { ToastService } from '../../shared/toast.service';
 
 @Component({
   selector: 'app-list-rutas',
@@ -17,9 +19,15 @@ export class ListComponent implements OnInit {
   rutas = signal<Ruta[]>([]);
   cargando = signal(true);
 
+  rutasBase = signal<Ruta[]>([]);
+cargandoBase = signal(true);
+copiando = signal(false);
+
   constructor(
     private rutasService: RutasService,
-    private router: Router
+    private router: Router,
+    private rutasBaseService: RutasBaseService,
+    private toast: ToastService
   ) {}
 
 iniciarReparto(rutaId: string) {
@@ -46,20 +54,20 @@ reiniciarReparto(rutaId: string) {
   this.router.navigate(['/rutas', rutaId, 'reparto']);
 }
 
-  async ngOnInit() {
-    console.log('ListComponent: ngOnInit');
+async ngOnInit() {
+  try {
+    const mis = await this.rutasService.obtenerMisRutas();
+    this.rutas.set(mis);
 
-    try {
-      const data = await this.rutasService.obtenerMisRutas();
-      console.log('ListComponent: rutas cargadas', data);
-
-      this.rutas.set(data);     // 👈 AHORA Angular detecta cambios SIEMPRE
-    } catch (e) {
-      console.error('Error cargando rutas', e);
-    } finally {
-      this.cargando.set(false);
-    }
+    const base = await this.rutasBaseService.obtenerRutasBase();
+    this.rutasBase.set(base);
+  } catch (e) {
+    console.error('Error cargando rutas', e);
+  } finally {
+    this.cargando.set(false);
+    this.cargandoBase.set(false);
   }
+}
 
   crearNuevaRuta() {
     this.router.navigate(['/rutas/crear']);
@@ -78,6 +86,33 @@ estadoReparto(rutaId: string): "nuevo" | "continuar" | "finalizado" {
 
   if (iniciado || tieneIndice) return "continuar";
   return "nuevo";
+}
+
+async crearMiCopiaDesdeBase(base: Ruta, ev?: MouseEvent) {
+  ev?.stopPropagation();
+
+  if (this.copiando()) return;
+  this.copiando.set(true);
+  this.toast.mostrar('Creando tu copia…', 'success');
+
+  try {
+    const nombre = `Mi ${String(base.nombreBase || '').toUpperCase()}`;
+
+    const nuevaId = await this.rutasBaseService.crearMiRutaDesdeBase(base.id!, nombre);
+
+    // ✅ refrescar lista SIN F5
+    const mis = await this.rutasService.obtenerMisRutas();
+    this.rutas.set(mis);
+
+    // ✅ abrir la copia
+    this.router.navigate(['/rutas', nuevaId]);
+
+  } catch (e) {
+    console.error(e);
+    this.toast.mostrar('Error creando la copia', 'error');
+  } finally {
+    this.copiando.set(false);
+  }
 }
 
 }

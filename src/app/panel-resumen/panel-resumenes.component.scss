@@ -1,0 +1,40 @@
+.fila-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ruta {
+  opacity: 0.85;
+}
+
+.btn-mini {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.04);
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.btn-mini:hover {
+  background: rgba(0, 0, 0, 0.07);
+}
+
+.btn-mini:active {
+  transform: scale(0.98);
+}
+
+.fila-bottom {
+  margin-top: 6px;
+}

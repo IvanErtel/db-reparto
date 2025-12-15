@@ -6,6 +6,7 @@ import { Ruta } from '../../models/ruta';
 import { Direccion } from '../../models/direccion';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '@angular/fire/auth';
+import { ToastService } from '../../shared/toast.service';
 
 @Component({
   selector: 'app-detalle-ruta',
@@ -42,7 +43,8 @@ mostrarScrollTop = false;
     private route: ActivatedRoute,
     private router: Router,
     private rutasService: RutasService,
-    private auth: Auth
+    private auth: Auth,
+    private toast: ToastService
   ) {}
 
   // -------------------------
@@ -215,6 +217,85 @@ hayProgresoGuardado(): boolean {
   // Si no hay coordenadas, buscamos por dirección
   const encoded = encodeURIComponent(d.direccion);
   window.open(`https://www.google.com/maps?q=${encoded}`, "_blank");
+}
+
+private csvEscape(v: any): string {
+  const s = String(v ?? '');
+  // Excel/CSV: escapamos comillas y encerramos en comillas si hace falta
+  const needs = /[;"\n\r]/.test(s);
+  const escaped = s.replace(/"/g, '""');
+  return needs ? `"${escaped}"` : escaped;
+}
+
+private diasTexto(d: any): string {
+  const dias = d?.dias || {};
+  const parts: string[] = [];
+  if (dias.lunes) parts.push('L');
+  if (dias.martes) parts.push('M');
+  if (dias.miercoles) parts.push('X');
+  if (dias.jueves) parts.push('J');
+  if (dias.viernes) parts.push('V');
+  if (dias.sabado) parts.push('S');
+  if (dias.domingo) parts.push('D');
+
+  if (dias.festivos) parts.push('Festivos');
+  if (dias.noEntregarFestivos) parts.push('NoFestivos');
+  if (dias.guardarFinSemanaParaLunes) parts.push('GuardarFS->L');
+
+  return parts.join(' ');
+}
+
+exportarCSV() {
+  const ruta = this.ruta();
+  const base = (ruta?.nombrePersonalizado || ruta?.nombreBase || 'ruta');
+
+  const safeName = base
+    .toString()
+    .trim()
+    .replace(/[^\w\- ]+/g, '')
+    .replace(/\s+/g, '_');
+
+  const hoy = new Date().toISOString().slice(0, 10);
+
+  // Exporta en el orden real (todasLasDirecciones ya está ordenada)
+  const lista = (this.todasLasDirecciones?.length ? this.todasLasDirecciones : this.direcciones()) || [];
+
+  const sep = ';';
+  const header = ['Orden', 'Cantidad', 'Cliente', 'Direccion', 'Notas', 'Dias', 'BajaDesde', 'BajaHasta']
+    .map(x => this.csvEscape(x))
+    .join(sep);
+
+  const lines: string[] = [header];
+
+  lista.forEach((d: any, idx: number) => {
+    const baja = Array.isArray(d?.bajas) && d.bajas.length ? d.bajas[0] : null;
+
+    lines.push([
+      this.csvEscape(idx + 1),
+      this.csvEscape(d?.cantidadDiarios ?? ''),
+      this.csvEscape(d?.cliente ?? ''),
+      this.csvEscape(d?.direccion ?? ''),
+      this.csvEscape(d?.notas ?? ''),
+      this.csvEscape(this.diasTexto(d)),
+      this.csvEscape(baja?.desde ?? ''),
+      this.csvEscape(baja?.hasta ?? ''),
+    ].join(sep));
+  });
+
+  // BOM para que Excel lea bien acentos
+  const csv = '\ufeff' + lines.join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${safeName}_${hoy}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  this.toast.mostrar('CSV exportado', 'success');
 }
 
 }

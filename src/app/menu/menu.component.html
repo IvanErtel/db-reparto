@@ -13,6 +13,8 @@
 
   <button (click)="navegar('/dashboard')">🏠 Dashboard</button>
   <button (click)="navegar('/rutas')">📦 Mis rutas</button>
+  <button (click)="navegar('/importar')">📥 Importar CSV</button>
+  <button (click)="navegar('/resumenes')">📊 Resúmenes</button>
 
   <ng-container *ngIf="!usuarioLogueado">
     <button (click)="navegar('/login')">🔐 Iniciar sesión</button>

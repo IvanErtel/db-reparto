@@ -1,0 +1,25 @@
+<div class="contenedor" *ngIf="resumen() as r">
+  <button class="btn" (click)="volver()">⬅ Volver</button>
+
+  <h2>📌 {{ r.fecha }} — {{ r.rutaNombre }}</h2>
+
+  <div class="card">
+    ✅ Entregados: <strong>{{ entregados().length }}</strong>
+    &nbsp; | &nbsp;
+    ⏭️ Salteados: <strong>{{ salteados().length }}</strong>
+    &nbsp; | &nbsp;
+    ⏱️ {{ duracionMin() }} min
+  </div>
+
+  <h3>✅ Entregados</h3>
+  <div class="card" *ngFor="let e of entregados()">
+    <div><strong>{{ nombre(e) }}</strong></div>
+    <div>{{ direccion(e) }}</div>
+  </div>
+
+  <h3>⏭️ Salteados</h3>
+  <div class="card" *ngFor="let s of salteados()">
+    <div><strong>{{ nombre(s) }}</strong></div>
+    <div>{{ direccion(s) }}</div>
+  </div>
+</div>
