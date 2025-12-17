@@ -67,6 +67,17 @@ select {
   }
 }
 
+/* ✅ Campo solo lectura para zona base */
+.campo { margin-top: 12px; }
+.label { opacity: .8; margin-bottom: 6px; }
+
+.readonly {
+  background: #fff;
+  border: var(--borde);
+  border-radius: var(--radio);
+  padding: 10px 12px;
+}
+
 /* MOVIL: ACCIONES EN COLUMNA (YA ESTÁ) */
 @media (min-width: 600px) {
   .acciones {

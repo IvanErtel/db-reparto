@@ -35,18 +35,18 @@ export class ResumenesComponent implements OnInit {
     );
   });
 
-  async ngOnInit() {
-    this.loading.mostrar();
-    try {
-      const data = await this.rutasService.obtenerResumenes();
-      this.resumenes.set(data);
-    } catch (e) {
-      console.error(e);
-      this.toast.mostrar('Error cargando resúmenes', 'error');
-    } finally {
-      this.loading.ocultar();
-    }
+async ngOnInit() {
+  this.loading.mostrar();
+  try {
+    const data = await this.rutasService.obtenerResumenes();
+    this.resumenes.set(data);
+  } catch (e) {
+    console.error(e);
+    this.toast.mostrar('Error cargando los resúmenes', 'error');
+  } finally {
+    this.loading.ocultar();
   }
+}
 
   verDetalle(id: string) {
   this.router.navigate(['/resumenes', id]);

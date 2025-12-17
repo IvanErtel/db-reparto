@@ -23,6 +23,9 @@ import { ResumenReparto } from '../models/resumen-reparto';
 })
 export class RutasService {
 
+  // 🔥 cache en memoria para rutas grandes
+private cacheDirecciones = new Map<string, Direccion[]>();
+
   constructor(
     private firestore: Firestore,
     private auth: Auth
@@ -97,6 +100,8 @@ export class RutasService {
       creadaEn: ahora,
       actualizadaEn: ahora
     });
+      // 🔥 invalidar cache
+  this.cacheDirecciones.delete(rutaId);
 
     return docRef.id;
   }
@@ -107,26 +112,26 @@ export class RutasService {
   if (!snap.exists()) return null;
   return { id: snap.id, ...(snap.data() as any) } as Ruta;
 }
-
   
 async obtenerDireccionesOrdenadas(rutaId: string): Promise<Direccion[]> {
-  const colRef = collection(this.firestore, `routes/${rutaId}/stops`);
 
-  const snap = await getDocs(colRef);
+  // ✅ devolver cache si ya existe
+  if (this.cacheDirecciones.has(rutaId)) {
+    return this.cacheDirecciones.get(rutaId)!;
+  }
 
-  let dirs = snap.docs.map(d => {
-    const data = d.data() as any;
+  // ⏬ tu código ACTUAL para traer de Firestore
+  const col = collection(this.firestore, `routes/${rutaId}/stops`);
+  const q = query(col, orderBy('indiceOrden', 'asc'));
+  const snap = await getDocs(q);
 
-    // Si no tiene indiceOrden, le asignamos uno grande para no romper
-    if (data.indiceOrden === undefined || data.indiceOrden === null) {
-      data.indiceOrden = 9999;
-    }
+  const dirs = snap.docs.map(d => ({
+    id: d.id,
+    ...(d.data() as any)
+  })) as Direccion[];
 
-    return { id: d.id, ...data } as Direccion;
-  });
-
-  // Ordenar en memoria por indiceOrden
-  dirs.sort((a, b) => (a.indiceOrden ?? 9999) - (b.indiceOrden ?? 9999));
+  // ✅ guardar en cache
+  this.cacheDirecciones.set(rutaId, dirs);
 
   return dirs;
 }
@@ -137,11 +142,13 @@ async obtenerDireccionesOrdenadas(rutaId: string): Promise<Direccion[]> {
       ...parcial,
       actualizadaEn: new Date()
     });
+    this.cacheDirecciones.delete(rutaId);
   }
 
   async eliminarDireccion(rutaId: string, id: string): Promise<void> {
     const ref = doc(this.firestore, `routes/${rutaId}/stops/${id}`);
     await deleteDoc(ref);
+    this.cacheDirecciones.delete(rutaId);
   }
 
   // ============================
@@ -155,6 +162,7 @@ async obtenerDireccionesOrdenadas(rutaId: string): Promise<Direccion[]> {
     });
 
     await Promise.all(promesas);
+      this.cacheDirecciones.delete(rutaId);
   }
 
   // ============================
@@ -337,18 +345,31 @@ async obtenerDireccion(rutaId: string, direccionId: string): Promise<Direccion |
     );
   }
 
-  async esFestivo(fecha: Date): Promise<boolean> {
-  const fechaISO = fecha.toISOString().split('T')[0]; // ejemplo: "2025-01-06"
+  private festivosSet: Set<string> | null = null;
+private festivosPromise: Promise<Set<string>> | null = null;
 
-  const ref = doc(this.firestore, 'config/festivos');
-  const snap = await getDoc(ref);
+private async getFestivosSet(): Promise<Set<string>> {
+  if (this.festivosSet) return this.festivosSet;
+  if (this.festivosPromise) return this.festivosPromise;
 
-  if (!snap.exists()) return false;
+  this.festivosPromise = (async () => {
+    const ref = doc(this.firestore, 'config/festivos');
+    const snap = await getDoc(ref);
 
-  const data = snap.data();
-  const dias: string[] = data['dias'] || [];
+    const dias: string[] = snap.exists() ? (snap.data()['dias'] || []) : [];
+    this.festivosSet = new Set(dias);
 
-  return dias.includes(fechaISO);   // true si es festivo
+    this.festivosPromise = null;
+    return this.festivosSet!;
+  })();
+
+  return this.festivosPromise;
+}
+
+async esFestivo(fecha: Date): Promise<boolean> {
+  const fechaISO = fecha.toISOString().split('T')[0];
+  const set = await this.getFestivosSet();
+  return set.has(fechaISO);
 }
 
 async esDiaDeEntrega(d: Direccion, fecha: Date = new Date()): Promise<boolean> {
@@ -398,6 +419,37 @@ if (this.direccionEstaDeBaja(d, fecha)) {
     d.dias.sabado,
   ];
 
+  return mapa[dia] === true;
+}
+
+esDiaDeEntregaSync(d: Direccion, fecha: Date, esFestivo: boolean): boolean {
+  if (!d.dias) return true;
+
+  // 🚫 Si está de baja, NO se entrega
+  if (this.direccionEstaDeBaja(d, fecha)) return false;
+
+  const dia = fecha.getDay();
+
+  // 1) No entregar festivos
+  if (d.dias.noEntregarFestivos === true && esFestivo) return false;
+
+  // 2) Si es festivo y marcó festivos → entregar
+  if (esFestivo && d.dias.festivos === true) return true;
+
+  // 3) Si es festivo y NO marcó festivos → depende del día de semana
+  const mapa = [
+    d.dias.domingo,
+    d.dias.lunes,
+    d.dias.martes,
+    d.dias.miercoles,
+    d.dias.jueves,
+    d.dias.viernes,
+    d.dias.sabado,
+  ];
+
+  if (esFestivo && d.dias.festivos === false) return mapa[dia] === true;
+
+  // 4) día normal
   return mapa[dia] === true;
 }
 

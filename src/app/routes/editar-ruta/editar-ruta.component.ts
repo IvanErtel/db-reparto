@@ -67,10 +67,10 @@ async guardarCambios() {
   this.loading.mostrar();
 
   try {
-    await this.rutasService.actualizarRuta(this.rutaId, {
-      nombrePersonalizado: this.nombrePersonalizado,
-      nombreBase: this.nombreBase as Ruta['nombreBase'],
-    });
+await this.rutasService.actualizarRuta(this.rutaId, {
+  nombrePersonalizado: this.nombrePersonalizado,
+});
+
 
     this.toast.mostrar('Ruta actualizada', 'success');
     this.router.navigate(['/rutas', this.rutaId]);

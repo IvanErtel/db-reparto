@@ -5,11 +5,12 @@ import { RutasService } from '../../services/rutas.service';
 import { Ruta } from '../../models/ruta';
 import { RutasBaseService } from '../../services/rutas-base.service';
 import { ToastService } from '../../shared/toast.service';
+import { LoadingService } from '../../loading/loading.service';
 
 @Component({
   selector: 'app-list-rutas',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -27,7 +28,8 @@ copiando = signal(false);
     private rutasService: RutasService,
     private router: Router,
     private rutasBaseService: RutasBaseService,
-    private toast: ToastService
+    private toast: ToastService,
+      private loading: LoadingService
   ) {}
 
 iniciarReparto(rutaId: string) {
@@ -93,18 +95,23 @@ async crearMiCopiaDesdeBase(base: Ruta, ev?: MouseEvent) {
 
   if (this.copiando()) return;
   this.copiando.set(true);
-  this.toast.mostrar('Creando tu copia…', 'success');
+
+  // ✅ loading global, no toast
+  this.loading.mostrar();
 
   try {
     const nombre = `Mi ${String(base.nombreBase || '').toUpperCase()}`;
 
-    const nuevaId = await this.rutasBaseService.crearMiRutaDesdeBase(base.id!, nombre);
+    const nuevaId = await this.rutasBaseService.crearMiRutaDesdeBase(
+      base.id!,
+      nombre
+    );
 
-    // ✅ refrescar lista SIN F5
+    // refrescar mis rutas
     const mis = await this.rutasService.obtenerMisRutas();
     this.rutas.set(mis);
 
-    // ✅ abrir la copia
+    // ir a la copia
     this.router.navigate(['/rutas', nuevaId]);
 
   } catch (e) {
@@ -112,6 +119,7 @@ async crearMiCopiaDesdeBase(base: Ruta, ev?: MouseEvent) {
     this.toast.mostrar('Error creando la copia', 'error');
   } finally {
     this.copiando.set(false);
+    this.loading.ocultar();
   }
 }
 

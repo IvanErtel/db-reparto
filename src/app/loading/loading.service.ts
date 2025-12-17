@@ -1,14 +1,22 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class LoadingService {
-  cargando = signal(false);
+
+  private _cargando = signal(false);
+
+  cargando = computed(() => this._cargando());
 
   mostrar() {
-    this.cargando.set(true);
+    queueMicrotask(() => {
+      this._cargando.set(true);
+    });
   }
 
   ocultar() {
-    this.cargando.set(false);
+    queueMicrotask(() => {
+      this._cargando.set(false);
+    });
   }
 }
+

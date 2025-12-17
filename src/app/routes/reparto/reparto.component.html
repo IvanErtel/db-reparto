@@ -1,46 +1,38 @@
 <div class="reparto" *ngIf="!resumenFinal">
-
   <button class="btn-volver" (click)="volver()">⬅ Volver</button>
-<div class="busqueda-reparto">
+  <div class="busqueda-reparto">
+    <input
+      type="text"
+      placeholder="Buscar cliente o dirección…"
+      [ngModel]="busqueda()"
+      (ngModelChange)="busqueda.set($event)"
+    />
 
-<input
-  type="text"
-  placeholder="Buscar cliente o dirección…"
-  [ngModel]="busqueda()"
-  (ngModelChange)="busqueda.set($event)">
-
-  <div *ngIf="busqueda()"
-       class="overlay-busqueda">
-
-    <div *ngIf="resultadosBusqueda().length; else sinResultados"
-         class="resultados-busqueda">
-
-      <div class="resultado"
-           *ngFor="let r of resultadosBusqueda()"
-           (click)="busqueda.set('')">
-
-        <strong>{{ r.cliente }}</strong>
-        <div class="mini-dir">{{ r.direccion }}</div>
-        <div class="mini-diarios">📰 {{ r.cantidadDiarios }} diarios</div>
+    <div *ngIf="busqueda()" class="overlay-busqueda">
+      <div
+        *ngIf="resultadosBusqueda().length; else sinResultados"
+        class="resultados-busqueda"
+      >
+        <div
+          class="resultado"
+          *ngFor="let r of resultadosBusqueda()"
+          (click)="irADireccion(r)"
+        >
+          <strong>{{ r.cliente }}</strong>
+          <div class="mini-dir">{{ r.direccion }}</div>
+          <div class="mini-diarios">📰 {{ r.cantidadDiarios }} diarios</div>
+        </div>
       </div>
 
+      <ng-template #sinResultados>
+        <div class="sin-resultados">No se encontraron resultados</div>
+      </ng-template>
     </div>
-
-    <ng-template #sinResultados>
-      <div class="sin-resultados">
-        No se encontraron resultados
-      </div>
-    </ng-template>
-
   </div>
-
-</div>
 
   <!-- RESUMEN DEL DÍA -->
   <div class="resumen-simple" *ngIf="ruta() as r">
-    <p class="mensaje-animo">
-  💪 Vamos, reparto en marcha
-</p>
+    <p class="mensaje-animo">💪 Vamos, reparto en marcha</p>
 
     <div class="linea1">
       <strong>{{ r.nombrePersonalizado }}</strong>
@@ -55,61 +47,67 @@
     </div>
 
     <div class="info-reparto">
-  <div>📍 Direcciones del día: <strong>{{ totalHoy() }}</strong></div>
-  <div>⏳ Restantes: <strong>{{ restantes() }}</strong></div>
-</div>
-
+      <div>
+        📍 Direcciones del día: <strong>{{ totalHoy() }}</strong>
+      </div>
+      <div>
+        ⏳ Restantes: <strong>{{ restantes() }}</strong>
+      </div>
+    </div>
   </div>
 
- <!-- DIRECCIÓN ACTUAL -->
-<div
-  class="card-principal"
-  *ngIf="!resumenFinal && actual() as d"
-  [class.anim-ok]="animando"
->
+  <!-- DIRECCIÓN ACTUAL -->
+  <div
+    class="card-principal"
+    *ngIf="!resumenFinal && actual() as d"
+    [class.anim-ok]="animando"
+  >
+    <h2>{{ d.cliente }}</h2>
 
-  <h2>{{ d.cliente }}</h2>
+    <p class="diarios-reparto">📰 {{ d.cantidadDiarios }} diarios</p>
 
-  <p class="diarios-reparto">
-    📰 {{ d.cantidadDiarios }} diarios
-  </p>
+    <p><strong>Dirección:</strong> {{ d.direccion }}</p>
 
-  <p><strong>Dirección:</strong> {{ d.direccion }}</p>
+    <p *ngIf="d.notas">
+      <strong>Notas:</strong><br />
+      {{ d.notas }}
+    </p>
 
-  <p *ngIf="d.notas">
-    <strong>Notas:</strong><br>
-    {{ d.notas }}
-  </p>
-
-  <button class="btn-maps" (click)="abrirMaps()">
-    📍 Abrir en Google Maps
-  </button>
-
-  <!-- ACCIONES -->
- <div class="acciones-reparto">
-
-  <!-- ACCIÓN PRINCIPAL -->
-  <button class="btn-primario btn-entregar" (click)="entregar()" [disabled]="resumenFinal">
-    ✔ Entregado
-  </button>
-
-  <!-- ACCIONES SECUNDARIAS -->
-  <div class="fila-secundaria">
-    <button class="btn-secundario"
-            (click)="anterior()"
-            [disabled]="indiceActual() === 0">
-      ⬅ Anterior
+    <button class="btn-maps" (click)="abrirMaps()">
+      📍 Abrir en Google Maps
     </button>
 
-    <button class="btn-secundario" (click)="saltar()" [disabled]="resumenFinal">
-      ⏭ Saltar
-    </button>
+    <!-- ACCIONES -->
+    <div class="acciones-reparto">
+      <!-- ACCIÓN PRINCIPAL -->
+      <button
+        class="btn-primario btn-entregar"
+        (click)="entregar()"
+        [disabled]="resumenFinal"
+      >
+        ✔ Entregado
+      </button>
+
+      <!-- ACCIONES SECUNDARIAS -->
+      <div class="fila-secundaria">
+        <button
+          class="btn-secundario"
+          (click)="anterior()"
+          [disabled]="indiceActual() === 0"
+        >
+          ⬅ Anterior
+        </button>
+
+        <button
+          class="btn-secundario"
+          (click)="saltar()"
+          [disabled]="resumenFinal"
+        >
+          ⏭ Saltar
+        </button>
+      </div>
+    </div>
   </div>
-
-</div>
-
-
-</div>
 
   <!-- SIGUIENTES DIRECCIONES -->
   <h3 class="tit-siguientes">Próximas entregas:</h3>
@@ -124,12 +122,11 @@
   <button class="btn-reiniciar" (click)="reiniciarReparto()">
     Reiniciar reparto
   </button>
-
 </div>
 
 <app-resumen-reparto
   *ngIf="resumenFinal"
   [resumen]="resumenFinal"
-  (cerrarResumen)="cerrarResumen()">
+  (cerrarResumen)="cerrarResumen()"
+>
 </app-resumen-reparto>
-

@@ -4,7 +4,7 @@
   padding: 25px;
   background: white;
   border-radius: var(--radio);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .loading {
@@ -29,7 +29,8 @@ label {
 }
 
 /* Inputs y textarea */
-input, textarea {
+input,
+textarea {
   padding: 10px;
   border-radius: var(--radio);
   border: var(--borde);
@@ -91,7 +92,7 @@ h3 {
     cursor: pointer;
     font-size: 15px;
     font-weight: 500;
-    transition: .2s ease;
+    transition: 0.2s ease;
     color: white;
   }
 
@@ -104,7 +105,7 @@ h3 {
   }
 
   button:hover {
-    opacity: .9;
+    opacity: 0.9;
   }
 }
 
@@ -140,3 +141,31 @@ h3 {
   padding: 8px 10px;
 }
 
+.acciones {
+  flex-direction: column; /* móvil: mejor en columna */
+}
+
+.acciones .btn-exito {
+  background: var(--color-exito);
+}
+
+.acciones .btn-peligro {
+  background: var(--color-peligro);
+}
+
+/* el botón de eliminar, bien sólido y separado */
+.acciones .btn-eliminar {
+  width: 100%;
+}
+
+/* en pantallas más grandes podés volver a fila */
+@media (min-width: 600px) {
+  .acciones {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .acciones .btn-eliminar {
+    flex-basis: 100%;
+  }
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, signal, HostListener } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, signal, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
@@ -7,11 +7,13 @@ import { Direccion } from '../../models/direccion';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '@angular/fire/auth';
 import { ToastService } from '../../shared/toast.service';
+import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragMove } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-detalle-ruta',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DragDropModule],
   templateUrl: './detalle.component.html',
   styleUrl: './detalle.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -82,6 +84,60 @@ onWindowScroll() {
   // -------------------------
   // MODAL
   // -------------------------
+
+  @ViewChild('listaScroll') listaScroll!: ElementRef<HTMLElement>;
+private raf: number | null = null;
+
+private scrollDelta = 0;
+
+private getScrollEl(): HTMLElement {
+  return (document.scrollingElement || document.documentElement) as HTMLElement;
+}
+
+onDragMoved(ev: CdkDragMove<any>) {
+  const y = ev.pointerPosition.y;
+  const vh = window.innerHeight;
+
+  const edge = 120; // zona activa arriba/abajo
+  let delta = 0;
+
+  if (y < edge) {
+    const t = Math.max(0, edge - y);         // qué tan cerca del borde
+    delta = -Math.min(120, 22 + Math.floor(t / 2)); // velocidad ↑
+  } else if (y > vh - edge) {
+    const t = Math.max(0, y - (vh - edge));
+    delta = Math.min(120, 22 + Math.floor(t / 2));  // velocidad ↓
+  }
+
+  this.scrollDelta = delta;
+
+  // si no está en zona, frenar
+  if (delta === 0) {
+    if (this.raf) {
+      cancelAnimationFrame(this.raf);
+      this.raf = null;
+    }
+    return;
+  }
+
+  // loop continuo mientras mantenga el puntero en zona
+  if (!this.raf) {
+    const step = () => {
+      const el = this.getScrollEl();
+      el.scrollTop += this.scrollDelta;
+      this.raf = requestAnimationFrame(step);
+    };
+    this.raf = requestAnimationFrame(step);
+  }
+}
+
+onDragEnded() {
+  if (this.raf) {
+    cancelAnimationFrame(this.raf);
+    this.raf = null;
+  }
+  this.scrollDelta = 0;
+}
 
   abrirDetalle(d: Direccion) {
     this.detalleSeleccionado.set(d);
@@ -201,6 +257,41 @@ editarRuta() {
 
 hayProgresoGuardado(): boolean {
   return localStorage.getItem(`reparto_${this.rutaId}`) !== null;
+}
+
+esRutaBase(): boolean {
+  return this.ruta()?.usuarioId === '__BASE__';
+}
+
+reordenHabilitado(): boolean {
+  // Solo permitimos reordenar cuando NO hay filtros activos
+  return !this.esRutaBase() && !this.busqueda.trim() && this.diaSeleccionado === 'todos';
+}
+
+async drop(event: CdkDragDrop<Direccion[]>) {
+  if (!this.reordenHabilitado()) {
+    alert('Para reordenar, quitá el buscador y dejá el filtro en "todos".');
+    return;
+  }
+
+  // ✅ usar el data del dropList (es la lista renderizada)
+  const lista = [...(event.container.data || [])];
+
+  moveItemInArray(lista, event.previousIndex, event.currentIndex);
+
+  // ✅ actualizar UI primero (si no, vuelve al lugar original)
+  this.todasLasDirecciones = lista;
+  this.direcciones.set(lista);
+  this.direccionesFiltradas.set(lista);
+
+  try {
+    await this.rutasService.reordenarDirecciones(this.rutaId, lista);
+    this.toast.mostrar('Orden guardado', 'success');
+  } catch (e) {
+    console.error(e);
+    this.toast.mostrar('No se pudo guardar el orden, se recarga la lista', 'error');
+    await this.cargarDirecciones(); // vuelve al último orden real
+  }
 }
 
   abrirEnMaps() {

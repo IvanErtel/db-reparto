@@ -2,19 +2,14 @@
 
   <h1>Editar ruta</h1>
 
-  <label>Nombre de la ruta:
-    <input type="text" [(ngModel)]="nombrePersonalizado">
-  </label>
+<label>Nombre de la ruta:
+  <input type="text" [(ngModel)]="nombrePersonalizado" placeholder="Ej: Mi GAMONAL">
+</label>
 
-  <label>Zona base:
-    <select [(ngModel)]="nombreBase">
-      <option value="GAMONAL">GAMONAL</option>
-      <option value="ESTE">ESTE</option>
-      <option value="CENTRO">CENTRO</option>
-      <option value="OESTE">OESTE</option>
-      <option value="SUR">SUR</option>
-    </select>
-  </label>
+<div class="campo">
+  <div class="label">Zona base:</div>
+  <div class="readonly">{{ nombreBase }}</div>
+</div>
 
   <div class="acciones">
     <button class="btn-guardar" (click)="guardarCambios()">Guardar cambios</button>

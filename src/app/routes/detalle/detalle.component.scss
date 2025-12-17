@@ -264,3 +264,31 @@ h2 {
   background: rgba(0,0,0,.07);
 }
 
+.drag-handle {
+  user-select: none;
+  cursor: grab;
+  font-size: 18px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.05);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 34px;
+  margin-bottom: 8px;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-preview {
+  box-shadow: 0 10px 25px rgba(0,0,0,.15);
+  border-radius: 12px;
+}
+
+.cdk-drag-animating {
+  transition: transform 200ms ease;
+}
+
