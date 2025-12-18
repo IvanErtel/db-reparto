@@ -1,40 +1,240 @@
-.fila-top {
+.page {
+  padding: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 920px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.title {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 10px;
 }
 
-.titulo {
+.title h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.icon {
+  font-size: 22px;
+}
+
+.search {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+  outline: none;
+}
+
+.search:focus {
+  border-color: rgba(0, 0, 0, 0.28);
+}
+
+.empty {
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px dashed rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.list {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fecha {
+  font-weight: 900;
+  font-size: 16px;
 }
 
 .ruta {
-  opacity: 0.85;
+  opacity: 0.78;
+  font-weight: 700;
 }
 
-.btn-mini {
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  background: rgba(0, 0, 0, 0.04);
-  padding: 6px 10px;
-  border-radius: 10px;
-  font-size: 13px;
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.btn {
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: #fff;
+  padding: 10px 12px;
+  border-radius: 999px;
+  font-weight: 800;
   cursor: pointer;
   line-height: 1;
-  white-space: nowrap;
 }
 
-.btn-mini:hover {
-  background: rgba(0, 0, 0, 0.07);
-}
-
-.btn-mini:active {
+.btn:active {
   transform: scale(0.98);
 }
 
-.fila-bottom {
+.btn.ghost {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.stats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.pill {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.03);
+  font-weight: 800;
+}
+
+/* ✅ Modal confirm moderno */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 14px;
+  z-index: 9999;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 560px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+.sheetTitle {
+  font-weight: 900;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.sheetText {
+  opacity: 0.9;
+}
+
+.muted {
   margin-top: 6px;
+  opacity: 0.7;
+  font-size: 13px;
+}
+
+.sheetActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.sheetActions .btn {
+  flex: 1;
+  justify-content: center;
+}
+
+.sheetActions .btn.peligro {
+  background: var(--color-peligro) !important;
+  border-color: var(--color-peligro) !important;
+  color: #fff !important;
+  font-weight: 900;
+}
+
+/* Cancelar gris */
+.sheetActions .btn.ghost {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Botonera igual al detalle */
+/* Botones del listado iguales al detalle */
+.top-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.top-actions .btn {
+  flex: 1; /* mismo ancho */
+  min-height: 44px; /* misma altura */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center; /* centrado */
+  gap: 8px;
+}
+
+/* Tamaño “mini” consistente */
+.btn-mini {
+  padding: 0.65rem 0.9rem !important;
+  font-size: 0.95rem !important;
+  border-radius: 999px !important;
+}
+
+/* ✅ Eliminar rojo con texto blanco (fuerza contra estilos globales) */
+.top-actions .btn.danger {
+  background: var(--color-peligro) !important;
+  border-color: var(--color-peligro) !important;
+  color: #fff !important;
+}
+
+/* Ver (gris suave) */
+.top-actions .btn.ghost {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+/* móvil: los botones arriba a veces quedan mejor en 2 líneas */
+@media (max-width: 520px) {
+  .top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .actions {
+    justify-content: flex-start;
+  }
 }

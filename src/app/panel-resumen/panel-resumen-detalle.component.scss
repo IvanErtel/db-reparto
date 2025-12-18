@@ -1,0 +1,54 @@
+.top-actions {
+  display: flex;
+  gap: 10px;
+  margin: 8px 0 14px;
+}
+
+.btn-mini {
+  padding: 0.65rem 0.9rem !important;
+  font-size: 0.95rem !important;
+  width: auto !important; /* pisa el width:100% global */
+  flex: 1;
+}
+
+/* Confirm moderno */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 14px;
+  z-index: 9999;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 560px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+.sheetTitle {
+  font-weight: 900;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.sheetText {
+  opacity: 0.9;
+}
+.muted {
+  margin-top: 6px;
+  opacity: 0.7;
+  font-size: 13px;
+}
+
+.sheetActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}

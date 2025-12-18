@@ -1,35 +1,84 @@
-<div class="contenedor">
-  <h2>📊 Resúmenes</h2>
-
-  <input
-    type="text"
-    placeholder="Buscar por ruta o fecha (YYYY-MM-DD)"
-    [ngModel]="filtro()"
-    (ngModelChange)="filtro.set($event)"
-  />
-
-  <div *ngIf="filtrados().length === 0" class="vacio">
-    No hay resúmenes todavía.
-  </div>
-
-  <div class="card" *ngFor="let r of filtrados()">
-    <div class="fila fila-top">
-      <div class="titulo">
-        <strong>{{ r.fecha }}</strong>
-        <span class="ruta">— {{ r.rutaNombre }}</span>
+<div class="page">
+  <div class="wrap">
+    <div class="header">
+      <div class="title">
+        <span class="icon">📊</span>
+        <h1>Resúmenes</h1>
       </div>
 
-      <button class="btn-mini" (click)="verDetalle(r.id)">
-        👁️ Ver detalle
-      </button>
+      <input
+        class="search"
+        type="text"
+        placeholder="Buscar por ruta o fecha (YYYY-MM-DD)"
+        [ngModel]="filtro()"
+        (ngModelChange)="filtro.set($event)"
+      />
     </div>
 
-    <div class="fila fila-bottom">
-      ✅ Entregados: <strong>{{ (r.entregados?.length || 0) }}</strong>
-      &nbsp; | &nbsp;
-      ⏭️ Salteados: <strong>{{ (r.salteados?.length || 0) }}</strong>
-      &nbsp; | &nbsp;
-      ⏱️ {{ duracionMin(r.inicio, r.fin) }} min
+    <div *ngIf="filtrados().length === 0" class="empty">
+      No hay resúmenes todavía.
+    </div>
+
+    <div class="list" *ngIf="filtrados().length > 0">
+      <div class="card" *ngFor="let r of filtrados()">
+        <div class="top">
+          <div class="meta">
+            <div class="fecha">{{ r.fecha }}</div>
+            <div class="ruta">{{ r.rutaNombre }}</div>
+          </div>
+
+          <div class="top-actions">
+            <button
+              class="btn ghost btn-mini"
+              type="button"
+              (click)="verDetalle(r.id)"
+            >
+              👁️ Ver
+            </button>
+
+            <button
+              class="btn danger btn-mini"
+              type="button"
+              (click)="abrirEliminar(r)"
+            >
+              🗑️ Eliminar
+            </button>
+          </div>
+        </div>
+
+        <div class="stats">
+          <span class="pill">✅ {{ r.entregados?.length || 0 }}</span>
+          <span class="pill">⏭ {{ r.salteados?.length || 0 }}</span>
+          <span class="pill">⏱ {{ duracionMin(r.inicio, r.fin) }} min</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Confirm moderno (bottom-sheet) -->
+<div class="backdrop" *ngIf="confirmOpen()" (click)="cerrarEliminar()">
+  <div class="sheet" (click)="$event.stopPropagation()">
+    <div class="sheetTitle">Eliminar resumen</div>
+
+    <div class="sheetText" *ngIf="pendiente() as r">
+      ¿Eliminar el resumen <strong>{{ r.fecha }}</strong> —
+      <strong>{{ r.rutaNombre }}</strong
+      >?
+      <div class="muted">Esta acción no se puede deshacer.</div>
+    </div>
+
+    <div class="sheetActions">
+      <button class="btn ghost" type="button" (click)="cerrarEliminar()">
+        Cancelar
+      </button>
+      <button
+        class="btn peligro btn-mini"
+        type="button"
+        (click)="confirmarEliminar()"
+      >
+        Eliminar
+      </button>
     </div>
   </div>
 </div>

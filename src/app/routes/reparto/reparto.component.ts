@@ -148,6 +148,17 @@ export class RepartoComponent implements OnInit {
     );
   });
 
+  irADireccion(d: Direccion) {
+    const idx = this.direcciones().findIndex((x) => x.id === d.id);
+    if (idx < 0) return;
+
+    this.indiceActual.set(idx);
+    localStorage.setItem(`reparto_${this.rutaId}`, String(idx));
+
+    this.busqueda.set('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   // Dirección anterior
   anteriorDireccion = computed(() =>
     this.indiceActual() > 0 ? this.direcciones()[this.indiceActual() - 1] : null
@@ -226,7 +237,7 @@ export class RepartoComponent implements OnInit {
     // 👇 SI ES LA ÚLTIMA → FIN DIRECTO
     if (i >= total - 1) {
       this.animando = false;
-      this.mostrarFinDeReparto();
+      await this.mostrarFinDeReparto();
       return;
     }
 
@@ -254,7 +265,7 @@ export class RepartoComponent implements OnInit {
     // 👇 SI ES LA ÚLTIMA → FIN DIRECTO
     if (i >= total - 1) {
       this.animando = false;
-      this.mostrarFinDeReparto();
+      await this.mostrarFinDeReparto();
       return;
     }
 
@@ -262,18 +273,21 @@ export class RepartoComponent implements OnInit {
     this.animando = false;
   }
 
-  mostrarFinDeReparto() {
+  async mostrarFinDeReparto() {
+    const fecha = new Date().toISOString().slice(0, 10);
+
     const resumen: ResumenReparto = {
+      id: `${fecha}_${this.rutaId}`,
       rutaId: this.rutaId,
       rutaNombre: this.ruta()?.nombrePersonalizado || 'Ruta',
-      fecha: new Date().toISOString().slice(0, 10),
+      fecha,
       inicio: this.inicioReparto,
       fin: Date.now(),
       entregados: this.entregados,
       salteados: this.salteados,
     };
 
-    this.rutasService.guardarResumen(resumen);
+    await this.rutasService.guardarResumen(resumen);
 
     this.resumenFinal = resumen;
     this.cdr.detectChanges();
@@ -312,13 +326,16 @@ export class RepartoComponent implements OnInit {
     this.router.navigate(['/rutas', this.rutaId]);
   }
 
-  irADireccion(d: Direccion) {
-    const idx = this.direcciones().findIndex((x) => x.id === d.id);
-    if (idx >= 0) {
-      this.indiceActual.set(idx);
-      localStorage.setItem(`reparto_${this.rutaId}`, String(idx));
+  async eliminarResumen(id: string) {
+    try {
+      await this.rutasService.eliminarResumen(id);
+      this.toast.mostrar('Resumen eliminado', 'success');
+
+      // cerrar igual que siempre
+      this.cerrarResumen();
+    } catch (e) {
+      console.error(e);
+      this.toast.mostrar('No se pudo eliminar el resumen', 'error');
     }
-    this.busqueda.set('');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

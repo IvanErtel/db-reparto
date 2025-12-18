@@ -17,3 +17,22 @@
   padding: 1.25rem;
   border-radius: 12px;
 }
+
+.acciones {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.btn-borrar {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+  font-weight: 700;
+}
+
+.btn-primario {
+  flex: 1;
+}

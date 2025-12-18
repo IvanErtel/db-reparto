@@ -5,7 +5,7 @@ export interface Direccion {
   direccion: string;
   cantidadDiarios: number;
   orden?: number;
-  
+
   // NUEVO: coordenadas
   lat?: number | null;
   lng?: number | null;
@@ -30,10 +30,13 @@ export interface Direccion {
   fechaAlta?: any;
   fechaBaja?: any;
 
+  referencia?: string; // portal / piso / letra / código
+  etiqueta?: string; // BAR / QUIOSCO / HOTEL...
+
   bajas?: {
-  desde: string; // YYYY-MM-DD
-  hasta: string; // YYYY-MM-DD
-}[];
+    desde: string; // YYYY-MM-DD
+    hasta: string; // YYYY-MM-DD
+  }[];
   creadaEn?: any;
   actualizadaEn?: any;
 }

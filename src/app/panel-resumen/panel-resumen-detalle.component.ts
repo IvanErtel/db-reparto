@@ -17,6 +17,7 @@ export class PanelResumenDetalleComponent implements OnInit {
 
   entregados = computed(() => this.resumen()?.entregados ?? []);
   salteados = computed(() => this.resumen()?.salteados ?? []);
+  confirmOpen = signal(false);
 
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +48,28 @@ export class PanelResumenDetalleComponent implements OnInit {
     return x.direccion || '';
   }
 
+  async eliminar() {
+    const r = this.resumen();
+    if (!r?.id) return;
+
+    const ok = confirm(
+      '¿Eliminar este resumen? Esta acción no se puede deshacer.'
+    );
+    if (!ok) return;
+
+    this.loading.mostrar();
+    try {
+      await this.rutasService.eliminarResumen(r.id);
+      this.toast.mostrar('Resumen eliminado', 'success');
+      this.volver();
+    } catch (e) {
+      console.error(e);
+      this.toast.mostrar('Error eliminando el resumen', 'error');
+    } finally {
+      this.loading.ocultar();
+    }
+  }
+
   abrirMaps(x: any) {
     const lat = x?.lat;
     const lng = x?.lng;
@@ -54,7 +77,9 @@ export class PanelResumenDetalleComponent implements OnInit {
     if (lat && lng) {
       const destino = `${lat},${lng}`;
       window.open(
-        `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destino)}&travelmode=driving`,
+        `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+          destino
+        )}&travelmode=driving`,
         '_blank'
       );
       return;
@@ -64,7 +89,9 @@ export class PanelResumenDetalleComponent implements OnInit {
     if (!dir) return;
 
     window.open(
-      `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dir)}&travelmode=driving`,
+      `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+        dir
+      )}&travelmode=driving`,
       '_blank'
     );
   }
@@ -91,6 +118,31 @@ export class PanelResumenDetalleComponent implements OnInit {
       this.volver();
     } finally {
       this.loading.ocultar();
+    }
+  }
+  abrirEliminar() {
+    this.confirmOpen.set(true);
+  }
+
+  cerrarEliminar() {
+    this.confirmOpen.set(false);
+  }
+
+  async confirmarEliminar() {
+    const r = this.resumen();
+    if (!r?.id) return;
+
+    this.loading.mostrar();
+    try {
+      await this.rutasService.eliminarResumen(r.id);
+      this.toast.mostrar('Resumen eliminado', 'success');
+      this.volver();
+    } catch (e) {
+      console.error(e);
+      this.toast.mostrar('Error eliminando el resumen', 'error');
+    } finally {
+      this.loading.ocultar();
+      this.cerrarEliminar();
     }
   }
 }

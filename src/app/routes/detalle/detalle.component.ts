@@ -1,4 +1,12 @@
-import { Component, OnInit, ChangeDetectionStrategy, signal, HostListener, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  signal,
+  HostListener,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
@@ -7,7 +15,11 @@ import { Direccion } from '../../models/direccion';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '@angular/fire/auth';
 import { ToastService } from '../../shared/toast.service';
-import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import {
+  DragDropModule,
+  CdkDragDrop,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 import { CdkDragMove } from '@angular/cdk/drag-drop';
 
 @Component({
@@ -16,10 +28,9 @@ import { CdkDragMove } from '@angular/cdk/drag-drop';
   imports: [CommonModule, FormsModule, DragDropModule],
   templateUrl: './detalle.component.html',
   styleUrl: './detalle.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetalleComponent implements OnInit {
-
   // -------------------------
   // VARIABLES PRINCIPALES
   // -------------------------
@@ -29,12 +40,10 @@ export class DetalleComponent implements OnInit {
   direcciones = signal<Direccion[]>([]);
   cargandoRuta = signal(true);
   cargandoDirecciones = signal(true);
-busqueda = '';
-direccionesFiltradas = signal<Direccion[]>([]);
-mostrarScrollTop = false;
+  busqueda = '';
+  direccionesFiltradas = signal<Direccion[]>([]);
+  mostrarScrollTop = false;
 
-  // Para el filtro por día
-  diaSeleccionado = 'todos';
   todasLasDirecciones: Direccion[] = [];
 
   // Para el modal de detalle
@@ -54,7 +63,6 @@ mostrarScrollTop = false;
   // -------------------------
 
   async ngOnInit() {
-
     this.rutaId = this.route.snapshot.params['id'];
 
     await this.cargarRuta();
@@ -68,76 +76,78 @@ mostrarScrollTop = false;
   }
 
   async cargarDirecciones() {
-    const dirs = await this.rutasService.obtenerDireccionesOrdenadas(this.rutaId);
+    const dirs = await this.rutasService.obtenerDireccionesOrdenadas(
+      this.rutaId
+    );
 
-this.todasLasDirecciones = dirs;
-this.direcciones.set(dirs);
-this.direccionesFiltradas.set(dirs);   // ← IMPORTANTE
-this.cargandoDirecciones.set(false);
-
+    this.todasLasDirecciones = dirs;
+    this.direcciones.set(dirs);
+    this.direccionesFiltradas.set(dirs); // ← IMPORTANTE
+    this.cargandoDirecciones.set(false);
   }
 
-      @HostListener('window:scroll', [])
-onWindowScroll() {
-  this.mostrarScrollTop = window.scrollY > 300;
-}
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.mostrarScrollTop = window.scrollY > 300;
+  }
   // -------------------------
   // MODAL
   // -------------------------
 
   @ViewChild('listaScroll') listaScroll!: ElementRef<HTMLElement>;
-private raf: number | null = null;
+  private raf: number | null = null;
 
-private scrollDelta = 0;
+  private scrollDelta = 0;
 
-private getScrollEl(): HTMLElement {
-  return (document.scrollingElement || document.documentElement) as HTMLElement;
-}
-
-onDragMoved(ev: CdkDragMove<any>) {
-  const y = ev.pointerPosition.y;
-  const vh = window.innerHeight;
-
-  const edge = 120; // zona activa arriba/abajo
-  let delta = 0;
-
-  if (y < edge) {
-    const t = Math.max(0, edge - y);         // qué tan cerca del borde
-    delta = -Math.min(120, 22 + Math.floor(t / 2)); // velocidad ↑
-  } else if (y > vh - edge) {
-    const t = Math.max(0, y - (vh - edge));
-    delta = Math.min(120, 22 + Math.floor(t / 2));  // velocidad ↓
+  private getScrollEl(): HTMLElement {
+    return (document.scrollingElement ||
+      document.documentElement) as HTMLElement;
   }
 
-  this.scrollDelta = delta;
+  onDragMoved(ev: CdkDragMove<any>) {
+    const y = ev.pointerPosition.y;
+    const vh = window.innerHeight;
 
-  // si no está en zona, frenar
-  if (delta === 0) {
+    const edge = 120; // zona activa arriba/abajo
+    let delta = 0;
+
+    if (y < edge) {
+      const t = Math.max(0, edge - y); // qué tan cerca del borde
+      delta = -Math.min(120, 22 + Math.floor(t / 2)); // velocidad ↑
+    } else if (y > vh - edge) {
+      const t = Math.max(0, y - (vh - edge));
+      delta = Math.min(120, 22 + Math.floor(t / 2)); // velocidad ↓
+    }
+
+    this.scrollDelta = delta;
+
+    // si no está en zona, frenar
+    if (delta === 0) {
+      if (this.raf) {
+        cancelAnimationFrame(this.raf);
+        this.raf = null;
+      }
+      return;
+    }
+
+    // loop continuo mientras mantenga el puntero en zona
+    if (!this.raf) {
+      const step = () => {
+        const el = this.getScrollEl();
+        el.scrollTop += this.scrollDelta;
+        this.raf = requestAnimationFrame(step);
+      };
+      this.raf = requestAnimationFrame(step);
+    }
+  }
+
+  onDragEnded() {
     if (this.raf) {
       cancelAnimationFrame(this.raf);
       this.raf = null;
     }
-    return;
+    this.scrollDelta = 0;
   }
-
-  // loop continuo mientras mantenga el puntero en zona
-  if (!this.raf) {
-    const step = () => {
-      const el = this.getScrollEl();
-      el.scrollTop += this.scrollDelta;
-      this.raf = requestAnimationFrame(step);
-    };
-    this.raf = requestAnimationFrame(step);
-  }
-}
-
-onDragEnded() {
-  if (this.raf) {
-    cancelAnimationFrame(this.raf);
-    this.raf = null;
-  }
-  this.scrollDelta = 0;
-}
 
   abrirDetalle(d: Direccion) {
     this.detalleSeleccionado.set(d);
@@ -146,25 +156,6 @@ onDragEnded() {
 
   cerrarModal() {
     this.modalAbierto.set(false);
-  }
-
-  // -------------------------
-  // FILTRO POR DÍA
-  // -------------------------
-
-  filtrarPorDia() {
-if (this.diaSeleccionado === 'todos') {
-  this.direcciones.set(this.todasLasDirecciones);
-  this.direccionesFiltradas.set(this.todasLasDirecciones);
-  return;
-}
-
-const filtradas = this.todasLasDirecciones.filter(d =>
-  d.dias[this.diaSeleccionado as keyof typeof d.dias]
-);
-
-this.direcciones.set(filtradas);
-this.direccionesFiltradas.set(filtradas);
   }
 
   // -------------------------
@@ -180,213 +171,229 @@ this.direccionesFiltradas.set(filtradas);
   }
 
   filtrarBusqueda() {
-  const texto = this.busqueda.toLowerCase().trim();
+    const texto = this.busqueda.toLowerCase().trim();
 
-  if (!texto) {
-    this.direccionesFiltradas.set(this.direcciones());
-    return;
+    if (!texto) {
+      this.direccionesFiltradas.set(this.direcciones());
+      return;
+    }
+
+    const filtradas = this.direcciones().filter(
+      (d) =>
+        d.cliente.toLowerCase().includes(texto) ||
+        d.direccion.toLowerCase().includes(texto)
+    );
+
+    this.direccionesFiltradas.set(filtradas);
   }
 
-  const filtradas = this.direcciones().filter(d =>
-    d.cliente.toLowerCase().includes(texto) ||
-    d.direccion.toLowerCase().includes(texto)
-  );
+  async subirDireccion(d: Direccion) {
+    const lista = [...this.todasLasDirecciones];
+    const index = lista.findIndex((x) => x.id === d.id);
+    if (index <= 0) return; // ya está arriba
 
-  this.direccionesFiltradas.set(filtradas);
-}
+    // intercambiar con la anterior
+    const tmp = lista[index - 1];
+    lista[index - 1] = lista[index];
+    lista[index] = tmp;
 
-async subirDireccion(d: Direccion) {
-  const lista = [...this.todasLasDirecciones];
-  const index = lista.findIndex(x => x.id === d.id);
-  if (index <= 0) return; // ya está arriba
+    // guardar nuevo orden en Firestore
+    await this.rutasService.reordenarDirecciones(this.rutaId, lista);
 
-  // intercambiar con la anterior
-  const tmp = lista[index - 1];
-  lista[index - 1] = lista[index];
-  lista[index] = tmp;
+    // actualizar en memoria y filtros
+    this.todasLasDirecciones = lista;
+    this.direcciones.set(lista);
+    this.filtrarBusqueda();
+  }
 
-  // guardar nuevo orden en Firestore
-  await this.rutasService.reordenarDirecciones(this.rutaId, lista);
+  volverArriba() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
-  // actualizar en memoria y filtros
-  this.todasLasDirecciones = lista;
-  this.direcciones.set(lista);
-  this.filtrarPorDia();
-  this.filtrarBusqueda();
-}
+  async bajarDireccion(d: Direccion) {
+    const lista = [...this.todasLasDirecciones];
+    const index = lista.findIndex((x) => x.id === d.id);
+    if (index === -1 || index >= lista.length - 1) return; // ya está abajo o no existe
 
-volverArriba() {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+    // intercambiar con la siguiente
+    const tmp = lista[index + 1];
+    lista[index + 1] = lista[index];
+    lista[index] = tmp;
 
-async bajarDireccion(d: Direccion) {
-  const lista = [...this.todasLasDirecciones];
-  const index = lista.findIndex(x => x.id === d.id);
-  if (index === -1 || index >= lista.length - 1) return; // ya está abajo o no existe
+    // guardar nuevo orden en Firestore
+    await this.rutasService.reordenarDirecciones(this.rutaId, lista);
 
-  // intercambiar con la siguiente
-  const tmp = lista[index + 1];
-  lista[index + 1] = lista[index];
-  lista[index] = tmp;
+    // actualizar en memoria y filtros
+    this.todasLasDirecciones = lista;
+    this.direcciones.set(lista);
+    this.filtrarBusqueda();
+  }
 
-  // guardar nuevo orden en Firestore
-  await this.rutasService.reordenarDirecciones(this.rutaId, lista);
-
-  // actualizar en memoria y filtros
-  this.todasLasDirecciones = lista;
-  this.direcciones.set(lista);
-  this.filtrarPorDia();
-  this.filtrarBusqueda();
-}
-
-estaDeBajaHoy(d: Direccion): boolean {
-  return (this.rutasService as any).direccionEstaDeBaja(d, new Date());
-}
+  estaDeBajaHoy(d: Direccion): boolean {
+    return (this.rutasService as any).direccionEstaDeBaja(d, new Date());
+  }
 
   editarDireccion(id: string) {
     this.router.navigate(['/rutas', this.rutaId, 'editar', id]);
   }
 
   iniciarReparto() {
-  this.router.navigate(['/rutas', this.rutaId, 'reparto']);
-}
-
-editarRuta() {
-  this.router.navigate(['/rutas', this.rutaId, 'editar-ruta']);
-}
-
-hayProgresoGuardado(): boolean {
-  return localStorage.getItem(`reparto_${this.rutaId}`) !== null;
-}
-
-esRutaBase(): boolean {
-  return this.ruta()?.usuarioId === '__BASE__';
-}
-
-reordenHabilitado(): boolean {
-  // Solo permitimos reordenar cuando NO hay filtros activos
-  return !this.esRutaBase() && !this.busqueda.trim() && this.diaSeleccionado === 'todos';
-}
-
-async drop(event: CdkDragDrop<Direccion[]>) {
-  if (!this.reordenHabilitado()) {
-    alert('Para reordenar, quitá el buscador y dejá el filtro en "todos".');
-    return;
+    this.router.navigate(['/rutas', this.rutaId, 'reparto']);
   }
 
-  // ✅ usar el data del dropList (es la lista renderizada)
-  const lista = [...(event.container.data || [])];
-
-  moveItemInArray(lista, event.previousIndex, event.currentIndex);
-
-  // ✅ actualizar UI primero (si no, vuelve al lugar original)
-  this.todasLasDirecciones = lista;
-  this.direcciones.set(lista);
-  this.direccionesFiltradas.set(lista);
-
-  try {
-    await this.rutasService.reordenarDirecciones(this.rutaId, lista);
-    this.toast.mostrar('Orden guardado', 'success');
-  } catch (e) {
-    console.error(e);
-    this.toast.mostrar('No se pudo guardar el orden, se recarga la lista', 'error');
-    await this.cargarDirecciones(); // vuelve al último orden real
+  editarRuta() {
+    this.router.navigate(['/rutas', this.rutaId, 'editar-ruta']);
   }
-}
+
+  hayProgresoGuardado(): boolean {
+    return localStorage.getItem(`reparto_${this.rutaId}`) !== null;
+  }
+
+  esRutaBase(): boolean {
+    return this.ruta()?.usuarioId === '__BASE__';
+  }
+
+  reordenHabilitado(): boolean {
+    // Solo permitimos reordenar cuando NO hay filtros activos
+    return !this.esRutaBase() && !this.busqueda.trim();
+  }
+
+  async drop(event: CdkDragDrop<Direccion[]>) {
+    if (!this.reordenHabilitado()) {
+      alert('Para reordenar, borrá el texto del buscador.');
+      return;
+    }
+
+    // ✅ usar el data del dropList (es la lista renderizada)
+    const lista = [...(event.container.data || [])];
+
+    moveItemInArray(lista, event.previousIndex, event.currentIndex);
+
+    // ✅ actualizar UI primero (si no, vuelve al lugar original)
+    this.todasLasDirecciones = lista;
+    this.direcciones.set(lista);
+    this.direccionesFiltradas.set(lista);
+
+    try {
+      await this.rutasService.reordenarDirecciones(this.rutaId, lista);
+      this.toast.mostrar('Orden guardado', 'success');
+    } catch (e) {
+      console.error(e);
+      this.toast.mostrar(
+        'No se pudo guardar el orden, se recarga la lista',
+        'error'
+      );
+      await this.cargarDirecciones(); // vuelve al último orden real
+    }
+  }
 
   abrirEnMaps() {
-  const d = this.detalleSeleccionado();
+    const d = this.detalleSeleccionado();
 
-  if (!d) return;
+    if (!d) return;
 
-  // Primero probamos coordenadas (cuando existan)
-  if ((d as any).lat && (d as any).lng) {
-    window.open(`https://www.google.com/maps?q=${d.lat},${d.lng}`, "_blank");
-    return;
+    // Primero probamos coordenadas (cuando existan)
+    if ((d as any).lat && (d as any).lng) {
+      window.open(`https://www.google.com/maps?q=${d.lat},${d.lng}`, '_blank');
+      return;
+    }
+
+    // Si no hay coordenadas, buscamos por dirección
+    const encoded = encodeURIComponent(d.direccion);
+    window.open(`https://www.google.com/maps?q=${encoded}`, '_blank');
   }
 
-  // Si no hay coordenadas, buscamos por dirección
-  const encoded = encodeURIComponent(d.direccion);
-  window.open(`https://www.google.com/maps?q=${encoded}`, "_blank");
-}
+  private csvEscape(v: any): string {
+    const s = String(v ?? '');
+    // Excel/CSV: escapamos comillas y encerramos en comillas si hace falta
+    const needs = /[;"\n\r]/.test(s);
+    const escaped = s.replace(/"/g, '""');
+    return needs ? `"${escaped}"` : escaped;
+  }
 
-private csvEscape(v: any): string {
-  const s = String(v ?? '');
-  // Excel/CSV: escapamos comillas y encerramos en comillas si hace falta
-  const needs = /[;"\n\r]/.test(s);
-  const escaped = s.replace(/"/g, '""');
-  return needs ? `"${escaped}"` : escaped;
-}
+  private diasTexto(d: any): string {
+    const dias = d?.dias || {};
+    const parts: string[] = [];
+    if (dias.lunes) parts.push('L');
+    if (dias.martes) parts.push('M');
+    if (dias.miercoles) parts.push('X');
+    if (dias.jueves) parts.push('J');
+    if (dias.viernes) parts.push('V');
+    if (dias.sabado) parts.push('S');
+    if (dias.domingo) parts.push('D');
 
-private diasTexto(d: any): string {
-  const dias = d?.dias || {};
-  const parts: string[] = [];
-  if (dias.lunes) parts.push('L');
-  if (dias.martes) parts.push('M');
-  if (dias.miercoles) parts.push('X');
-  if (dias.jueves) parts.push('J');
-  if (dias.viernes) parts.push('V');
-  if (dias.sabado) parts.push('S');
-  if (dias.domingo) parts.push('D');
+    if (dias.festivos) parts.push('Festivos');
+    if (dias.noEntregarFestivos) parts.push('NoFestivos');
+    if (dias.guardarFinSemanaParaLunes) parts.push('GuardarFS->L');
 
-  if (dias.festivos) parts.push('Festivos');
-  if (dias.noEntregarFestivos) parts.push('NoFestivos');
-  if (dias.guardarFinSemanaParaLunes) parts.push('GuardarFS->L');
+    return parts.join(' ');
+  }
 
-  return parts.join(' ');
-}
+  exportarCSV() {
+    const ruta = this.ruta();
+    const base = ruta?.nombrePersonalizado || ruta?.nombreBase || 'ruta';
 
-exportarCSV() {
-  const ruta = this.ruta();
-  const base = (ruta?.nombrePersonalizado || ruta?.nombreBase || 'ruta');
+    const safeName = base
+      .toString()
+      .trim()
+      .replace(/[^\w\- ]+/g, '')
+      .replace(/\s+/g, '_');
 
-  const safeName = base
-    .toString()
-    .trim()
-    .replace(/[^\w\- ]+/g, '')
-    .replace(/\s+/g, '_');
+    const hoy = new Date().toISOString().slice(0, 10);
 
-  const hoy = new Date().toISOString().slice(0, 10);
+    // Exporta en el orden real (todasLasDirecciones ya está ordenada)
+    const lista =
+      (this.todasLasDirecciones?.length
+        ? this.todasLasDirecciones
+        : this.direcciones()) || [];
 
-  // Exporta en el orden real (todasLasDirecciones ya está ordenada)
-  const lista = (this.todasLasDirecciones?.length ? this.todasLasDirecciones : this.direcciones()) || [];
+    const sep = ';';
+    const header = [
+      'Orden',
+      'Cantidad',
+      'Cliente',
+      'Direccion',
+      'Notas',
+      'Dias',
+      'BajaDesde',
+      'BajaHasta',
+    ]
+      .map((x) => this.csvEscape(x))
+      .join(sep);
 
-  const sep = ';';
-  const header = ['Orden', 'Cantidad', 'Cliente', 'Direccion', 'Notas', 'Dias', 'BajaDesde', 'BajaHasta']
-    .map(x => this.csvEscape(x))
-    .join(sep);
+    const lines: string[] = [header];
 
-  const lines: string[] = [header];
+    lista.forEach((d: any, idx: number) => {
+      const baja =
+        Array.isArray(d?.bajas) && d.bajas.length ? d.bajas[0] : null;
 
-  lista.forEach((d: any, idx: number) => {
-    const baja = Array.isArray(d?.bajas) && d.bajas.length ? d.bajas[0] : null;
+      lines.push(
+        [
+          this.csvEscape(idx + 1),
+          this.csvEscape(d?.cantidadDiarios ?? ''),
+          this.csvEscape(d?.cliente ?? ''),
+          this.csvEscape(d?.direccion ?? ''),
+          this.csvEscape(d?.notas ?? ''),
+          this.csvEscape(this.diasTexto(d)),
+          this.csvEscape(baja?.desde ?? ''),
+          this.csvEscape(baja?.hasta ?? ''),
+        ].join(sep)
+      );
+    });
 
-    lines.push([
-      this.csvEscape(idx + 1),
-      this.csvEscape(d?.cantidadDiarios ?? ''),
-      this.csvEscape(d?.cliente ?? ''),
-      this.csvEscape(d?.direccion ?? ''),
-      this.csvEscape(d?.notas ?? ''),
-      this.csvEscape(this.diasTexto(d)),
-      this.csvEscape(baja?.desde ?? ''),
-      this.csvEscape(baja?.hasta ?? ''),
-    ].join(sep));
-  });
+    // BOM para que Excel lea bien acentos
+    const csv = '\ufeff' + lines.join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 
-  // BOM para que Excel lea bien acentos
-  const csv = '\ufeff' + lines.join('\r\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${safeName}_${hoy}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${safeName}_${hoy}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-
-  this.toast.mostrar('CSV exportado', 'success');
-}
-
+    this.toast.mostrar('CSV exportado', 'success');
+  }
 }

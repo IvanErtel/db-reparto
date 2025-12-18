@@ -1,14 +1,9 @@
 <div class="card-resumen" *ngIf="resumen">
-
   <h2>📊 Resumen del reparto</h2>
 
-  <p class="ruta">
-    <strong>Ruta:</strong> {{ resumen.rutaNombre }}
-  </p>
+  <p class="ruta"><strong>Ruta:</strong> {{ resumen.rutaNombre }}</p>
 
-  <p class="fecha">
-    <strong>Fecha:</strong> {{ resumen.fecha }}
-  </p>
+  <p class="fecha"><strong>Fecha:</strong> {{ resumen.fecha }}</p>
 
   <div class="bloque">
     <h3>✅ Entregados ({{ resumen.entregados.length }})</h3>
@@ -24,8 +19,9 @@
     </ul>
   </div>
 
-  <button class="btn-primario" (click)="cerrar()">
-    Cerrar
-  </button>
+  <div class="acciones">
+    <button class="btn-borrar" (click)="pedirEliminar()">🗑️ Eliminar</button>
 
+    <button class="btn-primario" (click)="cerrar()">Cerrar</button>
+  </div>
 </div>
