@@ -1,4 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { RutasService } from '../../services/rutas.service';
@@ -10,66 +15,65 @@ import { LoadingService } from '../../loading/loading.service';
 @Component({
   selector: 'app-list-rutas',
   standalone: true,
-  imports: [CommonModule,],
+  imports: [CommonModule],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListComponent implements OnInit {
-
   rutas = signal<Ruta[]>([]);
   cargando = signal(true);
 
   rutasBase = signal<Ruta[]>([]);
-cargandoBase = signal(true);
-copiando = signal(false);
+  cargandoBase = signal(true);
+  copiando = signal(false);
 
   constructor(
     private rutasService: RutasService,
     private router: Router,
     private rutasBaseService: RutasBaseService,
     private toast: ToastService,
-      private loading: LoadingService
+    private loading: LoadingService
   ) {}
 
-iniciarReparto(rutaId: string) {
-  // Empezar desde cero
-  localStorage.removeItem(`reparto_${rutaId}`);
-  localStorage.removeItem(`reparto_${rutaId}_iniciado`);
-  localStorage.removeItem(`reparto_${rutaId}_completado`);
+  iniciarReparto(rutaId: string) {
+    // Empezar desde cero
+    localStorage.removeItem(`reparto_${rutaId}`);
+    localStorage.removeItem(`reparto_${rutaId}_iniciado`);
+    localStorage.removeItem(`reparto_${rutaId}_completado`);
 
-  this.router.navigate(['/rutas', rutaId, 'reparto']);
-}
-
-continuarReparto(rutaId: string) {
-  this.router.navigate(['/rutas', rutaId, 'reparto']);
-}
-
-reiniciarReparto(rutaId: string) {
-  if (!confirm("¿Seguro que deseas reiniciar el reparto?")) return;
-
-  // Reiniciar = empezar desde cero también
-  localStorage.removeItem(`reparto_${rutaId}`);
-  localStorage.removeItem(`reparto_${rutaId}_iniciado`);
-  localStorage.removeItem(`reparto_${rutaId}_completado`);
-
-  this.router.navigate(['/rutas', rutaId, 'reparto']);
-}
-
-async ngOnInit() {
-  try {
-    const mis = await this.rutasService.obtenerMisRutas();
-    this.rutas.set(mis);
-
-    const base = await this.rutasBaseService.obtenerRutasBase();
-    this.rutasBase.set(base);
-  } catch (e) {
-    console.error('Error cargando rutas', e);
-  } finally {
-    this.cargando.set(false);
-    this.cargandoBase.set(false);
+    this.router.navigate(['/rutas', rutaId, 'reparto']);
   }
-}
+
+  continuarReparto(rutaId: string) {
+    this.router.navigate(['/rutas', rutaId, 'reparto']);
+  }
+
+  reiniciarReparto(rutaId: string) {
+    if (!confirm('¿Seguro que deseas reiniciar el reparto?')) return;
+
+    // Reiniciar = empezar desde cero también
+    localStorage.removeItem(`reparto_${rutaId}`);
+    localStorage.removeItem(`reparto_${rutaId}_iniciado`);
+    localStorage.removeItem(`reparto_${rutaId}_completado`);
+
+    this.router.navigate(['/rutas', rutaId, 'reparto']);
+  }
+
+  async ngOnInit() {
+    try {
+      const mis = await this.rutasService.obtenerMisRutas();
+      this.rutas.set(mis);
+
+      const base = await this.rutasBaseService.obtenerRutasBase();
+      this.rutasBase.set(base);
+    } catch (e) {
+      console.error('Error cargando rutas', e);
+    } finally {
+      this.cargando.set(false);
+      this.cargandoBase.set(false);
+    }
+  }
 
   crearNuevaRuta() {
     this.router.navigate(['/rutas/crear']);
@@ -79,48 +83,93 @@ async ngOnInit() {
     this.router.navigate(['/rutas', id]);
   }
 
-estadoReparto(rutaId: string): "nuevo" | "continuar" | "finalizado" {
-  const terminado = localStorage.getItem(`reparto_${rutaId}_completado`) === "true";
-  if (terminado) return "finalizado";
+  estadoReparto(rutaId: string): 'nuevo' | 'continuar' | 'finalizado' {
+    const terminado =
+      localStorage.getItem(`reparto_${rutaId}_completado`) === 'true';
+    if (terminado) return 'finalizado';
 
-  const iniciado = localStorage.getItem(`reparto_${rutaId}_iniciado`) === "true";
-  const tieneIndice = localStorage.getItem(`reparto_${rutaId}`) !== null;
+    const iniciado =
+      localStorage.getItem(`reparto_${rutaId}_iniciado`) === 'true';
+    const tieneIndice = localStorage.getItem(`reparto_${rutaId}`) !== null;
 
-  if (iniciado || tieneIndice) return "continuar";
-  return "nuevo";
-}
+    if (iniciado || tieneIndice) return 'continuar';
+    return 'nuevo';
+  }
 
-async crearMiCopiaDesdeBase(base: Ruta, ev?: MouseEvent) {
-  ev?.stopPropagation();
+  async crearMiCopiaDesdeBase(base: Ruta, ev?: MouseEvent) {
+    ev?.stopPropagation();
 
-  if (this.copiando()) return;
-  this.copiando.set(true);
+    if (this.copiando()) return;
+    this.copiando.set(true);
 
-  // ✅ loading global, no toast
-  this.loading.mostrar();
+    // ✅ loading global, no toast
+    this.loading.mostrar();
 
-  try {
-    const nombre = `Mi ${String(base.nombreBase || '').toUpperCase()}`;
+    try {
+      const nombre = `Mi ${String(base.nombreBase || '').toUpperCase()}`;
 
-    const nuevaId = await this.rutasBaseService.crearMiRutaDesdeBase(
-      base.id!,
-      nombre
+      const nuevaId = await this.rutasBaseService.crearMiRutaDesdeBase(
+        base.id!,
+        nombre
+      );
+
+      // refrescar mis rutas
+      const mis = await this.rutasService.obtenerMisRutas();
+      this.rutas.set(mis);
+
+      // ir a la copia
+      this.router.navigate(['/rutas', nuevaId]);
+    } catch (e) {
+      console.error(e);
+      this.toast.mostrar('Error creando la copia', 'error');
+    } finally {
+      this.copiando.set(false);
+      this.loading.ocultar();
+    }
+  }
+  private dateValue(v: any): number {
+    if (!v) return 0;
+    const d = typeof v?.toDate === 'function' ? v.toDate() : v;
+    return d instanceof Date ? d.getTime() : 0;
+  }
+
+  fechaHora(v: any): string {
+    const d = typeof v?.toDate === 'function' ? v.toDate() : v;
+    if (!(d instanceof Date)) return '';
+
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const da = String(d.getDate()).padStart(2, '0');
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    return `${y}-${m}-${da} ${hh}:${mm}`;
+  }
+
+  baseAbierta = signal<string | null>(null);
+
+  toggleBase(nombreBase: string) {
+    this.baseAbierta.set(this.baseAbierta() === nombreBase ? null : nombreBase);
+  }
+
+  basesAgrupadas() {
+    const bases = [...this.rutasBase()];
+    bases.sort(
+      (a, b) =>
+        this.dateValue(b.actualizadaEn || b.creadaEn) -
+        this.dateValue(a.actualizadaEn || a.creadaEn)
     );
 
-    // refrescar mis rutas
-    const mis = await this.rutasService.obtenerMisRutas();
-    this.rutas.set(mis);
+    const map = new Map<string, Ruta[]>();
+    for (const r of bases) {
+      const key = String(r.nombreBase);
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(r);
+    }
 
-    // ir a la copia
-    this.router.navigate(['/rutas', nuevaId]);
-
-  } catch (e) {
-    console.error(e);
-    this.toast.mostrar('Error creando la copia', 'error');
-  } finally {
-    this.copiando.set(false);
-    this.loading.ocultar();
+    return Array.from(map.entries()).map(([nombreBase, versiones]) => ({
+      nombreBase,
+      versiones,
+      ultima: versiones[0],
+    }));
   }
-}
-
 }

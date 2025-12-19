@@ -21,6 +21,8 @@ import {
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
 import { CdkDragMove } from '@angular/cdk/drag-drop';
+import { RutasBaseService } from '../../services/rutas-base.service';
+import { LoadingService } from '../../loading/loading.service';
 
 @Component({
   selector: 'app-detalle-ruta',
@@ -42,8 +44,12 @@ export class DetalleComponent implements OnInit {
   cargandoDirecciones = signal(true);
   busqueda = '';
   direccionesFiltradas = signal<Direccion[]>([]);
+  resultadosBusqueda = signal<Direccion[]>([]);
+  resaltadoId = signal<string | null>(null);
   mostrarScrollTop = false;
-
+  moverOpen = signal(false);
+  moverDir = signal<Direccion | null>(null);
+  moverPos = signal<number>(1);
   todasLasDirecciones: Direccion[] = [];
 
   // Para el modal de detalle
@@ -55,7 +61,9 @@ export class DetalleComponent implements OnInit {
     private router: Router,
     private rutasService: RutasService,
     private auth: Auth,
-    private toast: ToastService
+    private toast: ToastService,
+    private rutasBaseService: RutasBaseService,
+    private loading: LoadingService
   ) {}
 
   // -------------------------
@@ -174,17 +182,109 @@ export class DetalleComponent implements OnInit {
     const texto = this.busqueda.toLowerCase().trim();
 
     if (!texto) {
-      this.direccionesFiltradas.set(this.direcciones());
+      this.resultadosBusqueda.set([]);
       return;
     }
 
-    const filtradas = this.direcciones().filter(
-      (d) =>
-        d.cliente.toLowerCase().includes(texto) ||
-        d.direccion.toLowerCase().includes(texto)
-    );
+    const res = this.direcciones()
+      .filter(
+        (d) =>
+          d.cliente.toLowerCase().includes(texto) ||
+          d.direccion.toLowerCase().includes(texto)
+      )
+      .slice(0, 25); // para no listar 200 resultados
 
-    this.direccionesFiltradas.set(filtradas);
+    this.resultadosBusqueda.set(res);
+  }
+
+  abrirMover(d: Direccion) {
+    const base = this.todasLasDirecciones?.length
+      ? this.todasLasDirecciones
+      : this.direcciones();
+    const idx = base.findIndex((x) => x.id === d.id);
+
+    this.moverDir.set(d);
+    this.moverPos.set(idx >= 0 ? idx + 1 : 1);
+    this.moverOpen.set(true);
+  }
+
+  cerrarMover() {
+    this.moverOpen.set(false);
+    this.moverDir.set(null);
+  }
+
+  async confirmarMover() {
+    const d = this.moverDir();
+    if (!d) return;
+
+    // ✅ SIEMPRE trabajamos sobre la lista real completa
+    const base = this.todasLasDirecciones?.length
+      ? this.todasLasDirecciones
+      : this.direcciones();
+    const lista = [...base];
+    const total = lista.length;
+
+    let pos = Number(this.moverPos());
+    if (!Number.isFinite(pos)) pos = 1;
+    pos = Math.max(1, Math.min(total, pos));
+
+    const from = lista.findIndex((x) => x.id === d.id);
+    if (from < 0) {
+      this.cerrarMover();
+      return;
+    }
+
+    let to = pos - 1;
+
+    const [item] = lista.splice(from, 1);
+    if (to > from) to--;
+    lista.splice(to, 0, item);
+
+    // ✅ actualizamos la lista REAL que pinta la UI
+    this.todasLasDirecciones = lista;
+    this.direcciones.set(lista);
+
+    // si tu HTML usa direccionesFiltradas(), también hay que setearla:
+    if ((this as any).direccionesFiltradas?.set) {
+      (this as any).direccionesFiltradas.set(lista);
+    }
+
+    const desde = Math.min(from, to);
+    const hasta = Math.max(from, to);
+
+    this.loading.mostrar();
+    try {
+      await this.rutasService.reordenarRango(this.rutaId, lista, desde, hasta);
+      this.toast.mostrar(`Movido a posición ${pos}`, 'success');
+      this.cerrarMover();
+    } catch (e) {
+      console.error(e);
+      this.toast.mostrar('Error guardando el orden', 'error');
+    } finally {
+      this.loading.ocultar();
+    }
+  }
+
+  irA(d: Direccion) {
+    this.resultadosBusqueda.set([]);
+
+    const id = d.id ? `dir-${d.id}` : null;
+    if (!id) return;
+
+    // scroll al elemento en la lista real
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        this.resaltadoId.set(d.id!);
+        setTimeout(() => this.resaltadoId.set(null), 1600);
+      }
+    }, 0);
+  }
+
+  posicion(d: Direccion): number {
+    const idx = this.todasLasDirecciones.findIndex((x) => x.id === d.id);
+    return idx >= 0 ? idx + 1 : 0;
   }
 
   async subirDireccion(d: Direccion) {
@@ -197,8 +297,10 @@ export class DetalleComponent implements OnInit {
     lista[index - 1] = lista[index];
     lista[index] = tmp;
 
-    // guardar nuevo orden en Firestore
-    await this.rutasService.reordenarDirecciones(this.rutaId, lista);
+    // ✅ guardar SOLO el rango afectado (2 elementos)
+    const desde = index - 1;
+    const hasta = index;
+    await this.rutasService.reordenarRango(this.rutaId, lista, desde, hasta);
 
     // actualizar en memoria y filtros
     this.todasLasDirecciones = lista;
@@ -208,6 +310,20 @@ export class DetalleComponent implements OnInit {
 
   volverArriba() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async subirComoBase() {
+    this.loading.mostrar();
+    try {
+      const baseId = await this.rutasBaseService.subirRutaComoBase(this.rutaId);
+      this.toast.mostrar('Ruta subida a BASE (nueva versión)', 'success');
+      this.router.navigate(['/rutas', baseId]);
+    } catch (e) {
+      console.error(e);
+      this.toast.mostrar('No se pudo subir la ruta a BASE', 'error');
+    } finally {
+      this.loading.ocultar();
+    }
   }
 
   async bajarDireccion(d: Direccion) {
@@ -221,7 +337,9 @@ export class DetalleComponent implements OnInit {
     lista[index] = tmp;
 
     // guardar nuevo orden en Firestore
-    await this.rutasService.reordenarDirecciones(this.rutaId, lista);
+    const desde = index;
+    const hasta = index + 1;
+    await this.rutasService.reordenarRango(this.rutaId, lista, desde, hasta);
 
     // actualizar en memoria y filtros
     this.todasLasDirecciones = lista;
@@ -254,8 +372,8 @@ export class DetalleComponent implements OnInit {
   }
 
   reordenHabilitado(): boolean {
-    // Solo permitimos reordenar cuando NO hay filtros activos
-    return !this.esRutaBase() && !this.busqueda.trim();
+    // Reordenar solo si NO es ruta base (tu regla original)
+    return !this.esRutaBase();
   }
 
   async drop(event: CdkDragDrop<Direccion[]>) {

@@ -1,5 +1,4 @@
 <div class="detalle-ruta">
-
   <div class="cabecera">
     <button (click)="volver()">⬅ Volver</button>
   </div>
@@ -16,71 +15,106 @@
       ✏ Editar ruta
     </button>
 
-    <button class="btn-exportar" (click)="exportarCSV()">
-  ⬇ Exportar CSV
-</button>
+    <button class="btn-subir-base" (click)="subirComoBase()">
+      ⬆ Subir a base
+    </button>
 
+    <button class="btn-exportar" (click)="exportarCSV()">⬇ Exportar CSV</button>
   </div>
 
   <h2>Direcciones cargadas ({{ direcciones().length }})</h2>
 
   <div class="buscador">
-  <input
-    type="text"
-    placeholder="Buscar dirección o cliente..."
-    [(ngModel)]="busqueda"
-    (input)="filtrarBusqueda()">
-</div>
+    <input
+      type="text"
+      placeholder="Buscar dirección o cliente..."
+      [(ngModel)]="busqueda"
+      (input)="filtrarBusqueda()"
+    />
+  </div>
+
+  <div class="resultados" *ngIf="resultadosBusqueda().length > 0">
+    <button
+      class="resultado"
+      *ngFor="let r of resultadosBusqueda()"
+      type="button"
+      (click)="irA(r)"
+    >
+      <div class="r-cliente">{{ r.cliente }}</div>
+      <div class="r-dir">📍 {{ r.direccion }}</div>
+    </button>
+  </div>
 
   <div *ngIf="cargandoDirecciones()" class="loading">
     Cargando direcciones...
   </div>
 
-<div class="lista"
-     *ngIf="!cargandoDirecciones() && direcciones().length > 0"
-     cdkDropList
-     [cdkDropListData]="direccionesFiltradas()"
-     [cdkDropListDisabled]="!reordenHabilitado()"
-     (cdkDropListDropped)="drop($event)">
+  <div
+    class="lista"
+    *ngIf="!cargandoDirecciones() && direcciones().length > 0"
+    cdkDropList
+    [cdkDropListData]="direccionesFiltradas()"
+    [cdkDropListDisabled]="!reordenHabilitado()"
+    (cdkDropListDropped)="drop($event)"
+  >
+    <div
+      class="card"
+      *ngFor="let d of direccionesFiltradas(); let i = index"
+      [attr.id]="'dir-' + d.id"
+      [class.highlight]="resaltadoId() === d.id"
+      cdkDrag
+      [cdkDragDisabled]="!reordenHabilitado()"
+      cdkDragLockAxis="y"
+      (cdkDragMoved)="onDragMoved($event)"
+      (cdkDragEnded)="onDragEnded()"
+      (click)="abrirDetalle(d)"
+    >
+      <span class="badgeOrden" *ngIf="posicion(d) as p">#{{ p }}</span>
+      <div
+        class="drag-handle"
+        *ngIf="!esRutaBase()"
+        cdkDragHandle
+        (click)="$event.stopPropagation()"
+      >
+        ☰
+      </div>
 
-  <div class="card"
-       *ngFor="let d of direccionesFiltradas(); let i = index"
-       cdkDrag
-       [cdkDragDisabled]="!reordenHabilitado()"
-       cdkDragLockAxis="y"
-       (cdkDragMoved)="onDragMoved($event)"
-     (cdkDragEnded)="onDragEnded()"
-       (click)="abrirDetalle(d)">
+      <div class="cliente">{{ d.cliente }}</div>
+      <div class="direccion">📍 {{ d.direccion }}</div>
+      <div class="info">📰 {{ d.cantidadDiarios }} diarios</div>
+      <div class="acciones-card" *ngIf="!esRutaBase()">
+        <button
+          class="btn-mover"
+          type="button"
+          (click)="abrirMover(d); $event.stopPropagation()"
+        >
+          ↕️ Mover
+        </button>
+      </div>
 
-    <div class="drag-handle" *ngIf="!esRutaBase()" cdkDragHandle (click)="$event.stopPropagation()">
-      ☰
+      <!-- ✅ Ya no usamos Subir/Bajar -->
     </div>
-
-    <div class="cliente">{{ d.cliente }}</div>
-    <div class="direccion">📍 {{ d.direccion }}</div>
-    <div class="info">📰 {{ d.cantidadDiarios }} diarios</div>
-
-    <!-- ✅ Ya no usamos Subir/Bajar -->
   </div>
-</div>
 
-
-  <p class="sin-datos" *ngIf="!cargandoDirecciones() && direccionesFiltradas().length === 0">
+  <p
+    class="sin-datos"
+    *ngIf="!cargandoDirecciones() && direccionesFiltradas().length === 0"
+  >
     Esta ruta todavía no tiene direcciones.
   </p>
 
   <!-- MODAL DETALLE -->
   <div class="modal-fondo" *ngIf="modalAbierto()">
     <div class="modal-contenido">
-
       <h2>{{ detalleSeleccionado()?.cliente }}</h2>
- <div *ngIf="detalleSeleccionado()?.bajas?.length"
-     class="estado-baja">
-  🚫 Cliente con baja programada
-</div>
+      <div *ngIf="detalleSeleccionado()?.bajas?.length" class="estado-baja">
+        🚫 Cliente con baja programada
+      </div>
 
       <p><strong>Dirección:</strong> {{ detalleSeleccionado()?.direccion }}</p>
-      <p><strong>Diarios:</strong> {{ detalleSeleccionado()?.cantidadDiarios }}</p>
+      <p>
+        <strong>Diarios:</strong> {{ detalleSeleccionado()?.cantidadDiarios }}
+      </p>
 
       <p *ngIf="detalleSeleccionado()?.lat">
         <strong>Latitud:</strong> {{ detalleSeleccionado()?.lat }}
@@ -103,33 +137,65 @@
       </ul>
 
       <p *ngIf="detalleSeleccionado()?.notas">
-        <strong>Notas:</strong><br>
+        <strong>Notas:</strong><br />
         {{ detalleSeleccionado()?.notas }}
       </p>
 
       <div class="acciones-modal">
-<button class="btn-primario" (click)="abrirEnMaps()">
-  📍 Ver en Google Maps
-</button>
+        <button class="btn-primario" (click)="abrirEnMaps()">
+          📍 Ver en Google Maps
+        </button>
 
-<button class="btn-secundario"
-        (click)="editarDireccion(detalleSeleccionado()!.id!)">
-  Editar
-</button>
+        <button
+          class="btn-secundario"
+          (click)="editarDireccion(detalleSeleccionado()!.id!)"
+        >
+          Editar
+        </button>
 
-<button class="btn-peligro" (click)="cerrarModal()">
-  Cerrar
-</button>
-
+        <button class="btn-peligro" (click)="cerrarModal()">Cerrar</button>
       </div>
-
     </div>
   </div>
-
 </div>
 <button
   *ngIf="mostrarScrollTop"
   class="btn-scroll-top"
-  (click)="volverArriba()">
+  (click)="volverArriba()"
+>
   ⬆
 </button>
+
+<div class="backdrop" *ngIf="moverOpen()" (click)="cerrarMover()">
+  <div class="sheet" (click)="$event.stopPropagation()">
+    <div class="sheetTitle">Mover dirección</div>
+
+    <div class="sheetText" *ngIf="moverDir() as dir">
+      <strong>{{ dir.cliente }}</strong>
+      <div class="muted">
+        Elegí la posición (1 a {{ todasLasDirecciones.length }})
+      </div>
+    </div>
+
+    <div class="fila-pos">
+      <input
+        class="input-pos"
+        type="number"
+        min="1"
+        [max]="direcciones().length"
+        [ngModel]="moverPos()"
+        (ngModelChange)="moverPos.set($event)"
+      />
+    </div>
+
+    <div class="sheetActions">
+      <button class="btn ghost" type="button" (click)="cerrarMover()">
+        Cancelar
+      </button>
+
+      <button class="btn peligro" type="button" (click)="confirmarMover()">
+        Mover
+      </button>
+    </div>
+  </div>
+</div>

@@ -11,6 +11,7 @@ import {
   query,
   where,
   orderBy,
+  writeBatch,
 } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
 import { Ruta } from '../models/ruta';
@@ -168,6 +169,35 @@ export class RutasService {
     });
 
     await Promise.all(promesas);
+    this.cacheDirecciones.delete(rutaId);
+  }
+
+  async reordenarRango(
+    rutaId: string,
+    direcciones: Direccion[],
+    desde: number,
+    hasta: number
+  ): Promise<void> {
+    let batch = writeBatch(this.firestore);
+    let ops = 0;
+
+    for (let i = desde; i <= hasta; i++) {
+      const dir = direcciones[i];
+      const ref = doc(this.firestore, `routes/${rutaId}/stops/${dir.id}`);
+      batch.update(ref, { indiceOrden: i });
+      ops++;
+
+      // margen para no llegar a 500
+      if (ops >= 450) {
+        await batch.commit();
+        batch = writeBatch(this.firestore);
+        ops = 0;
+      }
+    }
+
+    if (ops > 0) await batch.commit();
+
+    // 🔥 invalidar cache
     this.cacheDirecciones.delete(rutaId);
   }
 

@@ -17,7 +17,7 @@
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
-    transition: .2s ease;
+    transition: 0.2s ease;
 
     &:hover {
       opacity: 0.9;
@@ -54,7 +54,7 @@ h1 {
   font-size: 15px;
   font-weight: 500;
   color: white;
-  transition: .2s ease;
+  transition: 0.2s ease;
 }
 
 .btn-agregar {
@@ -87,13 +87,13 @@ h2 {
   background: white;
   padding: 18px;
   border-radius: var(--radio);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   cursor: pointer;
-  transition: .2s ease;
+  transition: 0.2s ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
   }
 
   .cliente {
@@ -103,14 +103,14 @@ h2 {
   }
 
   .direccion {
-  font-size: 0.9rem;
-  color: var(--texto-secundario);
-}
+    font-size: 0.9rem;
+    color: var(--texto-secundario);
+  }
 
   .info {
     font-size: 14px;
     color: var(--color-gris);
-    margin-top: 0.25rem
+    margin-top: 0.25rem;
   }
 }
 
@@ -129,7 +129,7 @@ h2 {
 .modal-fondo {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -143,13 +143,19 @@ h2 {
   border-radius: var(--radio);
   max-width: 450px;
   width: 100%;
-  animation: fadeIn .25s ease;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  animation: fadeIn 0.25s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .modal-contenido h2 {
@@ -184,7 +190,7 @@ h2 {
     font-size: 15px;
     color: white;
     font-weight: 500;
-    transition: .2s ease;
+    transition: 0.2s ease;
   }
 
   .btn-maps {
@@ -203,15 +209,15 @@ h2 {
     opacity: 0.9;
   }
 
-.estado-baja {
-  margin: 8px 0 12px;
-  padding: 6px 10px;
-  background: #fee2e2;
-  color: #991b1b;
-  border-radius: 8px;
-  font-weight: 600;
-  text-align: center;
-}
+  .estado-baja {
+    margin: 8px 0 12px;
+    padding: 6px 10px;
+    background: #fee2e2;
+    color: #991b1b;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+  }
 }
 
 .btn-scroll-top {
@@ -253,15 +259,15 @@ h2 {
 }
 
 .btn-exportar {
-  border: 1px solid rgba(0,0,0,.15);
-  background: rgba(0,0,0,.04);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.04);
   padding: 10px 12px;
   border-radius: 12px;
   cursor: pointer;
 }
 
 .btn-exportar:hover {
-  background: rgba(0,0,0,.07);
+  background: rgba(0, 0, 0, 0.07);
 }
 
 .drag-handle {
@@ -270,7 +276,7 @@ h2 {
   font-size: 18px;
   padding: 6px 10px;
   border-radius: 10px;
-  background: rgba(0,0,0,0.05);
+  background: rgba(0, 0, 0, 0.05);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -284,7 +290,7 @@ h2 {
 }
 
 .cdk-drag-preview {
-  box-shadow: 0 10px 25px rgba(0,0,0,.15);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   border-radius: 12px;
 }
 
@@ -292,3 +298,200 @@ h2 {
   transition: transform 200ms ease;
 }
 
+.btn-subir-base {
+  border: none;
+  background: var(--color-primario);
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.btn-subir-base:hover {
+  opacity: 0.92;
+}
+
+.resultados {
+  margin: 8px 0 14px;
+  border: var(--borde);
+  border-radius: var(--radio);
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.resultado {
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border: 0;
+  background: #fff;
+  cursor: pointer;
+  display: block;
+}
+
+.resultado + .resultado {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.r-cliente {
+  font-weight: 900;
+}
+
+.r-dir {
+  opacity: 0.75;
+  font-size: 0.92rem;
+  margin-top: 2px;
+}
+
+/* resalta la card a donde saltaste */
+.card.highlight {
+  outline: 3px solid rgba(0, 140, 255, 0.35);
+  box-shadow: 0 0 0 6px rgba(0, 140, 255, 0.1);
+}
+
+.btn-mover {
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: rgba(0, 0, 0, 0.04);
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.fila-pos {
+  margin-top: 10px;
+}
+
+.input-pos {
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: var(--radio);
+  border: var(--borde);
+  outline: none;
+  font-weight: 900;
+  font-size: 1.05rem;
+}
+
+.btn-mover {
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: rgba(0, 0, 0, 0.04);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+/* ===== Botón Mover alineado ===== */
+.acciones-card {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.btn-mover {
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: rgba(0, 0, 0, 0.04);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* ===== Modal Mover (bottom sheet) ===== */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 14px;
+  z-index: 9999;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 560px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+.sheetTitle {
+  font-weight: 900;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.sheetText {
+  opacity: 0.9;
+}
+
+.muted {
+  margin-top: 6px;
+  opacity: 0.7;
+  font-size: 13px;
+}
+
+.fila-pos {
+  margin-top: 10px;
+}
+
+.input-pos {
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: var(--radio);
+  border: var(--borde);
+  outline: none;
+  font-weight: 900;
+  font-size: 1.05rem;
+}
+
+.sheetActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.sheetActions .btn {
+  flex: 1;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 999px;
+  padding: 10px 12px;
+  font-weight: 900;
+  cursor: pointer;
+  background: #fff;
+}
+
+.sheetActions .btn.ghost {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.sheetActions .btn.peligro {
+  background: var(--color-peligro);
+  border-color: var(--color-peligro);
+  color: #fff;
+}
+
+.card {
+  position: relative; // necesario para posicionar el badge
+}
+
+.badgeOrden {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 12px;
+  font-weight: 900;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.05);
+  opacity: 0.9;
+  user-select: none;
+}
