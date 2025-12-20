@@ -86,6 +86,36 @@ export const routes: Routes = [
       ),
   },
 
+  // Importar CSV
+  {
+    path: 'importar-csv',
+    loadComponent: () =>
+      import('./importar-csv/importar-csv.component').then(
+        (m) => m.ImportarCsvComponent
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Resúmenes (listado)
+  {
+    path: 'resumenes',
+    loadComponent: () =>
+      import('./panel-resumen/panel-resumen.component').then(
+        (m) => m.ResumenesComponent
+      ),
+    canActivate: [authGuard],
+  },
+
+  // Resúmenes (detalle)
+  {
+    path: 'resumenes/:id',
+    loadComponent: () =>
+      import('./panel-resumen/panel-resumen-detalle.component').then(
+        (m) => m.PanelResumenDetalleComponent
+      ),
+    canActivate: [authGuard],
+  },
+
   { path: '', redirectTo: 'rutas', pathMatch: 'full' },
   { path: '**', redirectTo: 'rutas' },
 ];

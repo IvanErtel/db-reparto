@@ -1,9 +1,18 @@
 .lista-rutas {
-  width: 90%;
-  max-width: 1000px; /* más ancho en PC */
-  margin: 0 auto;
-  padding: 16px; /* para que no quede pegado en mobile */
+  width: 100%;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+}
+
+/* en PC sí centramos y limitamos ancho */
+@media (min-width: 821px) {
+  .lista-rutas {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 16px;
+  }
 }
 
 .lista-rutas ul {

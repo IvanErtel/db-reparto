@@ -1,5 +1,4 @@
 <div class="app-layout">
-
   <!-- ocultar menú completo en login -->
   <app-menu *ngIf="mostrarHamburguesa()"></app-menu>
 
@@ -10,6 +9,7 @@
   <main class="contenido">
     <router-outlet></router-outlet>
   </main>
+  <app-bottom-nav *ngIf="mostrarBottomNav()"></app-bottom-nav>
 
   <app-toast></app-toast>
   <app-loading></app-loading>
