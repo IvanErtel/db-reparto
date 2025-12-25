@@ -75,15 +75,16 @@ export const routes: Routes = [
       import('./importar-csv/importar-csv.component').then(
         (m) => m.ImportarCsvComponent
       ),
+    canActivate: [authGuard],
   },
 
-  // Reparto
   {
     path: 'rutas/:id/reparto',
     loadComponent: () =>
       import('./routes/reparto/reparto.component').then(
         (m) => m.RepartoComponent
       ),
+    canActivate: [authGuard],
   },
 
   // Importar CSV
@@ -96,26 +97,6 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
 
-  // Resúmenes (listado)
-  {
-    path: 'resumenes',
-    loadComponent: () =>
-      import('./panel-resumen/panel-resumen.component').then(
-        (m) => m.ResumenesComponent
-      ),
-    canActivate: [authGuard],
-  },
-
-  // Resúmenes (detalle)
-  {
-    path: 'resumenes/:id',
-    loadComponent: () =>
-      import('./panel-resumen/panel-resumen-detalle.component').then(
-        (m) => m.PanelResumenDetalleComponent
-      ),
-    canActivate: [authGuard],
-  },
-
-  { path: '', redirectTo: 'rutas', pathMatch: 'full' },
-  { path: '**', redirectTo: 'rutas' },
+  { path: '', redirectTo: 'rutas', pathMatch: 'full' }, // ok
+  { path: '**', redirectTo: 'login' },
 ];

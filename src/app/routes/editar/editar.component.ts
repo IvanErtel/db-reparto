@@ -29,6 +29,7 @@ export class EditarComponent implements OnInit {
   bajas: { desde: string; hasta: string }[] = [];
   bajaDesde = '';
   bajaHasta = '';
+  coordsTexto = '';
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -47,8 +48,74 @@ export class EditarComponent implements OnInit {
     const d = dirs.find((x) => x.id === this.direccionId) || null;
 
     this.direccion.set(d);
+    this.coordsTexto =
+      d?.lat != null && d?.lng != null ? `${d.lat}, ${d.lng}` : '';
     this.bajas = d?.bajas ? [...d.bajas] : [];
     this.cargando.set(false);
+  }
+
+  private parseCoords(text: string): { lat: number; lng: number } | null {
+    if (!text) return null;
+
+    const cleaned = text
+      .trim()
+      .replace(/[()]/g, '')
+      .replace(/;/g, ',')
+      .replace(/\s+/g, ' ');
+
+    const m = cleaned.match(/(-?\d+(?:\.\d+)?)[,\s]+(-?\d+(?:\.\d+)?)/);
+    if (!m) return null;
+
+    const a = Number(m[1]);
+    const b = Number(m[2]);
+    if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
+
+    let lat = a,
+      lng = b;
+    if (Math.abs(lat) > 90 && Math.abs(lng) <= 90) {
+      lat = b;
+      lng = a;
+    }
+
+    if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
+
+    return { lat, lng };
+  }
+
+  private setDireccionCoords(lat: number, lng: number) {
+    const d = this.direccion();
+    if (!d) return;
+
+    // importante: setear de nuevo la señal para que OnPush refresque seguro
+    this.direccion.set({ ...d, lat, lng });
+  }
+
+  onCoordsPaste(ev: ClipboardEvent) {
+    const txt = ev.clipboardData?.getData('text') ?? '';
+    const parsed = this.parseCoords(txt);
+
+    if (!parsed) {
+      this.toast.mostrar(
+        'Formato inválido. Pegá: 42.351017, -3.663434',
+        'error'
+      );
+      return;
+    }
+
+    ev.preventDefault();
+
+    this.setDireccionCoords(parsed.lat, parsed.lng);
+    this.coordsTexto = `${parsed.lat}, ${parsed.lng}`;
+  }
+
+  aplicarCoordsDesdeTexto() {
+    if (!this.coordsTexto?.trim()) return;
+
+    const parsed = this.parseCoords(this.coordsTexto);
+    if (!parsed) return;
+
+    this.setDireccionCoords(parsed.lat, parsed.lng);
+    this.coordsTexto = `${parsed.lat}, ${parsed.lng}`;
   }
 
   async guardar() {

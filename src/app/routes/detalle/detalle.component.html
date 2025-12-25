@@ -7,19 +7,41 @@
   <p class="base">Zona base: {{ ruta()?.nombreBase }}</p>
 
   <div class="acciones-principales">
-    <button class="btn-agregar" (click)="agregarDireccion()">
-      ➕ Agregar dirección
+    <!-- Grande -->
+    <button class="accion accion-primary" (click)="agregarDireccion()">
+      <span class="icon">＋</span>
+      <span class="txt">
+        <span class="t1">Agregar</span>
+        <span class="t2">dirección</span>
+      </span>
     </button>
 
-    <button class="btn-editar-ruta" (click)="editarRuta()">
-      ✏ Editar ruta
-    </button>
+    <!-- Pequeños -->
+    <div class="acciones-sec">
+      <button
+        class="accion accion-mini"
+        (click)="editarRuta()"
+        title="Editar ruta"
+      >
+        ✏️ <span>Editar</span>
+      </button>
 
-    <button class="btn-subir-base" (click)="subirComoBase()">
-      ⬆ Subir a base
-    </button>
+      <button
+        class="accion accion-mini"
+        (click)="subirComoBase()"
+        title="Subir a base"
+      >
+        ⬆️ <span>Base</span>
+      </button>
 
-    <button class="btn-exportar" (click)="exportarCSV()">⬇ Exportar CSV</button>
+      <button
+        class="accion accion-mini"
+        (click)="exportarCSV()"
+        title="Exportar CSV"
+      >
+        ⬇️ <span>CSV</span>
+      </button>
+    </div>
   </div>
 
   <h2>Direcciones cargadas ({{ direcciones().length }})</h2>
@@ -70,14 +92,17 @@
       (cdkDragEnded)="onDragEnded()"
       (click)="abrirDetalle(d)"
     >
-      <span class="badgeOrden" *ngIf="posicion(d) as p">#{{ p }}</span>
-      <div
-        class="drag-handle"
-        *ngIf="!esRutaBase()"
-        cdkDragHandle
-        (click)="$event.stopPropagation()"
-      >
-        ☰
+      <div class="card-top">
+        <div
+          class="drag-handle"
+          *ngIf="!esRutaBase()"
+          cdkDragHandle
+          (click)="$event.stopPropagation()"
+        >
+          ☰
+        </div>
+
+        <div class="pos-badge">#{{ i + 1 }}</div>
       </div>
 
       <div class="cliente">{{ d.cliente }}</div>

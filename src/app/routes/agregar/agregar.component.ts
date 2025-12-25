@@ -25,6 +25,8 @@ export class AgregarComponent implements OnInit {
   // Coordenadas
   lat: number | null = null;
   lng: number | null = null;
+  // Pegar coordenadas tipo "42.3510, -3.6634"
+  coordsTexto = '';
 
   // Días de entrega
   dias = {
@@ -85,6 +87,68 @@ export class AgregarComponent implements OnInit {
 
   eliminarBaja(i: number) {
     this.bajas.splice(i, 1);
+  }
+
+  private parseCoords(text: string): { lat: number; lng: number } | null {
+    if (!text) return null;
+
+    const cleaned = text
+      .trim()
+      .replace(/[()]/g, '')
+      .replace(/;/g, ',')
+      .replace(/\s+/g, ' ');
+
+    // toma los primeros 2 números que encuentre
+    const m = cleaned.match(/(-?\d+(?:\.\d+)?)[,\s]+(-?\d+(?:\.\d+)?)/);
+    if (!m) return null;
+
+    const a = Number(m[1]);
+    const b = Number(m[2]);
+    if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
+
+    // lat entre -90 y 90, lng entre -180 y 180
+    let lat = a,
+      lng = b;
+
+    // si vienen invertidas (raro), corregimos
+    if (Math.abs(lat) > 90 && Math.abs(lng) <= 90) {
+      lat = b;
+      lng = a;
+    }
+
+    if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
+
+    return { lat, lng };
+  }
+
+  onCoordsPaste(ev: ClipboardEvent) {
+    const txt = ev.clipboardData?.getData('text') ?? '';
+    const parsed = this.parseCoords(txt);
+
+    if (!parsed) {
+      this.toast.mostrar(
+        'Formato inválido. Pegá: 42.351017, -3.663434',
+        'error'
+      );
+      return;
+    }
+
+    ev.preventDefault();
+
+    this.lat = parsed.lat;
+    this.lng = parsed.lng;
+    this.coordsTexto = `${parsed.lat}, ${parsed.lng}`;
+  }
+
+  aplicarCoordsDesdeTexto() {
+    if (!this.coordsTexto?.trim()) return;
+
+    const parsed = this.parseCoords(this.coordsTexto);
+    if (!parsed) return;
+
+    this.lat = parsed.lat;
+    this.lng = parsed.lng;
+    this.coordsTexto = `${parsed.lat}, ${parsed.lng}`;
   }
 
   async guardar() {

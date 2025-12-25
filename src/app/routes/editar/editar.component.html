@@ -1,106 +1,145 @@
 <div class="editar">
-
   <h1>Editar dirección</h1>
 
   <div *ngIf="cargando()" class="loading">Cargando...</div>
 
   <div *ngIf="!cargando() && direccion()">
-
     <!-- CLIENTE -->
-    <label>Cliente:
-      <input type="text" [(ngModel)]="direccion()!.cliente">
+    <label
+      >Cliente:
+      <input type="text" [(ngModel)]="direccion()!.cliente" />
     </label>
 
     <!-- DIRECCIÓN -->
-    <label>Dirección:
-      <input type="text" [(ngModel)]="direccion()!.direccion">
+    <label
+      >Dirección:
+      <input type="text" [(ngModel)]="direccion()!.direccion" />
     </label>
 
     <!-- DIARIOS -->
-    <label>Cantidad de diarios:
-      <input type="number" min="1" [(ngModel)]="direccion()!.cantidadDiarios">
+    <label
+      >Cantidad de diarios:
+      <input type="number" min="1" [(ngModel)]="direccion()!.cantidadDiarios" />
     </label>
 
     <!-- DÍAS DE ENTREGA -->
     <h3>Días de entrega</h3>
 
     <div class="dias">
-      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.lunes"> Lunes</label>
-      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.martes"> Martes</label>
-      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.miercoles"> Miércoles</label>
-      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.jueves"> Jueves</label>
-      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.viernes"> Viernes</label>
-      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.sabado"> Sábado</label>
-      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.domingo"> Domingo</label>
-      <label><input type="checkbox" [(ngModel)]="direccion()!.dias.festivos"> Festivos</label>
+      <label
+        ><input type="checkbox" [(ngModel)]="direccion()!.dias.lunes" />
+        Lunes</label
+      >
+      <label
+        ><input type="checkbox" [(ngModel)]="direccion()!.dias.martes" />
+        Martes</label
+      >
+      <label
+        ><input type="checkbox" [(ngModel)]="direccion()!.dias.miercoles" />
+        Miércoles</label
+      >
+      <label
+        ><input type="checkbox" [(ngModel)]="direccion()!.dias.jueves" />
+        Jueves</label
+      >
+      <label
+        ><input type="checkbox" [(ngModel)]="direccion()!.dias.viernes" />
+        Viernes</label
+      >
+      <label
+        ><input type="checkbox" [(ngModel)]="direccion()!.dias.sabado" />
+        Sábado</label
+      >
+      <label
+        ><input type="checkbox" [(ngModel)]="direccion()!.dias.domingo" />
+        Domingo</label
+      >
+      <label
+        ><input type="checkbox" [(ngModel)]="direccion()!.dias.festivos" />
+        Festivos</label
+      >
       <label>
-  <input type="checkbox" [(ngModel)]="direccion()!.dias.noEntregarFestivos">
-  No entregar en festivos
-</label>
-
+        <input
+          type="checkbox"
+          [(ngModel)]="direccion()!.dias.noEntregarFestivos"
+        />
+        No entregar en festivos
+      </label>
 
       <label class="full">
-        <input type="checkbox" [(ngModel)]="direccion()!.dias.guardarFinSemanaParaLunes">
+        <input
+          type="checkbox"
+          [(ngModel)]="direccion()!.dias.guardarFinSemanaParaLunes"
+        />
         Guardar sáb-dom para entregar lunes
       </label>
     </div>
 
     <h3>Bajas temporales (vacaciones)</h3>
 
-<div class="bajas-box">
-  <div class="baja-form">
-    <label>
-      Desde:
-      <input type="date" [(ngModel)]="bajaDesde">
-    </label>
+    <div class="bajas-box">
+      <div class="baja-form">
+        <label>
+          Desde:
+          <input type="date" [(ngModel)]="bajaDesde" />
+        </label>
 
-    <label>
-      Hasta:
-      <input type="date" [(ngModel)]="bajaHasta">
-    </label>
+        <label>
+          Hasta:
+          <input type="date" [(ngModel)]="bajaHasta" />
+        </label>
 
-    <button type="button" class="btn-gris" (click)="agregarBaja()">
-      ➕ Agregar baja
-    </button>
-  </div>
+        <button type="button" class="btn-gris" (click)="agregarBaja()">
+          ➕ Agregar baja
+        </button>
+      </div>
 
-  <div *ngIf="bajas.length > 0" class="lista-bajas">
-    <div class="baja-item" *ngFor="let b of bajas; let i = index">
-      <span>📅 {{ b.desde }} → {{ b.hasta }}</span>
+      <div *ngIf="bajas.length > 0" class="lista-bajas">
+        <div class="baja-item" *ngFor="let b of bajas; let i = index">
+          <span>📅 {{ b.desde }} → {{ b.hasta }}</span>
 
-      <button type="button" class="btn-peligro" (click)="eliminarBaja(i)">
-        ✖
-      </button>
+          <button type="button" class="btn-peligro" (click)="eliminarBaja(i)">
+            ✖
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
     <!-- COORDENADAS -->
     <h3>Coordenadas</h3>
 
-    <label>Latitud:
-      <input type="number" step="0.000001" [(ngModel)]="direccion()!.lat">
+    <input
+      type="text"
+      [(ngModel)]="coordsTexto"
+      placeholder="Ej: 42.351017, -3.663434"
+      (paste)="onCoordsPaste($event)"
+      (blur)="aplicarCoordsDesdeTexto()"
+    />
+
+    <label
+      >Latitud:
+      <input type="number" step="0.000001" [(ngModel)]="direccion()!.lat" />
     </label>
 
-    <label>Longitud:
-      <input type="number" step="0.000001" [(ngModel)]="direccion()!.lng">
+    <label
+      >Longitud:
+      <input type="number" step="0.000001" [(ngModel)]="direccion()!.lng" />
     </label>
 
     <!-- NOTAS -->
-    <label>Notas:
+    <label
+      >Notas:
       <textarea rows="3" [(ngModel)]="direccion()!.notas"></textarea>
     </label>
 
     <!-- BOTONES -->
-<div class="acciones">
-  <button class="btn-exito" (click)="guardar()">Guardar cambios</button>
-  <button class="btn-gris" (click)="cancelar()">Cancelar</button>
+    <div class="acciones">
+      <button class="btn-exito" (click)="guardar()">Guardar cambios</button>
+      <button class="btn-gris" (click)="cancelar()">Cancelar</button>
 
-  <button class="btn-peligro btn-eliminar" (click)="eliminarDireccion()">
-    Eliminar dirección
-  </button>
-</div>
-
+      <button class="btn-peligro btn-eliminar" (click)="eliminarDireccion()">
+        Eliminar dirección
+      </button>
+    </div>
   </div>
-
 </div>
