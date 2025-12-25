@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { LoadingComponent } from './loading/loading.component';
 import { BottomNavComponent } from './boton-nav/bottom-nav.component';
+import { SwUpdate } from '@angular/service-worker';
 
 @Component({
   selector: 'app-root',
@@ -30,13 +31,31 @@ export class App {
     window.matchMedia('(max-width: 820px)').matches ||
       window.matchMedia('(hover: none) and (pointer: coarse)').matches
   );
+  updateDisponible = signal(false);
 
   mostrarBottomNav = signal(false);
   currentYear = new Date().getFullYear();
-  constructor(private router: Router) {
+  constructor(private router: Router, private swUpdate: SwUpdate) {
     setTimeout(() => {
       this.appLista = true;
     }, 1000);
+
+    // ✅ Aviso de actualización PWA
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.versionUpdates.subscribe((evt: any) => {
+        if (evt.type === 'VERSION_READY') {
+          this.updateDisponible.set(true);
+        }
+      });
+
+      // chequea al entrar (ayuda a que avise más rápido)
+      this.swUpdate.checkForUpdate().catch(() => {});
+
+      // (opcional) chequear cada 15 min
+      setInterval(() => {
+        this.swUpdate.checkForUpdate().catch(() => {});
+      }, 15 * 60 * 1000);
+    }
 
     // Cambiar título dinámicamente según ruta
     this.router.events
@@ -93,5 +112,17 @@ export class App {
   toggleMenu() {
     const menu = document.querySelector('app-menu') as any;
     if (menu?.toggle) menu.toggle();
+  }
+
+  async actualizarAhora() {
+    try {
+      await this.swUpdate.activateUpdate();
+    } finally {
+      document.location.reload();
+    }
+  }
+
+  cerrarAvisoUpdate() {
+    this.updateDisponible.set(false);
   }
 }

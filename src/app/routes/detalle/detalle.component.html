@@ -27,7 +27,7 @@
   <div class="buscador">
     <input
       type="text"
-      placeholder="Buscar dirección o cliente..."
+      placeholder="Buscar dirección, cliente o notas..."
       [(ngModel)]="busqueda"
       (input)="filtrarBusqueda()"
     />
@@ -61,6 +61,7 @@
       class="card"
       *ngFor="let d of direccionesFiltradas(); let i = index"
       [attr.id]="'dir-' + d.id"
+      [attr.data-dir-id]="d.id"
       [class.highlight]="resaltadoId() === d.id"
       cdkDrag
       [cdkDragDisabled]="!reordenHabilitado()"

@@ -144,7 +144,8 @@ export class RepartoComponent implements OnInit {
     return this.direcciones().filter(
       (d) =>
         d.cliente.toLowerCase().includes(texto) ||
-        d.direccion.toLowerCase().includes(texto)
+        d.direccion.toLowerCase().includes(texto) ||
+        (d.notas ?? '').toLowerCase().includes(texto)
     );
   });
 

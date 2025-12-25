@@ -164,3 +164,36 @@ textarea:focus {
     padding-bottom: calc(90px + env(safe-area-inset-bottom));
   }
 }
+
+.update-banner {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: calc(90px + env(safe-area-inset-bottom) + 12px);
+  z-index: 9999;
+  background: #111;
+  color: #fff;
+  padding: 12px 14px;
+  border-radius: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.update-banner .actions {
+  display: flex;
+  gap: 8px;
+}
+
+.update-banner .btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 700;
+}
+
+.update-banner .btn.ghost {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}

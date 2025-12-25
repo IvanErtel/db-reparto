@@ -112,6 +112,25 @@ export class DetalleComponent implements OnInit {
       document.documentElement) as HTMLElement;
   }
 
+  private scrollToDireccionId(id?: string | null) {
+    if (!id) return;
+
+    const esc = (window as any).CSS?.escape
+      ? (window as any).CSS.escape(id)
+      : String(id).replace(/"/g, '\\"');
+
+    // Espera a que Angular pinte el nuevo orden
+    setTimeout(() => {
+      requestAnimationFrame(() => {
+        const el = document.querySelector(
+          `[data-dir-id="${esc}"]`
+        ) as HTMLElement | null;
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    }, 0);
+  }
+
   onDragMoved(ev: CdkDragMove<any>) {
     const y = ev.pointerPosition.y;
     const vh = window.innerHeight;
@@ -190,9 +209,11 @@ export class DetalleComponent implements OnInit {
       .filter(
         (d) =>
           d.cliente.toLowerCase().includes(texto) ||
-          d.direccion.toLowerCase().includes(texto)
+          d.direccion.toLowerCase().includes(texto) ||
+          (d.notas ?? '').toLowerCase().includes(texto)
       )
       .slice(0, 25); // para no listar 200 resultados
+    // para no listar 200 resultados
 
     this.resultadosBusqueda.set(res);
   }
@@ -378,11 +399,10 @@ export class DetalleComponent implements OnInit {
 
   async drop(event: CdkDragDrop<Direccion[]>) {
     if (!this.reordenHabilitado()) {
-      alert('Para reordenar, borrá el texto del buscador.');
+      alert('Para reordenar, quitá el buscador y dejá el filtro en "todos".');
       return;
     }
 
-    // ✅ usar el data del dropList (es la lista renderizada)
     const lista = [...(event.container.data || [])];
 
     moveItemInArray(lista, event.previousIndex, event.currentIndex);
@@ -391,6 +411,9 @@ export class DetalleComponent implements OnInit {
     this.todasLasDirecciones = lista;
     this.direcciones.set(lista);
     this.direccionesFiltradas.set(lista);
+
+    // ✅ ACÁ MISMO: luego de actualizar UI
+    this.scrollToDireccionId(lista[event.currentIndex]?.id);
 
     try {
       await this.rutasService.reordenarDirecciones(this.rutaId, lista);
@@ -401,7 +424,7 @@ export class DetalleComponent implements OnInit {
         'No se pudo guardar el orden, se recarga la lista',
         'error'
       );
-      await this.cargarDirecciones(); // vuelve al último orden real
+      await this.cargarDirecciones();
     }
   }
 

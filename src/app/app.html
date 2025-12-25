@@ -1,4 +1,12 @@
 <div class="app-layout">
+  <div class="update-banner" *ngIf="updateDisponible()">
+    <span>Hay una actualización disponible</span>
+    <div class="actions">
+      <button class="btn" (click)="actualizarAhora()">Actualizar</button>
+      <button class="btn ghost" (click)="cerrarAvisoUpdate()">Después</button>
+    </div>
+  </div>
+
   <!-- ocultar menú completo en login -->
   <app-menu *ngIf="mostrarHamburguesa()"></app-menu>
 
